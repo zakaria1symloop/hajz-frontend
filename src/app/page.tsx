@@ -228,15 +228,19 @@ export default function Home() {
           {/* Title & Slogan */}
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {/* Slogan */}
-            <h1
-              className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6 transition-all duration-1000 delay-300 ${
+            <div
+              className={`transition-all duration-1000 delay-300 ${
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
               dir="rtl"
             >
-              <span className="text-[#2FB7EC]">حجز:</span>{' '}
-              <span className="text-white">قرر تسافر والباقي خليه علينا</span>
-            </h1>
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-[#2FB7EC] mb-2 sm:mb-4">
+                حجز
+              </h1>
+              <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white">
+                قرر تسافر والباقي خليه علينا
+              </p>
+            </div>
             <p
               className={`text-white/70 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4 transition-all duration-1000 delay-500 ${
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
