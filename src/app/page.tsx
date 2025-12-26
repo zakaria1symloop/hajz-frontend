@@ -9,10 +9,13 @@ import { IoCarOutline, IoBedOutline, IoStarSharp, IoLocationOutline, IoPersonOut
 import { BsBuilding } from 'react-icons/bs';
 import { FiSearch } from 'react-icons/fi';
 
+// Algerian Heritage Places
 const heroImages = [
-  'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1920&q=80',
-  'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80',
-  'https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=1920&q=80',
+  'https://images.unsplash.com/photo-1568454537842-d933259bb258?w=1920&q=80', // Casbah of Algiers
+  'https://images.unsplash.com/photo-1597212618440-806262de4f6b?w=1920&q=80', // Santa Cruz Oran
+  'https://images.unsplash.com/photo-1583425921686-c5daf5f49e4a?w=1920&q=80', // Constantine Bridges
+  'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=1920&q=80', // Ghardaia M'zab Valley
+  'https://images.unsplash.com/photo-1581889470536-467bdbe30cd0?w=1920&q=80', // Sahara Desert
 ];
 
 const bestCars = [
@@ -222,30 +225,24 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative z-10 h-full flex flex-col items-center justify-center px-4 sm:px-6 pt-32 sm:pt-28 md:pt-24">
-          {/* Title */}
+          {/* Title & Slogan */}
           <div className={`text-center mb-8 sm:mb-12 transition-all duration-1000 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <p
-              className={`text-[#2FB7EC] font-semibold text-sm sm:text-lg mb-3 sm:mb-4 tracking-widest uppercase transition-all duration-1000 delay-200 ${
-                mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-              }`}
-            >
-              Welcome to Hajz
-            </p>
+            {/* Slogan */}
             <h1
-              className={`text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4 sm:mb-6 transition-all duration-1000 delay-300 ${
+              className={`text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6 transition-all duration-1000 delay-300 ${
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
+              dir="rtl"
             >
-              Find Your Perfect
-              <br />
-              <span className="text-[#2FB7EC]">Stay & Ride</span>
+              <span className="text-[#2FB7EC]">حجز:</span>{' '}
+              <span className="text-white">قرر تسافر والباقي خليه علينا</span>
             </h1>
             <p
-              className={`text-white/70 text-base sm:text-lg md:text-xl max-w-xl mx-auto px-4 transition-all duration-1000 delay-500 ${
+              className={`text-white/70 text-base sm:text-lg md:text-xl max-w-2xl mx-auto px-4 transition-all duration-1000 delay-500 ${
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
             >
-              Discover amazing hotels and rent cars at unbeatable prices
+              Discover the best hotels, restaurants, and car rentals across Algeria
             </p>
           </div>
 
