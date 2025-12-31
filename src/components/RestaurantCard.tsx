@@ -42,7 +42,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10">
               <div className="bg-red-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg font-semibold">
                 <XCircle size={18} />
-                Not Available
+                {t('notAvailable')}
               </div>
             </div>
           )}
@@ -125,7 +125,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
           ) : (
             <button className="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-not-allowed">
               <XCircle size={16} />
-              Not Accepting Bookings
+              {t('notAcceptingBookings')}
             </button>
           )}
         </div>

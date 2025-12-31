@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { HiOutlineX, HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
 import { useAuth } from '@/context/AuthContext';
@@ -14,6 +15,9 @@ interface RegisterModalProps {
 }
 
 export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: RegisterModalProps) {
+  const t = useTranslations('auth');
+  const tToast = useTranslations('toast');
+  const tCommon = useTranslations('common');
   const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
@@ -31,7 +35,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
       const response = await api.get('/auth/google');
       window.location.href = response.data.url;
     } catch (err) {
-      toast.error('Failed to connect to Google');
+      toast.error(tToast('networkError'));
       setGoogleLoading(false);
     }
   };
@@ -40,14 +44,14 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
     e.preventDefault();
 
     if (formData.password !== formData.password_confirmation) {
-      toast.error('Passwords do not match');
+      toast.error(tToast('passwordMismatch'));
       return;
     }
 
     setLoading(true);
     try {
       await register(formData);
-      toast.success('Account created successfully!');
+      toast.success(tToast('registerSuccess'));
       onClose();
     } catch (err: any) {
       const errors = err.response?.data?.errors;
@@ -55,7 +59,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
         const firstError = Object.values(errors)[0] as string[];
         toast.error(firstError[0]);
       } else {
-        toast.error(err.response?.data?.message || 'Registration failed');
+        toast.error(err.response?.data?.message || tToast('registerFailed'));
       }
     } finally {
       setLoading(false);
@@ -82,8 +86,8 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
           >
             <HiOutlineX size={24} />
           </button>
-          <h2 className="text-2xl font-bold text-white mb-2">Create Account</h2>
-          <p className="text-white/80 text-sm">Join Hajz and start booking</p>
+          <h2 className="text-2xl font-bold text-white mb-2">{t('createAccount')}</h2>
+          <p className="text-white/80 text-sm">{t('joinHajz')}</p>
         </div>
 
         {/* Form */}
@@ -101,12 +105,12 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                Connecting...
+                {tCommon('processing')}
               </span>
             ) : (
               <>
                 <FcGoogle size={20} />
-                Sign up with Google
+                {t('signUpWith')} {t('google')}
               </>
             )}
           </button>
@@ -117,14 +121,14 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
               <div className="w-full border-t border-gray-200"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Or sign up with email</span>
+              <span className="px-4 bg-white text-gray-500">{t('orSignUpWithEmail')}</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('fullName')}</label>
               <div className="relative">
                 <HiOutlineUser className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -132,7 +136,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all text-sm"
-                  placeholder="Enter your name"
+                  placeholder={t('namePlaceholder')}
                   required
                 />
               </div>
@@ -140,7 +144,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('email')}</label>
               <div className="relative">
                 <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -148,7 +152,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all text-sm"
-                  placeholder="Enter your email"
+                  placeholder={t('emailPlaceholder')}
                   required
                 />
               </div>
@@ -156,7 +160,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('phone')}</label>
               <div className="relative">
                 <HiOutlinePhone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -164,14 +168,14 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all text-sm"
-                  placeholder="+213 XXX XXX XXX"
+                  placeholder={t('phonePlaceholder')}
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('password')}</label>
               <div className="relative">
                 <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -179,7 +183,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all text-sm"
-                  placeholder="Create a password"
+                  placeholder={t('createPasswordPlaceholder')}
                   required
                   minLength={8}
                 />
@@ -188,7 +192,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('confirmPassword')}</label>
               <div className="relative">
                 <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                 <input
@@ -196,7 +200,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   value={formData.password_confirmation}
                   onChange={(e) => setFormData({ ...formData, password_confirmation: e.target.value })}
                   className="w-full pl-11 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all text-sm"
-                  placeholder="Confirm your password"
+                  placeholder={t('confirmPasswordPlaceholder')}
                   required
                 />
               </div>
@@ -214,10 +218,10 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  Creating account...
+                  {tCommon('processing')}
                 </span>
               ) : (
-                'Create Account'
+                t('createAccount')
               )}
             </button>
           </form>
@@ -225,13 +229,13 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
           {/* Switch to Login */}
           <div className="text-center pt-4 border-t border-gray-100">
             <p className="text-gray-600 text-sm">
-              Already have an account?{' '}
+              {t('haveAccount')}{' '}
               <button
                 type="button"
                 onClick={onSwitchToLogin}
                 className="text-[#2FB7EC] font-semibold hover:underline"
               >
-                Sign In
+                {t('signIn')}
               </button>
             </p>
           </div>

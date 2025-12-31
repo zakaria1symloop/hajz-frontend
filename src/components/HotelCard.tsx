@@ -37,7 +37,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
             <div className="absolute inset-0 bg-black/20 flex items-center justify-center z-10">
               <div className="bg-red-500 text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg font-bold">
                 <XCircle size={18} />
-                Not Available
+                {t('notAvailable')}
               </div>
             </div>
           )}
@@ -103,7 +103,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
           ) : (
             <button className="w-full bg-gray-400 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 cursor-not-allowed">
               <XCircle size={18} />
-              Not Accepting Bookings
+              {t('notAcceptingBookings')}
             </button>
           )}
         </div>

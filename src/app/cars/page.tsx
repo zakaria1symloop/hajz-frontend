@@ -146,9 +146,9 @@ export default function CarsPage() {
                     onChange={(e) => setTransmission(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">All</option>
+                    <option value="">{t('all')}</option>
                     {transmissions.map((trans) => (
-                      <option key={trans} value={trans} className="capitalize">{trans}</option>
+                      <option key={trans} value={trans} className="capitalize">{t(trans)}</option>
                     ))}
                   </select>
                 </div>
@@ -160,9 +160,9 @@ export default function CarsPage() {
                     onChange={(e) => setFuelType(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">All</option>
+                    <option value="">{t('all')}</option>
                     {fuelTypes.map((fuel) => (
-                      <option key={fuel} value={fuel} className="capitalize">{fuel}</option>
+                      <option key={fuel} value={fuel} className="capitalize">{t(fuel)}</option>
                     ))}
                   </select>
                 </div>
@@ -174,7 +174,7 @@ export default function CarsPage() {
                     onChange={(e) => setMinSeats(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">Any</option>
+                    <option value="">{t('any')}</option>
                     <option value="2">2+</option>
                     <option value="4">4+</option>
                     <option value="5">5+</option>
@@ -183,7 +183,7 @@ export default function CarsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Min Price (DZD)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('minPrice')}</label>
                   <input
                     type="number"
                     value={minPrice}
@@ -194,12 +194,12 @@ export default function CarsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Max Price (DZD)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('maxPrice')}</label>
                   <input
                     type="number"
                     value={maxPrice}
                     onChange={(e) => setMaxPrice(e.target.value)}
-                    placeholder="Any"
+                    placeholder={t('any')}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -209,7 +209,7 @@ export default function CarsPage() {
                     onClick={clearFilters}
                     className="text-blue-600 hover:text-blue-700 font-medium"
                   >
-                    Clear all filters
+                    {t('clearFilters')}
                   </button>
                 </div>
               </div>
