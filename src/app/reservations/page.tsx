@@ -347,7 +347,7 @@ export default function ReservationsPage() {
                             <span className="text-xl font-bold" style={{ color: config.color }}>
                               {reservation.total_price?.toLocaleString()}
                             </span>
-                            <span className="text-gray-500 text-sm ml-1">DZD</span>
+                            <span className="text-gray-500 text-sm ms-1">DZD</span>
                           </div>
 
                           {reservation.status === 'pending' && (

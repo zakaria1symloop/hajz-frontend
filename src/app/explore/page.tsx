@@ -657,7 +657,7 @@ export default function ExplorePage() {
                               <span className="text-lg font-bold text-[#2FB7EC]">
                                 {(hotel.min_price || 0).toLocaleString()}
                               </span>
-                              <span className="text-xs text-gray-400 ml-1">DZD</span>
+                              <span className="text-xs text-gray-400 ms-1">DZD</span>
                             </div>
                           </div>
 
@@ -733,7 +733,7 @@ export default function ExplorePage() {
                               <span className="text-lg font-bold text-orange-600">
                                 {restaurant.price_range?.toLocaleString() || 0}
                               </span>
-                              <span className="text-xs text-gray-400 ml-1">DZD</span>
+                              <span className="text-xs text-gray-400 ms-1">DZD</span>
                             </div>
                           </div>
 
@@ -822,7 +822,7 @@ export default function ExplorePage() {
                                 <span className="text-lg font-bold text-green-600">
                                   {car.min_price.toLocaleString()}
                                 </span>
-                                <span className="text-xs text-gray-400 ml-1">DZD</span>
+                                <span className="text-xs text-gray-400 ms-1">DZD</span>
                               </div>
                             ) : null}
                           </div>

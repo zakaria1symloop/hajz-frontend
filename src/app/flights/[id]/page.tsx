@@ -124,7 +124,7 @@ export default function FlightDetailPage() {
                       <div className="border-t-2 border-dashed border-gray-300 flex-1"></div>
                     </div>
                     <div className="flex items-center justify-center text-gray-500 mt-2">
-                      <Clock size={16} className="mr-1" />
+                      <Clock size={16} className="me-1" />
                       <span>{duration}{t('hourFlight')}</span>
                     </div>
                   </div>
@@ -167,7 +167,7 @@ export default function FlightDetailPage() {
               <div className="space-y-4 mb-6">
                 <div>
                   <label className="block text-sm text-gray-600 mb-2">
-                    <Users size={16} className="inline mr-1" />
+                    <Users size={16} className="inline me-1" />
                     {t('passengers')}
                   </label>
                   <select

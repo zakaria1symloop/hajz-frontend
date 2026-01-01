@@ -56,7 +56,7 @@ export default function FlightCard({ flight }: FlightCardProps) {
                 <div className="h-0.5 bg-amber-200 flex-1"></div>
               </div>
               <div className="flex items-center justify-center text-xs text-amber-600 font-bold mt-2">
-                <Clock size={14} className="mr-1" />
+                <Clock size={14} className="me-1" />
                 {duration}h {t('flight')}
               </div>
             </div>

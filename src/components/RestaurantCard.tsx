@@ -68,7 +68,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
             </h3>
             <div className="text-right flex-shrink-0">
               <span className="text-lg font-bold text-orange-600">{restaurant.price_range?.toLocaleString()}</span>
-              <span className="text-xs text-gray-500 ml-1">DZD</span>
+              <span className="text-xs text-gray-500 ms-1">DZD</span>
             </div>
           </div>
 

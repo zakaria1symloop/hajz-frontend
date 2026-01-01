@@ -484,7 +484,7 @@ export default function CarRentalDetailsPage() {
                         <span className="text-2xl font-bold text-green-600">
                           {car.price_per_day?.toLocaleString()}
                         </span>
-                        <span className="text-gray-500 text-sm ml-1">DZD/day</span>
+                        <span className="text-gray-500 text-sm ms-1">DZD/day</span>
                       </div>
                       <button
                         onClick={() => openBookingModal(car)}

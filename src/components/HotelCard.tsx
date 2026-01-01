@@ -73,7 +73,7 @@ export default function HotelCard({ hotel }: HotelCardProps) {
           </h3>
 
           <div className="flex items-center text-gray-500 text-sm mb-4">
-            <div className="p-1.5 bg-blue-100 rounded-lg mr-2">
+            <div className="p-1.5 bg-blue-100 rounded-lg me-2">
               <MapPin size={14} className="text-blue-600" />
             </div>
             <span className="truncate font-medium">{hotel.city}, {hotel.country}</span>

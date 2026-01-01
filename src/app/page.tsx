@@ -869,7 +869,7 @@ export default function Home() {
                         <span className="text-lg font-bold text-[#2FB7EC]">
                           {(hotel.min_price || hotel.price_per_night || 0).toLocaleString()}
                         </span>
-                        <span className="text-xs text-gray-400 ml-1">DZD</span>
+                        <span className="text-xs text-gray-400 ms-1">DZD</span>
                       </div>
                     </div>
 
@@ -975,7 +975,7 @@ export default function Home() {
                       </h3>
                       <div className="text-right flex-shrink-0">
                         <span className="text-lg font-bold text-orange-600">{restaurant.price_range?.toLocaleString()}</span>
-                        <span className="text-xs text-gray-400 ml-1">DZD</span>
+                        <span className="text-xs text-gray-400 ms-1">DZD</span>
                       </div>
                     </div>
 
@@ -1099,7 +1099,7 @@ export default function Home() {
                           <span className="text-lg font-bold text-green-600">
                             {carRental.min_price.toLocaleString()}
                           </span>
-                          <span className="text-xs text-gray-400 ml-1">DZD</span>
+                          <span className="text-xs text-gray-400 ms-1">DZD</span>
                         </div>
                       ) : null}
                     </div>

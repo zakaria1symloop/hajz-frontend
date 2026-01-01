@@ -64,7 +64,7 @@ export default function CarCard({ car }: CarCardProps) {
 
           {car.company && (
             <div className="flex items-center text-gray-500 text-sm mb-4">
-              <div className="p-1.5 bg-blue-100 rounded-lg mr-2">
+              <div className="p-1.5 bg-blue-100 rounded-lg me-2">
                 <MapPin size={14} className="text-blue-600" />
               </div>
               <span className="truncate font-medium">{car.company.name} • {car.company.city}</span>

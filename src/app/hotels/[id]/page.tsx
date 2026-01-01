@@ -358,12 +358,12 @@ export default function HotelDetailPage() {
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900">{hotel.name}</h1>
                   <div className="flex items-center text-gray-500 mt-2">
-                    <MapPin size={18} className="mr-1" />
+                    <MapPin size={18} className="me-1" />
                     <span>{hotel.address}, {hotel.city}, {hotel.state}</span>
                   </div>
                 </div>
                 <div className="flex items-center bg-[#2FB7EC]/10 px-3 py-1.5 rounded-xl border border-[#2FB7EC]/20">
-                  <Star className="text-yellow-500 fill-yellow-500 mr-1" size={18} />
+                  <Star className="text-yellow-500 fill-yellow-500 me-1" size={18} />
                   <span className="font-semibold text-[#2FB7EC]">{hotel.star_rating}</span>
                 </div>
               </div>
@@ -549,7 +549,7 @@ export default function HotelDetailPage() {
               <div className="space-y-4 mb-6">
                 <div>
                   <label className="block text-sm text-gray-600 mb-2">
-                    <Calendar size={16} className="inline mr-1" />
+                    <Calendar size={16} className="inline me-1" />
                     {t('checkIn')}
                   </label>
                   <DatePicker
@@ -581,7 +581,7 @@ export default function HotelDetailPage() {
                 </div>
                 <div>
                   <label className="block text-sm text-gray-600 mb-2">
-                    <Calendar size={16} className="inline mr-1" />
+                    <Calendar size={16} className="inline me-1" />
                     {t('checkOut')}
                   </label>
                   <DatePicker
@@ -639,7 +639,7 @@ export default function HotelDetailPage() {
 
                 <div>
                   <label className="block text-sm text-gray-600 mb-2">
-                    <Users size={16} className="inline mr-1" />
+                    <Users size={16} className="inline me-1" />
                     {t('guests')}
                   </label>
                   <select
@@ -751,7 +751,7 @@ export default function HotelDetailPage() {
                 {user && (
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-2.5 sm:p-3 mb-3 sm:mb-4">
                     <p className="text-xs sm:text-sm text-amber-700">
-                      <AlertCircle size={14} className="inline mr-1 -mt-0.5" />
+                      <AlertCircle size={14} className="inline me-1 -mt-0.5" />
                       {t('ensureInfoAccurate')}
                     </p>
                   </div>
@@ -759,7 +759,7 @@ export default function HotelDetailPage() {
                 <div className="space-y-3 sm:space-y-4">
                   <div>
                     <label className="block text-xs sm:text-sm text-gray-600 mb-1.5 sm:mb-2">
-                      <User size={14} className="inline mr-1" />
+                      <User size={14} className="inline me-1" />
                       {t('fullNameRequired')}
                     </label>
                     <input
@@ -773,7 +773,7 @@ export default function HotelDetailPage() {
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm text-gray-600 mb-1.5 sm:mb-2">
-                      <Mail size={14} className="inline mr-1" />
+                      <Mail size={14} className="inline me-1" />
                       {t('emailRequired')}
                     </label>
                     <input
@@ -787,7 +787,7 @@ export default function HotelDetailPage() {
                   </div>
                   <div>
                     <label className="block text-xs sm:text-sm text-gray-600 mb-1.5 sm:mb-2">
-                      <Phone size={14} className="inline mr-1" />
+                      <Phone size={14} className="inline me-1" />
                       {t('phoneRequired')}
                     </label>
                     <input

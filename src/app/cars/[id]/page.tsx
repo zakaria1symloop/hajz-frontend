@@ -340,7 +340,7 @@ export default function CarDetailPage() {
                   <div className="space-y-4 mb-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Calendar size={16} className="inline mr-2" />
+                        <Calendar size={16} className="inline me-2" />
                         {t('pickupDate')}
                       </label>
                       <input
@@ -357,7 +357,7 @@ export default function CarDetailPage() {
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        <Calendar size={16} className="inline mr-2" />
+                        <Calendar size={16} className="inline me-2" />
                         {t('returnDate')}
                       </label>
                       <input
@@ -376,7 +376,7 @@ export default function CarDetailPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <Clock size={16} className="inline mr-2" />
+                          <Clock size={16} className="inline me-2" />
                           {t('pickupTime')}
                         </label>
                         <input
@@ -388,7 +388,7 @@ export default function CarDetailPage() {
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          <Clock size={16} className="inline mr-2" />
+                          <Clock size={16} className="inline me-2" />
                           {t('returnTime')}
                         </label>
                         <input

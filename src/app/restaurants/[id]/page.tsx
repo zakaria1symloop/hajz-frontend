@@ -529,7 +529,7 @@ export default function RestaurantDetailsPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between">
                             <h4 className="font-semibold text-gray-900">{plat.name}</h4>
-                            <div className="flex gap-1 flex-shrink-0 ml-2">
+                            <div className="flex gap-1 flex-shrink-0 ms-2">
                               {plat.is_halal && (
                                 <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 rounded">Halal</span>
                               )}
