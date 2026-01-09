@@ -1,4 +1,14 @@
 {
+  "booking": {
+    "paymentSuccess": "Payment Successful!",
+    "paymentSuccessMessage": "Your booking has been confirmed. Thank you for your payment.",
+    "paymentFailed": "Payment Failed",
+    "paymentFailedMessage": "We couldn't process your payment. Please try again or use a different payment method.",
+    "paymentId": "Payment ID",
+    "viewReservations": "View My Reservations",
+    "backToHome": "Back to Home",
+    "tryAgain": "Try Again"
+  },
   "nav": {
     "hotels": "Hotels",
     "flights": "Flights",

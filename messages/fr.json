@@ -1,4 +1,14 @@
 {
+  "booking": {
+    "paymentSuccess": "Paiement Réussi!",
+    "paymentSuccessMessage": "Votre réservation a été confirmée. Merci pour votre paiement.",
+    "paymentFailed": "Échec du Paiement",
+    "paymentFailedMessage": "Nous n'avons pas pu traiter votre paiement. Veuillez réessayer ou utiliser un autre mode de paiement.",
+    "paymentId": "ID de Paiement",
+    "viewReservations": "Voir Mes Réservations",
+    "backToHome": "Retour à l'Accueil",
+    "tryAgain": "Réessayer"
+  },
   "nav": {
     "hotels": "Hôtels",
     "flights": "Vols",

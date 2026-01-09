@@ -1,4 +1,14 @@
 {
+  "booking": {
+    "paymentSuccess": "تم الدفع بنجاح!",
+    "paymentSuccessMessage": "تم تأكيد حجزك. شكراً لك على الدفع.",
+    "paymentFailed": "فشل الدفع",
+    "paymentFailedMessage": "لم نتمكن من معالجة دفعتك. يرجى المحاولة مرة أخرى أو استخدام طريقة دفع مختلفة.",
+    "paymentId": "رقم الدفع",
+    "viewReservations": "عرض حجوزاتي",
+    "backToHome": "العودة للرئيسية",
+    "tryAgain": "حاول مرة أخرى"
+  },
   "nav": {
     "hotels": "الفنادق",
     "flights": "الرحلات",
