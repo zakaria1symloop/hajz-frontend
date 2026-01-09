@@ -96,9 +96,9 @@ export default function Header() {
               <Image
                 src={!isFloatingHeader || useScrolledStyle ? '/images/Hajz.png' : '/images/Hajz-Ice-White.png'}
                 alt="Hajz"
-                width={80}
-                height={32}
-                className="h-8 w-auto object-contain"
+                width={120}
+                height={48}
+                className="h-12 w-auto object-contain"
                 priority
               />
             </Link>
