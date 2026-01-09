@@ -15,11 +15,11 @@ import api from '@/lib/api';
 
 // Algerian Heritage Places for hero background
 const heroImages = [
-  'https://images.unsplash.com/photo-1568454537842-d933259bb258?w=1920&q=80',
-  'https://images.unsplash.com/photo-1597212618440-806262de4f6b?w=1920&q=80',
-  'https://images.unsplash.com/photo-1583425921686-c5daf5f49e4a?w=1920&q=80',
-  'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=1920&q=80',
-  'https://images.unsplash.com/photo-1581889470536-467bdbe30cd0?w=1920&q=80',
+  '/images/azzedine-rouichi-9P4PigAh7Ho-unsplash.jpg',
+  '/images/daoud-abismail-E72PVn1qi30-unsplash.jpg',
+  '/images/jamil-kabar-m1HBvp3Cl-E-unsplash.jpg',
+  '/images/mido-art-HvNUKguRP2I-unsplash.jpg',
+  '/images/rab-rabah-qI94ozTxOFc-unsplash.jpg',
 ];
 
 interface Hotel {
@@ -284,6 +284,20 @@ export default function Home() {
   const formatTime = (time?: string) => {
     if (!time) return '';
     return time.slice(0, 5);
+  };
+
+  // Helper to translate amenity keys
+  const translateAmenity = (amenity: string) => {
+    // Normalize the key (lowercase, handle variations)
+    const key = amenity.toLowerCase().trim();
+    const translationKey = `amenityLabels.${key}`;
+    const translated = t(translationKey);
+    // If translation exists (not same as key), return it
+    if (translated !== translationKey) {
+      return translated;
+    }
+    // Fallback: format the raw string nicely (remove underscores, capitalize)
+    return amenity.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   };
 
   const getCarRentalImage = (carRental: CarRental) => {
@@ -891,7 +905,7 @@ export default function Home() {
                       <div className="flex flex-wrap gap-1.5 mb-3">
                         {hotel.amenities.slice(0, 3).map((amenity, idx) => (
                           <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md">
-                            {amenity}
+                            {translateAmenity(amenity)}
                           </span>
                         ))}
                         {hotel.amenities.length > 3 && (
