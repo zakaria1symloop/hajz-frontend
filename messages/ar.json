@@ -519,7 +519,7 @@
     "termsOfUse": "شروط الاستخدام",
     "privacyPolicy": "سياسة الخصوصية",
     "contactUs": "اتصل بنا",
-    "address": "الجزائر",
+    "address": "سطيف، الجزائر العاصمة، الجزائر",
     "rights": "جميع الحقوق محفوظة.",
     "madeWith": "صنع بـ",
     "inAlgeria": "في الجزائر"
@@ -918,7 +918,23 @@
     "viewReservations": "عرض الحجوزات",
     "manageBookings": "إدارة الحجوزات",
     "wallet": "المحفظة",
-    "viewEarnings": "عرض الأرباح والسحب"
+    "viewEarnings": "عرض الأرباح والسحب",
+    "hotelImages": "صور الفندق",
+    "uploadLandscapeImages": "رفع صور أفقية للفندق",
+    "uploadImages": "رفع الصور",
+    "uploading": "جاري الرفع...",
+    "noImages": "لم يتم رفع أي صور بعد",
+    "uploadLandscapeHint": "ارفع صور أفقية (عرضية) للحصول على أفضل عرض",
+    "landscapeOnly": "يرجى رفع صور أفقية (عرضية) فقط",
+    "imagesUploaded": "تم رفع الصور بنجاح!",
+    "uploadFailed": "فشل رفع الصور",
+    "confirmDeleteImage": "هل أنت متأكد من حذف هذه الصورة؟",
+    "imageDeleted": "تم حذف الصورة بنجاح",
+    "deleteFailed": "فشل حذف الصورة",
+    "primary": "رئيسية",
+    "setPrimary": "تعيين كصورة رئيسية",
+    "primarySet": "تم تعيين الصورة الرئيسية بنجاح",
+    "deleteImage": "حذف الصورة"
   },
   "proWallet": {
     "dashboard": "لوحة التحكم",

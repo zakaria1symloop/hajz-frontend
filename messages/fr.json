@@ -519,7 +519,7 @@
     "termsOfUse": "Conditions d'Utilisation",
     "privacyPolicy": "Politique de Confidentialité",
     "contactUs": "Nous Contacter",
-    "address": "Algérie",
+    "address": "Sétif, Alger, Algérie",
     "rights": "Tous droits réservés.",
     "madeWith": "Fait avec",
     "inAlgeria": "en Algérie"
@@ -918,7 +918,23 @@
     "viewReservations": "Voir les Réservations",
     "manageBookings": "Gérer les réservations",
     "wallet": "Portefeuille",
-    "viewEarnings": "Voir les revenus et retirer"
+    "viewEarnings": "Voir les revenus et retirer",
+    "hotelImages": "Images de l'Hôtel",
+    "uploadLandscapeImages": "Télécharger des images paysage pour votre hôtel",
+    "uploadImages": "Télécharger des Images",
+    "uploading": "Téléchargement...",
+    "noImages": "Aucune image téléchargée",
+    "uploadLandscapeHint": "Téléchargez des images horizontales (paysage) pour un meilleur affichage",
+    "landscapeOnly": "Veuillez télécharger uniquement des images horizontales (paysage)",
+    "imagesUploaded": "Images téléchargées avec succès !",
+    "uploadFailed": "Échec du téléchargement des images",
+    "confirmDeleteImage": "Êtes-vous sûr de vouloir supprimer cette image ?",
+    "imageDeleted": "Image supprimée avec succès",
+    "deleteFailed": "Échec de la suppression de l'image",
+    "primary": "Principale",
+    "setPrimary": "Définir comme principale",
+    "primarySet": "Image principale définie avec succès",
+    "deleteImage": "Supprimer l'image"
   },
   "proWallet": {
     "dashboard": "Tableau de Bord",

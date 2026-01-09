@@ -298,12 +298,17 @@ export default function Home() {
       key.replace(/_/g, ' '),       // underscores to spaces
     ];
 
-    for (const k of keyVariations) {
-      const translationKey = `amenityLabels.${k}`;
-      const translated = t(translationKey);
-      // If translation exists (not same as key path), return it
-      if (translated && translated !== translationKey && !translated.startsWith('amenityLabels.')) {
-        return translated;
+    // Try both root level and hotels namespace
+    const namespaces = ['hotels.amenityLabels', 'amenityLabels'];
+
+    for (const ns of namespaces) {
+      for (const k of keyVariations) {
+        const translationKey = `${ns}.${k}`;
+        const translated = t(translationKey);
+        // If translation exists (not same as key path), return it
+        if (translated && translated !== translationKey && !translated.includes('amenityLabels')) {
+          return translated;
+        }
       }
     }
 

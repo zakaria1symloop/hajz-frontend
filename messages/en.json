@@ -523,7 +523,7 @@
     "termsOfUse": "Terms of Use",
     "privacyPolicy": "Privacy Policy",
     "contactUs": "Contact Us",
-    "address": "Algeria",
+    "address": "Setif, Algiers, Algeria",
     "rights": "All rights reserved.",
     "madeWith": "Made with",
     "inAlgeria": "in Algeria"
@@ -922,7 +922,23 @@
     "viewReservations": "View Reservations",
     "manageBookings": "Manage bookings",
     "wallet": "Wallet",
-    "viewEarnings": "View earnings & withdraw"
+    "viewEarnings": "View earnings & withdraw",
+    "hotelImages": "Hotel Images",
+    "uploadLandscapeImages": "Upload landscape images for your hotel",
+    "uploadImages": "Upload Images",
+    "uploading": "Uploading...",
+    "noImages": "No images uploaded yet",
+    "uploadLandscapeHint": "Upload landscape (horizontal) images for best display",
+    "landscapeOnly": "Please upload landscape (horizontal) images only",
+    "imagesUploaded": "Images uploaded successfully!",
+    "uploadFailed": "Failed to upload images",
+    "confirmDeleteImage": "Are you sure you want to delete this image?",
+    "imageDeleted": "Image deleted successfully",
+    "deleteFailed": "Failed to delete image",
+    "primary": "Primary",
+    "setPrimary": "Set as primary",
+    "primarySet": "Primary image set successfully",
+    "deleteImage": "Delete image"
   },
   "proWallet": {
     "dashboard": "Dashboard",

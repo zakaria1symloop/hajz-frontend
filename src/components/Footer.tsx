@@ -102,8 +102,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2 text-gray-400 text-sm">
                 <HiOutlinePhone size={16} className="text-[#2FB7EC]" />
-                <a href="tel:+213123456789" className="hover:text-[#2FB7EC] transition-colors" dir="ltr">
-                  +213 123 456 789
+                <a href="tel:+21350478" className="hover:text-[#2FB7EC] transition-colors" dir="ltr">
+                  +213 50478
                 </a>
               </li>
               <li className="flex items-start gap-2 text-gray-400 text-sm">

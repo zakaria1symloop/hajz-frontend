@@ -1,14 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useProAuth } from '@/context/ProAuthContext';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
-import { HiOutlineArrowLeft, HiOutlinePencil, HiOutlineCheck, HiOutlineX, HiOutlinePhotograph, HiOutlinePlus, HiOutlineTrash, HiOutlineStar, HiOutlineLocationMarker, HiOutlineClock, HiOutlinePhone, HiOutlineMail, HiOutlineGlobe } from 'react-icons/hi';
+import { HiOutlineArrowLeft, HiOutlinePencil, HiOutlineCheck, HiOutlineX, HiOutlinePhotograph, HiOutlinePlus, HiOutlineTrash, HiOutlineStar, HiOutlineLocationMarker, HiOutlineClock, HiOutlinePhone, HiOutlineMail, HiOutlineGlobe, HiOutlineUpload } from 'react-icons/hi';
 import { BsBriefcase } from 'react-icons/bs';
 import { useTranslations } from 'next-intl';
+
+interface HotelImage {
+  id: number;
+  image_path: string;
+  url?: string;
+  is_primary: boolean;
+}
 
 export default function MyHotelPage() {
   const router = useRouter();
@@ -16,6 +24,9 @@ export default function MyHotelPage() {
   const t = useTranslations('proHotel');
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const [hotelImages, setHotelImages] = useState<HotelImage[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -53,8 +64,106 @@ export default function MyHotelPage() {
         check_out_time: (hotel as any).check_out_time || '12:00',
         amenities: (hotel as any).amenities || [],
       });
+      // Load hotel images
+      if ((hotel as any).images) {
+        setHotelImages((hotel as any).images);
+      }
     }
   }, [loading, hotelOwner, hotel, router]);
+
+  const getImageUrl = (image: HotelImage) => {
+    if (image.url) return image.url;
+    if (image.image_path?.startsWith('http')) return image.image_path;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+    return `${baseUrl}/storage/${image.image_path}`;
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // Validate files - must be landscape (width > height)
+    for (const file of Array.from(files)) {
+      const img = document.createElement('img');
+      const objectUrl = URL.createObjectURL(file);
+
+      await new Promise<void>((resolve, reject) => {
+        img.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          if (img.width < img.height) {
+            toast.error(t('landscapeOnly'));
+            reject();
+          } else {
+            resolve();
+          }
+        };
+        img.src = objectUrl;
+      }).catch(() => {
+        return;
+      });
+    }
+
+    setUploadingImages(true);
+    const formData = new FormData();
+    for (const file of Array.from(files)) {
+      formData.append('images[]', file);
+    }
+
+    try {
+      const token = localStorage.getItem('pro_token');
+      const response = await api.post('/hotel-owner/hotel/images', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success(t('imagesUploaded'));
+      await refreshHotel();
+      if (response.data.images) {
+        setHotelImages(response.data.images);
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || t('uploadFailed'));
+    } finally {
+      setUploadingImages(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleDeleteImage = async (imageId: number) => {
+    if (!confirm(t('confirmDeleteImage'))) return;
+
+    try {
+      const token = localStorage.getItem('pro_token');
+      await api.delete(`/hotel-owner/hotel/images/${imageId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(t('imageDeleted'));
+      setHotelImages(hotelImages.filter(img => img.id !== imageId));
+      await refreshHotel();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || t('deleteFailed'));
+    }
+  };
+
+  const handleSetPrimary = async (imageId: number) => {
+    try {
+      const token = localStorage.getItem('pro_token');
+      await api.put(`/hotel-owner/hotel/images/${imageId}/primary`, {}, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(t('primarySet'));
+      setHotelImages(hotelImages.map(img => ({
+        ...img,
+        is_primary: img.id === imageId
+      })));
+      await refreshHotel();
+    } catch (err: any) {
+      toast.error(err.response?.data?.message || t('updateFailed'));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -324,6 +433,98 @@ export default function MyHotelPage() {
                 </button>
               </div>
             )}
+          </div>
+
+          {/* Hotel Images Section */}
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-6">
+            <div className="p-6 border-b border-gray-100">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center">
+                    <HiOutlinePhotograph size={20} className="text-purple-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">{t('hotelImages')}</h2>
+                    <p className="text-sm text-gray-500">{t('uploadLandscapeImages')}</p>
+                  </div>
+                </div>
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="hotel-images"
+                  />
+                  <label
+                    htmlFor="hotel-images"
+                    className={`flex items-center gap-2 px-4 py-2.5 bg-[#2FB7EC] text-white rounded-lg hover:bg-[#26a5d8] transition-colors cursor-pointer ${uploadingImages ? 'opacity-50 pointer-events-none' : ''}`}
+                  >
+                    {uploadingImages ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        {t('uploading')}
+                      </>
+                    ) : (
+                      <>
+                        <HiOutlineUpload size={18} />
+                        {t('uploadImages')}
+                      </>
+                    )}
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6">
+              {hotelImages.length === 0 ? (
+                <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
+                  <HiOutlinePhotograph size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500 mb-2">{t('noImages')}</p>
+                  <p className="text-sm text-gray-400">{t('uploadLandscapeHint')}</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {hotelImages.map((image) => (
+                    <div key={image.id} className="relative group aspect-video rounded-xl overflow-hidden border border-gray-200">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={getImageUrl(image)}
+                        alt="Hotel"
+                        className="w-full h-full object-cover"
+                      />
+                      {image.is_primary && (
+                        <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                          {t('primary')}
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        {!image.is_primary && (
+                          <button
+                            type="button"
+                            onClick={() => handleSetPrimary(image.id)}
+                            className="p-2 bg-white rounded-lg text-green-600 hover:bg-green-50 transition-colors"
+                            title={t('setPrimary')}
+                          >
+                            <HiOutlineStar size={20} />
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteImage(image.id)}
+                          className="p-2 bg-white rounded-lg text-red-600 hover:bg-red-50 transition-colors"
+                          title={t('deleteImage')}
+                        >
+                          <HiOutlineTrash size={20} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Quick Actions */}
