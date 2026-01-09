@@ -624,7 +624,7 @@ export default function WalletPage() {
                           <HiOutlineCreditCard size={20} className="text-purple-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">{t('withdrawTo', { bank: request.bank_name })}</p>
+                          <p className="font-medium text-gray-900">{t('withdrawTo', { bank: request.bank_name || 'N/A' })}</p>
                           <p className="text-sm text-gray-500">{formatDate(request.created_at)}</p>
                           {request.account_number && (
                             <p className="text-sm text-gray-400">{t('account')}: ***{request.account_number.slice(-4)}</p>
