@@ -114,6 +114,13 @@ input, select, textarea {
 .react-datepicker__day--today {
   font-weight: 700 !important;
   color: #2FB7EC !important;
+  background: #2FB7EC20 !important;
+}
+
+.react-datepicker__day--today.react-datepicker__day--selected,
+.react-datepicker__day--today.react-datepicker__day--keyboard-selected {
+  color: white !important;
+  background: #2FB7EC !important;
 }
 
 .react-datepicker__day--disabled {
@@ -138,7 +145,7 @@ input, select, textarea {
 }
 
 .react-datepicker-popper {
-  z-index: 100 !important;
+  z-index: 9999 !important;
 }
 
 .react-datepicker__triangle {

@@ -9,6 +9,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlinePhotograph, HiOutlineX, HiOutlineCheck } from 'react-icons/hi';
 import { FaUtensils, FaLeaf } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 
 interface PlatImage {
   id: number;
@@ -33,24 +34,28 @@ interface Plat {
   images: PlatImage[];
 }
 
-const CATEGORIES = [
-  'Starters',
-  'Main Course',
-  'Grills',
-  'Seafood',
-  'Pasta',
-  'Pizza',
-  'Salads',
-  'Sandwiches',
-  'Desserts',
-  'Beverages',
-  'Traditional',
-  'Other',
-];
+// Category values to translation key mapping
+const CATEGORY_KEYS: Record<string, string> = {
+  'Starters': 'starters',
+  'Main Course': 'mainCourse',
+  'Grills': 'grills',
+  'Seafood': 'seafood',
+  'Pasta': 'pasta',
+  'Pizza': 'pizza',
+  'Salads': 'salads',
+  'Sandwiches': 'sandwiches',
+  'Desserts': 'desserts',
+  'Beverages': 'beverages',
+  'Traditional': 'traditional',
+  'Other': 'other',
+};
+
+const CATEGORIES = Object.keys(CATEGORY_KEYS);
 
 export default function PlatsPage() {
   const router = useRouter();
   const { restaurantOwner, restaurant, loading, businessType } = useProAuth();
+  const t = useTranslations('proPlats');
   const [plats, setPlats] = useState<Plat[]>([]);
   const [loadingPlats, setLoadingPlats] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -96,7 +101,7 @@ export default function PlatsPage() {
       });
       setPlats(response.data.plats || []);
     } catch (err) {
-      toast.error('Failed to load menu items');
+      toast.error(t('loadFailed'));
     } finally {
       setLoadingPlats(false);
     }
@@ -154,7 +159,7 @@ export default function PlatsPage() {
         await api.put(`/restaurant-owner/plats/${editingPlat.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Dish updated successfully!');
+        toast.success(t('dishUpdated'));
       } else {
         const response = await api.post('/restaurant-owner/plats', payload, {
           headers: { Authorization: `Bearer ${token}` }
@@ -174,31 +179,31 @@ export default function PlatsPage() {
             }
           });
         }
-        toast.success('Dish created successfully!');
+        toast.success(t('dishCreated'));
       }
 
       setShowModal(false);
       resetForm();
       fetchPlats();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save dish');
+      toast.error(err.response?.data?.message || t('saveFailed'));
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (plat: Plat) => {
-    if (!confirm(`Are you sure you want to delete "${plat.name}"?`)) return;
+    if (!confirm(t('confirmDelete', { name: plat.name }))) return;
 
     try {
       const token = localStorage.getItem('pro_token');
       await api.delete(`/restaurant-owner/plats/${plat.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Dish deleted successfully!');
+      toast.success(t('dishDeleted'));
       fetchPlats();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete dish');
+      toast.error(err.response?.data?.message || t('deleteFailed'));
     }
   };
 
@@ -217,10 +222,10 @@ export default function PlatsPage() {
           'Content-Type': 'multipart/form-data',
         }
       });
-      toast.success('Images uploaded successfully!');
+      toast.success(t('imagesUploaded'));
       fetchPlats();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to upload images');
+      toast.error(err.response?.data?.message || t('uploadFailed'));
     } finally {
       setUploadingImages(false);
     }
@@ -232,10 +237,10 @@ export default function PlatsPage() {
       await api.delete(`/restaurant-owner/plats/images/${imageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Image deleted!');
+      toast.success(t('imageDeleted'));
       fetchPlats();
     } catch (err: any) {
-      toast.error('Failed to delete image');
+      toast.error(t('deleteImageFailed'));
     }
   };
 
@@ -249,7 +254,7 @@ export default function PlatsPage() {
       });
       fetchPlats();
     } catch (err) {
-      toast.error('Failed to update availability');
+      toast.error(t('availabilityFailed'));
     }
   };
 
@@ -260,6 +265,13 @@ export default function PlatsPage() {
       </div>
     );
   }
+
+  // Helper to get translated category name
+  const getTranslatedCategory = (category: string | undefined) => {
+    if (!category) return t('categories.other');
+    const key = CATEGORY_KEYS[category];
+    return key ? t(`categories.${key}`) : category;
+  };
 
   // Group plats by category
   const platsByCategory = plats.reduce((acc, plat) => {
@@ -276,15 +288,15 @@ export default function PlatsPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                 <FaUtensils size={14} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Menu Management</span>
+              <span className="font-semibold text-gray-900">{t('menuManagement')}</span>
             </div>
           </div>
           <button
@@ -295,7 +307,7 @@ export default function PlatsPage() {
             className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
             <HiOutlinePlus size={18} />
-            Add Dish
+            {t('addDish')}
           </button>
         </div>
       </header>
@@ -304,15 +316,15 @@ export default function PlatsPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500">Total Dishes</p>
+            <p className="text-sm text-gray-500">{t('totalDishes')}</p>
             <p className="text-2xl font-bold text-gray-900">{plats.length}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500">Available</p>
+            <p className="text-sm text-gray-500">{t('available')}</p>
             <p className="text-2xl font-bold text-green-600">{plats.filter(p => p.is_available).length}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500">Featured</p>
+            <p className="text-sm text-gray-500">{t('featured')}</p>
             <p className="text-2xl font-bold text-orange-600">{plats.filter(p => p.is_featured).length}</p>
           </div>
         </div>
@@ -323,8 +335,8 @@ export default function PlatsPage() {
             <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <FaUtensils size={28} className="text-orange-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No dishes yet</h3>
-            <p className="text-gray-500 mb-6">Start building your menu by adding your first dish</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noDishesYet')}</h3>
+            <p className="text-gray-500 mb-6">{t('noDishesDesc')}</p>
             <button
               onClick={() => {
                 resetForm();
@@ -333,14 +345,14 @@ export default function PlatsPage() {
               className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors"
             >
               <HiOutlinePlus size={18} />
-              Add Your First Dish
+              {t('addFirstDish')}
             </button>
           </div>
         ) : (
           <div className="space-y-8">
             {Object.entries(platsByCategory).map(([category, categoryPlats]) => (
               <div key={category}>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">{category}</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{getTranslatedCategory(category)}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {categoryPlats.map((plat) => (
                     <div key={plat.id} className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow">
@@ -362,17 +374,17 @@ export default function PlatsPage() {
                         {!plat.is_available && (
                           <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                             <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                              Unavailable
+                              {t('unavailable')}
                             </span>
                           </div>
                         )}
                         {plat.is_featured && (
-                          <span className="absolute top-2 left-2 bg-orange-500 text-white px-2 py-0.5 rounded-full text-xs font-medium">
-                            Featured
+                          <span className="absolute top-2 start-2 bg-orange-500 text-white px-2 py-0.5 rounded-full text-xs font-medium">
+                            {t('featured')}
                           </span>
                         )}
                         {/* Image upload button */}
-                        <label className="absolute bottom-2 right-2 w-8 h-8 bg-white/90 rounded-lg flex items-center justify-center cursor-pointer hover:bg-white transition-colors">
+                        <label className="absolute bottom-2 end-2 w-8 h-8 bg-white/90 rounded-lg flex items-center justify-center cursor-pointer hover:bg-white transition-colors">
                           <HiOutlinePhotograph size={16} className="text-gray-600" />
                           <input
                             type="file"
@@ -404,17 +416,17 @@ export default function PlatsPage() {
                         <div className="flex flex-wrap gap-1 mb-3">
                           {plat.is_vegetarian && (
                             <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 text-green-600 rounded-full text-xs">
-                              <FaLeaf size={10} /> Vegetarian
+                              <FaLeaf size={10} /> {t('vegetarian')}
                             </span>
                           )}
                           {plat.is_halal && (
                             <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 rounded-full text-xs">
-                              Halal
+                              {t('halal')}
                             </span>
                           )}
                           {plat.preparation_time && (
                             <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full text-xs">
-                              {plat.preparation_time} min
+                              {t('minutes', { count: plat.preparation_time })}
                             </span>
                           )}
                         </div>
@@ -425,7 +437,7 @@ export default function PlatsPage() {
                             onClick={() => toggleAvailability(plat)}
                             className={`text-sm font-medium ${plat.is_available ? 'text-green-600' : 'text-gray-400'}`}
                           >
-                            {plat.is_available ? 'Available' : 'Unavailable'}
+                            {plat.is_available ? t('available') : t('unavailable')}
                           </button>
                           <div className="flex items-center gap-2">
                             <button
@@ -458,7 +470,7 @@ export default function PlatsPage() {
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
               <h2 className="text-lg font-semibold text-gray-900">
-                {editingPlat ? 'Edit Dish' : 'Add New Dish'}
+                {editingPlat ? t('editDish') : t('addNewDish')}
               </h2>
               <button
                 onClick={() => {
@@ -474,7 +486,7 @@ export default function PlatsPage() {
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')}</label>
                   <input
                     type="text"
                     value={formData.name}
@@ -484,7 +496,7 @@ export default function PlatsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Arabic Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('arabicName')}</label>
                   <input
                     type="text"
                     value={formData.name_ar}
@@ -496,7 +508,7 @@ export default function PlatsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -507,7 +519,7 @@ export default function PlatsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price (DZD) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('priceDzd')}</label>
                   <input
                     type="number"
                     value={formData.price}
@@ -519,22 +531,22 @@ export default function PlatsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('category')}</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                   >
-                    <option value="">Select category</option>
+                    <option value="">{t('selectCategory')}</option>
                     {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat} value={cat}>{t(`categories.${CATEGORY_KEYS[cat]}`)}</option>
                     ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Prep Time (minutes)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('prepTime')}</label>
                 <input
                   type="number"
                   value={formData.preparation_time}
@@ -547,10 +559,10 @@ export default function PlatsPage() {
               {/* Toggles */}
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { key: 'is_available', label: 'Available' },
-                  { key: 'is_featured', label: 'Featured' },
-                  { key: 'is_vegetarian', label: 'Vegetarian' },
-                  { key: 'is_halal', label: 'Halal' },
+                  { key: 'is_available', label: t('available') },
+                  { key: 'is_featured', label: t('featured') },
+                  { key: 'is_vegetarian', label: t('vegetarian') },
+                  { key: 'is_halal', label: t('halal') },
                 ].map((toggle) => (
                   <label key={toggle.key} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer">
                     <input
@@ -567,7 +579,7 @@ export default function PlatsPage() {
               {/* Image upload for new plat */}
               {!editingPlat && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Images</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('images')}</label>
                   <input
                     type="file"
                     multiple
@@ -576,7 +588,7 @@ export default function PlatsPage() {
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none"
                   />
                   {selectedFiles.length > 0 && (
-                    <p className="text-sm text-gray-500 mt-1">{selectedFiles.length} file(s) selected</p>
+                    <p className="text-sm text-gray-500 mt-1">{t('filesSelected', { count: selectedFiles.length })}</p>
                   )}
                 </div>
               )}
@@ -590,14 +602,14 @@ export default function PlatsPage() {
                   }}
                   className="px-4 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
                   className="px-6 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : (editingPlat ? 'Update Dish' : 'Add Dish')}
+                  {submitting ? t('saving') : (editingPlat ? t('updateDish') : t('addDish'))}
                 </button>
               </div>
             </form>

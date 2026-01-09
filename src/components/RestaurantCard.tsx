@@ -120,7 +120,7 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
           {isAvailable ? (
             <button className="w-full bg-orange-500 group-hover:bg-orange-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all">
               {t('bookTable')}
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              <ArrowRight size={16} className="rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
             </button>
           ) : (
             <button className="w-full bg-gray-300 text-gray-500 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 cursor-not-allowed">

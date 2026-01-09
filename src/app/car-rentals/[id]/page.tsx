@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
 import api from '@/lib/api';
 import { toast } from 'react-hot-toast';
@@ -81,6 +82,7 @@ export default function CarRentalDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const { user } = useAuth();
+  const t = useTranslations('carRentalPage');
   const [company, setCompany] = useState<CarRentalCompany | null>(null);
   const [cars, setCars] = useState<CarType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,7 +154,7 @@ export default function CarRentalDetailsPage() {
       setCompany(companyRes.data);
       setCars(carsRes.data.data || carsRes.data || []);
     } catch (error) {
-      toast.error('Failed to load car rental company');
+      toast.error(t('failedToLoad'));
       router.push('/cars');
     } finally {
       setLoading(false);
@@ -237,10 +239,10 @@ export default function CarRentalDetailsPage() {
 
       setIsAvailable(response.data.available);
       if (!response.data.available) {
-        toast.error('This car is not available for the selected dates');
+        toast.error(t('notAvailableDates'));
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to check availability');
+      toast.error(error.response?.data?.message || t('failedCheckAvailability'));
       setIsAvailable(false);
     } finally {
       setCheckingAvailability(false);
@@ -251,7 +253,7 @@ export default function CarRentalDetailsPage() {
     if (!selectedCar || !pickupDate) return;
 
     if (!guestInfo.name || !guestInfo.email || !guestInfo.phone || !guestInfo.driver_license) {
-      toast.error('Please fill in all required fields');
+      toast.error(t('fillRequiredFields'));
       return;
     }
 
@@ -280,9 +282,9 @@ export default function CarRentalDetailsPage() {
         carName: selectedCar.full_name,
         totalPrice: response.data.subtotal,
       });
-      toast.success('Booking request submitted!');
+      toast.success(t('bookingSubmitted'));
     } catch (error: any) {
-      const errorMsg = error.response?.data?.error || error.response?.data?.message || 'Booking failed';
+      const errorMsg = error.response?.data?.error || error.response?.data?.message || t('bookingFailed');
       toast.error(errorMsg);
     } finally {
       setBookingLoading(false);
@@ -307,7 +309,7 @@ export default function CarRentalDetailsPage() {
   if (!company) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Car rental company not found</p>
+        <p>{t('companyNotFound')}</p>
       </div>
     );
   }
@@ -319,7 +321,7 @@ export default function CarRentalDetailsPage() {
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
             <button onClick={() => router.back()} className="p-2 hover:bg-gray-100 rounded-full">
-              <ChevronLeft size={24} />
+              <ChevronLeft size={24} className="rtl:rotate-180" />
             </button>
             <div>
               <h1 className="text-xl font-bold text-gray-900">{company.name}</h1>
@@ -364,7 +366,7 @@ export default function CarRentalDetailsPage() {
             {!company.is_active && (
               <div className="bg-red-100 text-red-700 px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
                 <AlertCircle size={16} />
-                Not Available
+                {t('notAvailable')}
               </div>
             )}
           </div>
@@ -373,13 +375,13 @@ export default function CarRentalDetailsPage() {
         {/* Cars Section */}
         <div className="mb-6">
           <h3 className="text-xl font-bold text-gray-900 mb-4">
-            Available Cars ({cars.length})
+            {t('availableCars', { count: cars.length })}
           </h3>
 
           {cars.length === 0 ? (
             <div className="bg-white rounded-2xl p-12 text-center">
               <Car size={48} className="mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500">No cars available at the moment</p>
+              <p className="text-gray-500">{t('noCarsAvailable')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -412,7 +414,7 @@ export default function CarRentalDetailsPage() {
                     {!car.is_available && (
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                         <span className="bg-red-500 text-white px-4 py-2 rounded-full font-medium">
-                          Not Available
+                          {t('notAvailable')}
                         </span>
                       </div>
                     )}
@@ -471,9 +473,9 @@ export default function CarRentalDetailsPage() {
                     {car.mileage_limit && (
                       <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
                         <Gauge size={14} />
-                        <span>{car.mileage_limit} km/day included</span>
+                        <span>{t('kmPerDayIncluded', { km: car.mileage_limit })}</span>
                         {car.extra_km_price && (
-                          <span className="text-orange-500">+{car.extra_km_price} DZD/km extra</span>
+                          <span className="text-orange-500">{t('extraKmCharge', { price: car.extra_km_price })}</span>
                         )}
                       </div>
                     )}
@@ -484,14 +486,14 @@ export default function CarRentalDetailsPage() {
                         <span className="text-2xl font-bold text-green-600">
                           {car.price_per_day?.toLocaleString()}
                         </span>
-                        <span className="text-gray-500 text-sm ms-1">DZD/day</span>
+                        <span className="text-gray-500 text-sm ms-1">{t('dzdPerDay')}</span>
                       </div>
                       <button
                         onClick={() => openBookingModal(car)}
                         disabled={!car.is_available || !company.is_active}
                         className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                       >
-                        Book Now
+                        {t('bookNow')}
                       </button>
                     </div>
                   </div>
@@ -508,7 +510,7 @@ export default function CarRentalDetailsPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-900">Book {selectedCar.full_name}</h2>
+                <h2 className="text-xl font-bold text-gray-900">{t('bookCar', { carName: selectedCar.full_name })}</h2>
                 <button
                   onClick={() => setShowBookingModal(false)}
                   className="p-2 hover:bg-gray-100 rounded-full"
@@ -530,15 +532,15 @@ export default function CarRentalDetailsPage() {
                       <>
                         <button
                           onClick={() => setCarImageIndex((i) => (i - 1 + selectedCar.images.length) % selectedCar.images.length)}
-                          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full"
+                          className="absolute start-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full"
                         >
-                          <ChevronLeft size={20} />
+                          <ChevronLeft size={20} className="rtl:rotate-180" />
                         </button>
                         <button
                           onClick={() => setCarImageIndex((i) => (i + 1) % selectedCar.images.length)}
-                          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full"
+                          className="absolute end-2 top-1/2 -translate-y-1/2 bg-white/80 p-1 rounded-full"
                         >
-                          <ChevronRight size={20} />
+                          <ChevronRight size={20} className="rtl:rotate-180" />
                         </button>
                       </>
                     )}
@@ -554,7 +556,7 @@ export default function CarRentalDetailsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Pickup Date *
+                    {t('pickupDate')}
                   </label>
                   <DatePicker
                     selected={pickupDate}
@@ -562,12 +564,12 @@ export default function CarRentalDetailsPage() {
                     minDate={new Date()}
                     dateFormat="MMMM d, yyyy"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholderText="Select pickup date"
+                    placeholderText={t('selectPickupDate')}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Pickup Time *
+                    {t('pickupTime')}
                   </label>
                   <select
                     value={pickupTime}
@@ -584,7 +586,7 @@ export default function CarRentalDetailsPage() {
               {/* Rental Days */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Rental Duration (days)
+                  {t('rentalDuration')}
                 </label>
                 <div className="flex items-center gap-4">
                   <button
@@ -601,8 +603,8 @@ export default function CarRentalDetailsPage() {
                     +
                   </button>
                   <span className="text-sm text-gray-500">
-                    {selectedCar.min_rental_days && `Min: ${selectedCar.min_rental_days} days`}
-                    {selectedCar.max_rental_days && ` | Max: ${selectedCar.max_rental_days} days`}
+                    {selectedCar.min_rental_days && t('minDays', { days: selectedCar.min_rental_days })}
+                    {selectedCar.max_rental_days && ` | ${t('maxDays', { days: selectedCar.max_rental_days })}`}
                   </span>
                 </div>
               </div>
@@ -610,48 +612,48 @@ export default function CarRentalDetailsPage() {
               {/* Return Date Preview */}
               {pickupDate && (
                 <div className="bg-green-50 rounded-xl p-4 mb-6">
-                  <h4 className="font-medium text-gray-900 mb-2">Rental Summary</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">{t('rentalSummary')}</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-500">Pickup</p>
+                      <p className="text-gray-500">{t('pickup')}</p>
                       <p className="font-medium">{pickupDate.toLocaleDateString()}</p>
                       <p className="text-green-600">{pickupTime}</p>
                     </div>
                     <div>
-                      <p className="text-gray-500">Return</p>
+                      <p className="text-gray-500">{t('return')}</p>
                       <p className="font-medium">{calculateReturnDateTime()?.toLocaleDateString()}</p>
-                      <p className="text-green-600">{getReturnTime()} (1h before pickup time)</p>
+                      <p className="text-green-600">{getReturnTime()} {t('beforePickupTime')}</p>
                     </div>
                   </div>
                   <div className="mt-3 pt-3 border-t border-green-200">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Duration</span>
-                      <span className="font-medium">{rentalDays} day{rentalDays > 1 ? 's' : ''}</span>
+                      <span className="text-gray-600">{t('duration')}</span>
+                      <span className="font-medium">{rentalDays} {rentalDays > 1 ? t('days') : t('day')}</span>
                     </div>
                     <div className="flex justify-between text-sm mt-1">
-                      <span className="text-gray-600">Price per day</span>
+                      <span className="text-gray-600">{t('pricePerDay')}</span>
                       <span className="font-medium">{selectedCar.price_per_day?.toLocaleString()} DZD</span>
                     </div>
                     {calculateTotalKmAllowed() && (
                       <div className="flex justify-between text-sm mt-1">
-                        <span className="text-gray-600">Total KM allowed</span>
-                        <span className="font-medium">{calculateTotalKmAllowed()?.toLocaleString()} km</span>
+                        <span className="text-gray-600">{t('totalKmAllowed')}</span>
+                        <span className="font-medium">{calculateTotalKmAllowed()?.toLocaleString()} {t('km')}</span>
                       </div>
                     )}
                     {selectedCar.extra_km_price && (
                       <div className="flex justify-between text-sm mt-1 text-orange-600">
-                        <span>Extra KM charge</span>
-                        <span>{selectedCar.extra_km_price} DZD/km</span>
+                        <span>{t('extraKmChargeLabel')}</span>
+                        <span>{selectedCar.extra_km_price} {t('dzdPerKm')}</span>
                       </div>
                     )}
                     {selectedCar.deposit_amount && (
                       <div className="flex justify-between text-sm mt-1">
-                        <span className="text-gray-600">Deposit required</span>
+                        <span className="text-gray-600">{t('depositRequired')}</span>
                         <span className="font-medium">{selectedCar.deposit_amount?.toLocaleString()} DZD</span>
                       </div>
                     )}
                     <div className="flex justify-between mt-2 pt-2 border-t border-green-200">
-                      <span className="font-semibold text-gray-900">Total Rental</span>
+                      <span className="font-semibold text-gray-900">{t('totalRental')}</span>
                       <span className="text-xl font-bold text-green-600">
                         {calculateTotalPrice().toLocaleString()} DZD
                       </span>
@@ -667,7 +669,7 @@ export default function CarRentalDetailsPage() {
                   disabled={checkingAvailability}
                   className="w-full py-3 mb-6 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
                 >
-                  {checkingAvailability ? 'Checking...' : 'Check Availability'}
+                  {checkingAvailability ? t('checking') : t('checkAvailability')}
                 </button>
               )}
 
@@ -678,12 +680,12 @@ export default function CarRentalDetailsPage() {
                     {isAvailable ? (
                       <>
                         <Check className="text-green-600" size={20} />
-                        <span className="font-medium text-green-700">Car is available for these dates!</span>
+                        <span className="font-medium text-green-700">{t('carAvailable')}</span>
                       </>
                     ) : (
                       <>
                         <X className="text-red-600" size={20} />
-                        <span className="font-medium text-red-700">Car is not available for these dates</span>
+                        <span className="font-medium text-red-700">{t('carNotAvailable')}</span>
                       </>
                     )}
                   </div>
@@ -694,68 +696,68 @@ export default function CarRentalDetailsPage() {
               {isAvailable && (
                 <>
                   <div className="space-y-4 mb-6">
-                    <h4 className="font-medium text-gray-900">Your Information</h4>
+                    <h4 className="font-medium text-gray-900">{t('yourInformation')}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('fullName')}</label>
                         <input
                           type="text"
                           value={guestInfo.name}
                           onChange={(e) => setGuestInfo({ ...guestInfo, name: e.target.value })}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="Your name"
+                          placeholder={t('yourName')}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Phone *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('phone')}</label>
                         <input
                           type="tel"
                           value={guestInfo.phone}
                           onChange={(e) => setGuestInfo({ ...guestInfo, phone: e.target.value })}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="+213 XX XXX XXXX"
+                          placeholder={t('phonePlaceholder')}
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
                       <input
                         type="email"
                         value={guestInfo.email}
                         onChange={(e) => setGuestInfo({ ...guestInfo, email: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="your@email.com"
+                        placeholder={t('emailPlaceholder')}
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">ID Number</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('idNumber')}</label>
                         <input
                           type="text"
                           value={guestInfo.id_number}
                           onChange={(e) => setGuestInfo({ ...guestInfo, id_number: e.target.value })}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="National ID"
+                          placeholder={t('nationalId')}
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Driver License *</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('driverLicense')}</label>
                         <input
                           type="text"
                           value={guestInfo.driver_license}
                           onChange={(e) => setGuestInfo({ ...guestInfo, driver_license: e.target.value })}
                           className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                          placeholder="License number"
+                          placeholder={t('licenseNumber')}
                         />
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">{t('notes')}</label>
                       <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                        placeholder="Any special requests..."
+                        placeholder={t('specialRequests')}
                         rows={2}
                       />
                     </div>
@@ -766,7 +768,7 @@ export default function CarRentalDetailsPage() {
                     disabled={bookingLoading}
                     className="w-full py-3 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 transition-colors disabled:bg-gray-300"
                   >
-                    {bookingLoading ? 'Submitting...' : `Book Now - ${calculateTotalPrice().toLocaleString()} DZD`}
+                    {bookingLoading ? t('submitting') : t('bookNowPrice', { price: calculateTotalPrice().toLocaleString() })}
                   </button>
                 </>
               )}
@@ -782,36 +784,36 @@ export default function CarRentalDetailsPage() {
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Check size={40} className="text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Booking Submitted!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('bookingSubmittedTitle')}</h2>
             <p className="text-gray-600 mb-6">
-              Your car rental request has been submitted. The company will confirm your booking shortly.
+              {t('bookingConfirmation')}
             </p>
 
             <div className="bg-gray-50 rounded-xl p-4 mb-6 text-left">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Booking ID</span>
+                  <span className="text-gray-500">{t('bookingId')}</span>
                   <span className="font-medium">#{bookingSuccess.bookingId}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Car</span>
+                  <span className="text-gray-500">{t('car')}</span>
                   <span className="font-medium">{bookingSuccess.carName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Pickup</span>
+                  <span className="text-gray-500">{t('pickup')}</span>
                   <span className="font-medium">{pickupDate?.toLocaleDateString()} at {pickupTime}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Return</span>
+                  <span className="text-gray-500">{t('return')}</span>
                   <span className="font-medium">{formatDateTime(calculateReturnDateTime())}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Duration</span>
-                  <span className="font-medium">{rentalDays} day{rentalDays > 1 ? 's' : ''}</span>
+                  <span className="text-gray-500">{t('duration')}</span>
+                  <span className="font-medium">{rentalDays} {rentalDays > 1 ? t('days') : t('day')}</span>
                 </div>
                 {bookingSuccess.totalPrice && (
                   <div className="flex justify-between pt-2 border-t">
-                    <span className="text-gray-500">Total</span>
+                    <span className="text-gray-500">{t('total')}</span>
                     <span className="font-bold text-green-600">{bookingSuccess.totalPrice.toLocaleString()} DZD</span>
                   </div>
                 )}
@@ -830,7 +832,7 @@ export default function CarRentalDetailsPage() {
               }}
               className="w-full px-4 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors"
             >
-              Done
+              {t('done')}
             </button>
           </div>
         </div>

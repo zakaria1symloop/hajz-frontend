@@ -111,11 +111,11 @@ export default function Header() {
                 }`}>
                   <HiOutlinePhone size={16} className="group-hover:rotate-12 transition-transform duration-300" />
                 </span>
-                <span className="font-medium text-sm">+213 123 456 789</span>
+                <span className="font-medium text-sm" dir="ltr">+213 123 456 789</span>
               </a>
 
               {/* Language Switcher */}
-              <LanguageSwitcher />
+              <LanguageSwitcher variant={!isFloatingHeader || useScrolledStyle ? 'light' : 'dark'} />
 
               {/* Auth Buttons */}
               {user ? (
@@ -275,11 +275,11 @@ export default function Header() {
                   }`}
                 >
                   <HiOutlinePhone size={20} />
-                  <span className="font-medium">+213 123 456 789</span>
+                  <span className="font-medium" dir="ltr">+213 123 456 789</span>
                 </a>
 
                 <div className="py-2 px-3">
-                  <LanguageSwitcher />
+                  <LanguageSwitcher variant={!isFloatingHeader || useScrolledStyle ? 'light' : 'dark'} />
                 </div>
 
                 {user ? (

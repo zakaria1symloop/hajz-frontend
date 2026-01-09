@@ -94,7 +94,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-500">{user.email}</p>
               </div>
             </div>
-            <HiOutlineChevronRight size={20} className="text-gray-400" />
+            <HiOutlineChevronRight size={20} className="text-gray-400 rtl:rotate-180" />
           </Link>
         </div>
 
@@ -114,7 +114,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-500">{t('updateProfileDetails')}</p>
               </div>
             </div>
-            <HiOutlineChevronRight size={20} className="text-gray-400" />
+            <HiOutlineChevronRight size={20} className="text-gray-400 rtl:rotate-180" />
           </Link>
 
           <Link href="/profile" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-50">
@@ -127,7 +127,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-500">{t('managePassword')}</p>
               </div>
             </div>
-            <HiOutlineChevronRight size={20} className="text-gray-400" />
+            <HiOutlineChevronRight size={20} className="text-gray-400 rtl:rotate-180" />
           </Link>
 
           <Link href="/reservations" className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
@@ -140,7 +140,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-500">{t('viewBookingHistory')}</p>
               </div>
             </div>
-            <HiOutlineChevronRight size={20} className="text-gray-400" />
+            <HiOutlineChevronRight size={20} className="text-gray-400 rtl:rotate-180" />
           </Link>
         </div>
 
@@ -181,7 +181,7 @@ export default function SettingsPage() {
                 <p className="text-sm text-gray-500">{t('currentLanguage')}</p>
               </div>
             </div>
-            <HiOutlineChevronRight size={20} className="text-gray-400" />
+            <HiOutlineChevronRight size={20} className="text-gray-400 rtl:rotate-180" />
           </div>
 
           <div className="flex items-center justify-between p-4">

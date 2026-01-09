@@ -73,34 +73,13 @@ const amenityIcons: Record<string, React.ReactNode> = {
   closet: <Package size={20} />,
 };
 
-const amenityLabels: Record<string, string> = {
-  wifi: 'Free WiFi',
-  parking: 'Free Parking',
-  gym: 'Fitness Center',
-  restaurant: 'Restaurant',
-  pool: 'Swimming Pool',
-  spa: 'Spa & Wellness',
-  room_service: 'Room Service',
-  airport_shuttle: 'Airport Shuttle',
-  ac: 'Air Conditioning',
-  bar: 'Bar/Lounge',
-  breakfast: 'Breakfast Included',
-  pet_friendly: 'Pet Friendly',
-  tv: 'TV',
-  mini_bar: 'Mini Bar',
-  safe: 'Safe',
-  balcony: 'Balcony',
-  sea_view: 'Sea View',
-  city_view: 'City View',
-  mountain_view: 'Mountain View',
-  bathtub: 'Bathtub',
-  shower: 'Shower',
-  hair_dryer: 'Hair Dryer',
-  coffee_maker: 'Coffee Maker',
-  iron: 'Iron & Ironing Board',
-  desk: 'Work Desk',
-  closet: 'Closet',
-};
+// Amenity keys for translation lookup
+const AMENITY_KEYS = [
+  'wifi', 'parking', 'gym', 'restaurant', 'pool', 'spa', 'room_service',
+  'airport_shuttle', 'ac', 'bar', 'breakfast', 'pet_friendly', 'tv',
+  'mini_bar', 'safe', 'balcony', 'sea_view', 'city_view', 'mountain_view',
+  'bathtub', 'shower', 'hair_dryer', 'coffee_maker', 'iron', 'desk', 'closet'
+];
 
 export default function HotelDetailPage() {
   const t = useTranslations('hotels');
@@ -291,20 +270,24 @@ export default function HotelDetailPage() {
       const endpoint = user ? '/reservations' : '/reservations/guest';
       const response = await api.post(endpoint, bookingData);
 
-      if (response.data.checkout_url) {
+      // Check for SlickPay payment URL
+      if (response.data.payment_url) {
+        toast.success(t('redirectingToPayment'));
+        window.location.href = response.data.payment_url;
+      } else if (response.data.checkout_url) {
         window.location.href = response.data.checkout_url;
       } else {
-        // Payment simulated - show success
+        // No payment URL - show success (shouldn't happen with SlickPay)
         setShowBookingModal(false);
         setBookingSuccess({
           show: true,
           reservationId: response.data.reservation?.id
         });
-        toast.success('Booking confirmed successfully!');
+        toast.success(t('bookingConfirmed'));
       }
     } catch (error: any) {
       console.error('Booking failed:', error);
-      toast.error(error.response?.data?.error || error.response?.data?.message || 'Booking failed');
+      toast.error(error.response?.data?.error || error.response?.data?.message || t('bookingFailed'));
     } finally {
       setBooking(false);
     }
@@ -342,9 +325,9 @@ export default function HotelDetailPage() {
         <div className="absolute inset-0 bg-black/30"></div>
         <button
           onClick={() => router.back()}
-          className="absolute top-6 left-6 bg-white p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition shadow-sm"
+          className="absolute top-6 start-6 bg-white p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition shadow-sm"
         >
-          <ArrowLeft size={24} />
+          <ArrowLeft size={24} className="rtl:rotate-180" />
         </button>
       </div>
 
@@ -376,9 +359,9 @@ export default function HotelDetailPage() {
                   <h2 className="text-xl font-semibold mb-4">{t('amenities')}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {hotel.amenities.map((amenity) => (
-                      <div key={amenity} className="flex items-center space-x-2 text-gray-600 bg-gray-50 px-4 py-3 rounded-xl border border-gray-100">
+                      <div key={amenity} className="flex items-center gap-2 text-gray-600 bg-gray-50 px-4 py-3 rounded-xl border border-gray-100">
                         {amenityIcons[amenity.toLowerCase()] || <Shield size={20} />}
-                        <span>{amenityLabels[amenity.toLowerCase()] || amenity}</span>
+                        <span>{t(`amenityLabels.${amenity.toLowerCase()}`, { defaultValue: amenity })}</span>
                       </div>
                     ))}
                   </div>
@@ -428,7 +411,7 @@ export default function HotelDetailPage() {
                               <div className="flex items-start justify-between gap-2">
                                 <div className="min-w-0">
                                   <h3 className="font-semibold text-gray-900 truncate">{room.name}</h3>
-                                  <p className="text-xs text-gray-500 capitalize">{room.type} Room</p>
+                                  <p className="text-xs text-gray-500 capitalize">{room.type} {t('roomType')}</p>
                                 </div>
                                 {isSelected && (
                                   <div className="w-5 h-5 bg-[#2FB7EC] rounded-full flex items-center justify-center flex-shrink-0">
@@ -438,7 +421,7 @@ export default function HotelDetailPage() {
                               </div>
                               <div className="mt-2">
                                 <p className="text-lg font-bold text-[#2FB7EC]">
-                                  {room.price_per_night.toLocaleString()} <span className="text-xs font-normal text-gray-400">DZD/night</span>
+                                  {room.price_per_night.toLocaleString()} <span className="text-xs font-normal text-gray-400">{t('dzdNight')}</span>
                                 </p>
                               </div>
                             </div>
@@ -452,7 +435,7 @@ export default function HotelDetailPage() {
                               <Bed size={12} />
                               {room.bed_configuration}
                             </span>
-                            {room.size_sqm && <span className="bg-gray-100 px-2 py-1 rounded">{room.size_sqm} sqm</span>}
+                            {room.size_sqm && <span className="bg-gray-100 px-2 py-1 rounded">{room.size_sqm} {t('sqm')}</span>}
                           </div>
                         </div>
 
@@ -474,7 +457,7 @@ export default function HotelDetailPage() {
                             <div className="flex items-start justify-between">
                               <div>
                                 <h3 className="font-semibold text-gray-900">{room.name}</h3>
-                                <p className="text-sm text-gray-500 capitalize">{room.type} Room</p>
+                                <p className="text-sm text-gray-500 capitalize">{room.type} {t('roomType')}</p>
                               </div>
                               {isSelected && (
                                 <div className="w-6 h-6 bg-[#2FB7EC] rounded-full flex items-center justify-center">
@@ -486,13 +469,13 @@ export default function HotelDetailPage() {
                             <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                               <span className="flex items-center gap-1">
                                 <Users size={14} />
-                                {room.capacity} guests
+                                {room.capacity} {t('guests')}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Bed size={14} />
                                 {room.bed_configuration}
                               </span>
-                              {room.size_sqm && <span>{room.size_sqm} sqm</span>}
+                              {room.size_sqm && <span>{room.size_sqm} {t('sqm')}</span>}
                             </div>
 
                             {room.amenities && room.amenities.length > 0 && (
@@ -500,7 +483,7 @@ export default function HotelDetailPage() {
                                 {room.amenities.slice(0, 4).map(amenity => (
                                   <span key={amenity} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded flex items-center gap-1">
                                     {amenityIcons[amenity.toLowerCase()] && <span className="scale-75">{amenityIcons[amenity.toLowerCase()]}</span>}
-                                    {amenityLabels[amenity.toLowerCase()] || amenity}
+                                    {t(`amenityLabels.${amenity.toLowerCase()}`, { defaultValue: amenity })}
                                   </span>
                                 ))}
                                 {room.amenities.length > 4 && (
@@ -515,7 +498,7 @@ export default function HotelDetailPage() {
                             <p className="text-xl font-bold text-[#2FB7EC]">
                               {room.price_per_night.toLocaleString()}
                             </p>
-                            <p className="text-sm text-gray-400">DZD/night</p>
+                            <p className="text-sm text-gray-400">{t('dzdNight')}</p>
                           </div>
                         </div>
                       </div>
@@ -534,9 +517,9 @@ export default function HotelDetailPage() {
                   <div className="text-center mb-4 pb-4 border-b border-gray-100">
                     <p className="text-sm text-gray-500 mb-1">{selectedRoom.name}</p>
                     <span className="text-3xl font-bold text-[#2FB7EC]">
-                      {selectedRoom.price_per_night.toLocaleString()} DZD
+                      {selectedRoom.price_per_night.toLocaleString()} {t('currency')}
                     </span>
-                    <span className="text-gray-500"> / night</span>
+                    <span className="text-gray-500"> {t('perNight')}</span>
                   </div>
                 </>
               ) : (
@@ -669,12 +652,12 @@ export default function HotelDetailPage() {
               {nights > 0 && selectedRoom && (
                 <div className="border-t border-gray-100 pt-4 mb-4">
                   <div className="flex justify-between text-gray-600 mb-2">
-                    <span>{selectedRoom.price_per_night.toLocaleString()} DZD x {nights} {t('nights')}</span>
-                    <span>{totalPrice.toLocaleString()} DZD</span>
+                    <span>{selectedRoom.price_per_night.toLocaleString()} {t('currency')} x {nights} {t('nights')}</span>
+                    <span>{totalPrice.toLocaleString()} {t('currency')}</span>
                   </div>
                   <div className="flex justify-between font-bold text-lg">
                     <span>{t('total')}</span>
-                    <span className="text-[#2FB7EC]">{totalPrice.toLocaleString()} DZD</span>
+                    <span className="text-[#2FB7EC]">{totalPrice.toLocaleString()} {t('currency')}</span>
                   </div>
                 </div>
               )}
@@ -689,7 +672,7 @@ export default function HotelDetailPage() {
 
               {selectedRoom && (
                 <p className="text-center text-sm text-gray-500 mt-4">
-                  Max {selectedRoom.capacity} guests
+                  {t('maxGuests', { count: selectedRoom.capacity })}
                 </p>
               )}
             </div>
@@ -738,7 +721,7 @@ export default function HotelDetailPage() {
                   </div>
                   <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between">
                     <span className="font-semibold text-gray-900">{t('total')}</span>
-                    <span className="font-bold text-[#2FB7EC]">{totalPrice.toLocaleString()} DZD</span>
+                    <span className="font-bold text-[#2FB7EC]">{totalPrice.toLocaleString()} {t('currency')}</span>
                   </div>
                 </div>
               </div>
@@ -882,7 +865,7 @@ export default function HotelDetailPage() {
                 </div>
                 <div className="border-t border-gray-200 pt-2 flex justify-between">
                   <span className="font-semibold">{t('totalPaid')}</span>
-                  <span className="font-bold text-[#2FB7EC]">{totalPrice.toLocaleString()} DZD</span>
+                  <span className="font-bold text-[#2FB7EC]">{totalPrice.toLocaleString()} {t('currency')}</span>
                 </div>
               </div>
             </div>

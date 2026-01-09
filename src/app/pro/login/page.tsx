@@ -7,15 +7,17 @@ import { useRouter } from 'next/navigation';
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineArrowLeft } from 'react-icons/hi';
 import { BsBriefcase, BsBuilding, BsShieldCheck } from 'react-icons/bs';
 import { FaHotel, FaUtensils, FaCar } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 import { useProAuth, BusinessType } from '@/context/ProAuthContext';
 
 const businessTypes = [
-  { id: 'hotel' as BusinessType, name: 'Hotel', icon: FaHotel, color: 'from-blue-500 to-blue-600' },
-  { id: 'restaurant' as BusinessType, name: 'Restaurant', icon: FaUtensils, color: 'from-orange-500 to-orange-600' },
-  { id: 'car_rental' as BusinessType, name: 'Car Rental', icon: FaCar, color: 'from-green-500 to-green-600' },
+  { id: 'hotel' as BusinessType, nameKey: 'hotel', icon: FaHotel, color: 'from-blue-500 to-blue-600' },
+  { id: 'restaurant' as BusinessType, nameKey: 'restaurant', icon: FaUtensils, color: 'from-orange-500 to-orange-600' },
+  { id: 'car_rental' as BusinessType, nameKey: 'carRental', icon: FaCar, color: 'from-green-500 to-green-600' },
 ];
 
 export default function ProLoginPage() {
+  const t = useTranslations('proAuth');
   const router = useRouter();
   const { owner, businessType: savedBusinessType, loading: authLoading, login, register } = useProAuth();
   const [isLogin, setIsLogin] = useState(true);
@@ -52,7 +54,8 @@ export default function ProLoginPage() {
       await login(loginData.email, loginData.password, selectedType);
       router.push('/pro/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid credentials');
+      const errorMsg = err.response?.data?.message;
+      setError(errorMsg ? translateError(errorMsg) : t('invalidCredentials'));
     } finally {
       setLoading(false);
     }
@@ -63,7 +66,7 @@ export default function ProLoginPage() {
     setError('');
 
     if (registerData.password !== registerData.password_confirmation) {
-      setError('Passwords do not match');
+      setError(t('passwordsNoMatch'));
       return;
     }
 
@@ -72,13 +75,31 @@ export default function ProLoginPage() {
       await register({ ...registerData, type: selectedType });
       router.push('/pro/dashboard');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed');
+      const errorMsg = err.response?.data?.message;
+      setError(errorMsg ? translateError(errorMsg) : t('registrationFailed'));
     } finally {
       setLoading(false);
     }
   }
 
   const selectedBusiness = businessTypes.find(b => b.id === selectedType)!;
+  const selectedBusinessName = t(selectedBusiness.nameKey);
+
+  // Helper to translate common backend error messages
+  const translateError = (message: string) => {
+    const errorMap: Record<string, string> = {
+      'The provided credentials are incorrect.': t('invalidCredentials'),
+      'Invalid credentials': t('invalidCredentials'),
+      'These credentials do not match our records.': t('invalidCredentials'),
+      'The email has already been taken.': t('emailTaken'),
+      'The email field is required.': t('emailRequired'),
+      'The password field is required.': t('passwordRequired'),
+      'The password must be at least 8 characters.': t('passwordMinLength'),
+      'Unauthenticated.': t('sessionExpired'),
+      'Too many login attempts. Please try again later.': t('tooManyAttempts'),
+    };
+    return errorMap[message] || message;
+  };
 
   if (authLoading) {
     return (
@@ -100,7 +121,7 @@ export default function ProLoginPage() {
               ? "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1920&q=80"
               : "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920&q=80"
             }
-            alt={selectedBusiness.name}
+            alt={selectedBusinessName}
             fill
             className="object-cover opacity-30"
           />
@@ -108,10 +129,10 @@ export default function ProLoginPage() {
         <div className="relative z-10 flex flex-col justify-center px-12 xl:px-20">
           <Link
             href="/"
-            className="absolute top-8 left-8 flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+            className="absolute top-8 start-8 flex items-center gap-2 text-white/70 hover:text-white transition-colors"
           >
-            <HiOutlineArrowLeft size={20} />
-            Back to Hajz
+            <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+            {t('backToHajz')}
           </Link>
 
           <div className="mb-8">
@@ -120,19 +141,19 @@ export default function ProLoginPage() {
                 <selectedBusiness.icon size={24} className="text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">Hajz Pro</h1>
-                <p className="text-white/60 text-sm">For {selectedBusiness.name} Owners</p>
+                <h1 className="text-2xl font-bold text-white">{t('hajzPro')}</h1>
+                <p className="text-white/60 text-sm">{t('forOwners', { business: selectedBusinessName })}</p>
               </div>
             </div>
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
-              Manage Your {selectedBusiness.name}
+              {t('manageYour', { business: selectedBusinessName })}
               <br />
-              <span className="text-[#2FB7EC]">Like a Pro</span>
+              <span className="text-[#2FB7EC]">{t('likeAPro')}</span>
             </h2>
             <p className="text-white/70 text-lg max-w-md">
-              {selectedType === 'hotel' && 'Join thousands of hotel owners who trust Hajz to manage their bookings, rooms, and revenue.'}
-              {selectedType === 'restaurant' && 'Streamline table reservations, manage your menu, and grow your restaurant business.'}
-              {selectedType === 'car_rental' && 'Manage your fleet, handle bookings, and track your car rental business effortlessly.'}
+              {selectedType === 'hotel' && t('hotelDesc')}
+              {selectedType === 'restaurant' && t('restaurantDesc')}
+              {selectedType === 'car_rental' && t('carRentalDesc')}
             </p>
           </div>
 
@@ -144,14 +165,14 @@ export default function ProLoginPage() {
               </div>
               <div>
                 <p className="font-medium">
-                  {selectedType === 'hotel' && 'Complete Hotel Management'}
-                  {selectedType === 'restaurant' && 'Menu & Table Management'}
-                  {selectedType === 'car_rental' && 'Fleet Management'}
+                  {selectedType === 'hotel' && t('completeHotelManagement')}
+                  {selectedType === 'restaurant' && t('menuTableManagement')}
+                  {selectedType === 'car_rental' && t('fleetManagement')}
                 </p>
                 <p className="text-sm text-white/60">
-                  {selectedType === 'hotel' && 'Rooms, pricing, and availability'}
-                  {selectedType === 'restaurant' && 'Plats, tables, and reservations'}
-                  {selectedType === 'car_rental' && 'Cars, pricing, and bookings'}
+                  {selectedType === 'hotel' && t('roomsPricingAvailability')}
+                  {selectedType === 'restaurant' && t('platsTablesReservations')}
+                  {selectedType === 'car_rental' && t('carsPricingBookings')}
                 </p>
               </div>
             </div>
@@ -160,8 +181,8 @@ export default function ProLoginPage() {
                 <BsShieldCheck size={20} className="text-[#2FB7EC]" />
               </div>
               <div>
-                <p className="font-medium">Secure Payments</p>
-                <p className="text-sm text-white/60">Direct to your wallet</p>
+                <p className="font-medium">{t('securePayments')}</p>
+                <p className="text-sm text-white/60">{t('directToWallet')}</p>
               </div>
             </div>
           </div>
@@ -174,20 +195,20 @@ export default function ProLoginPage() {
           {/* Mobile Logo */}
           <div className="lg:hidden mb-8 text-center">
             <Link href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-6">
-              <HiOutlineArrowLeft size={20} />
-              Back to Hajz
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('backToHajz')}
             </Link>
             <div className="flex items-center justify-center gap-3">
               <div className="w-10 h-10 bg-[#2FB7EC] rounded-xl flex items-center justify-center">
                 <BsBriefcase size={20} className="text-white" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900">Hajz Pro</h1>
+              <h1 className="text-xl font-bold text-gray-900">{t('hajzPro')}</h1>
             </div>
           </div>
 
           {/* Business Type Selector */}
           <div className="mb-6">
-            <p className="text-sm font-medium text-gray-700 mb-3">Select your business type</p>
+            <p className="text-sm font-medium text-gray-700 mb-3">{t('selectBusinessType')}</p>
             <div className="grid grid-cols-3 gap-3">
               {businessTypes.map((type) => (
                 <button
@@ -200,7 +221,7 @@ export default function ProLoginPage() {
                   }`}
                 >
                   <type.icon size={24} className="mb-2" />
-                  <span className="text-xs font-medium">{type.name}</span>
+                  <span className="text-xs font-medium">{t(type.nameKey)}</span>
                 </button>
               ))}
             </div>
@@ -214,7 +235,7 @@ export default function ProLoginPage() {
                 isLogin ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              Sign In
+              {t('signIn')}
             </button>
             <button
               onClick={() => setIsLogin(false)}
@@ -222,7 +243,7 @@ export default function ProLoginPage() {
                 !isLogin ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              Register {selectedBusiness.name}
+              {t('register', { business: selectedBusinessName })}
             </button>
           </div>
 
@@ -236,30 +257,30 @@ export default function ProLoginPage() {
             /* Login Form */
             <form onSubmit={handleLogin} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('email')}</label>
                 <div className="relative">
-                  <HiOutlineMail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                  <HiOutlineMail className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input
                     type="email"
                     value={loginData.email}
                     onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all"
-                    placeholder="hotel@example.com"
+                    className="w-full ps-12 pe-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all"
+                    placeholder={t('emailPlaceholder')}
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('password')}</label>
                 <div className="relative">
-                  <HiOutlineLockClosed className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                  <HiOutlineLockClosed className="absolute start-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                   <input
                     type="password"
                     value={loginData.password}
                     onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                    className="w-full pl-12 pr-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all"
-                    placeholder="Enter your password"
+                    className="w-full ps-12 pe-4 py-3.5 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent transition-all"
+                    placeholder={t('passwordPlaceholder')}
                     required
                   />
                 </div>
@@ -270,7 +291,7 @@ export default function ProLoginPage() {
                 disabled={loading}
                 className={`w-full bg-gradient-to-r ${selectedBusiness.color} text-white py-4 rounded-xl font-semibold hover:opacity-90 transition-all duration-300 disabled:opacity-50 shadow-lg`}
               >
-                {loading ? 'Signing in...' : 'Sign In to Dashboard'}
+                {loading ? t('signingIn') : t('signInToDashboard')}
               </button>
             </form>
           ) : (
@@ -278,61 +299,61 @@ export default function ProLoginPage() {
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('fullName')}</label>
                   <input
                     type="text"
                     value={registerData.name}
                     onChange={(e) => setRegisterData({ ...registerData, name: e.target.value })}
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent"
-                    placeholder="Your name"
+                    placeholder={t('namePlaceholder')}
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('email')}</label>
                   <input
                     type="email"
                     value={registerData.email}
                     onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent"
-                    placeholder={`email@${selectedBusiness.name.toLowerCase()}.com`}
+                    placeholder={`email@${selectedBusinessName.toLowerCase()}.com`}
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('phone')}</label>
                   <input
                     type="tel"
                     value={registerData.phone}
                     onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent"
-                    placeholder="+213 XXX XXX"
+                    placeholder={t('phonePlaceholder')}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('password')}</label>
                   <input
                     type="password"
                     value={registerData.password}
                     onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent"
-                    placeholder="Min 8 characters"
+                    placeholder={t('minCharacters')}
                     required
                     minLength={8}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('confirmPassword')}</label>
                   <input
                     type="password"
                     value={registerData.password_confirmation}
                     onChange={(e) => setRegisterData({ ...registerData, password_confirmation: e.target.value })}
                     className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent"
-                    placeholder="Confirm"
+                    placeholder={t('confirm')}
                     required
                   />
                 </div>
@@ -343,11 +364,11 @@ export default function ProLoginPage() {
                 disabled={loading}
                 className={`w-full bg-gradient-to-r ${selectedBusiness.color} text-white py-4 rounded-xl font-semibold hover:opacity-90 transition-all duration-300 disabled:opacity-50 shadow-lg mt-2`}
               >
-                {loading ? 'Creating account...' : `Register Your ${selectedBusiness.name}`}
+                {loading ? t('creatingAccount') : t('registerYour', { business: selectedBusinessName })}
               </button>
 
               <p className="text-xs text-gray-500 text-center">
-                By registering, you agree to our Terms of Service and Privacy Policy
+                {t('termsAgreement')}
               </p>
             </form>
           )}

@@ -27,6 +27,25 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Response interceptor for handling 401 errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (typeof window !== 'undefined' && error.response?.status === 401) {
+      // Clear auth data
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+
+      // Check if we're on a pro page and redirect to pro login
+      const currentPath = window.location.pathname;
+      if (currentPath.startsWith('/pro') && !currentPath.includes('/pro/login')) {
+        window.location.href = '/pro/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth
 export const login = async (email: string, password: string) => {
   const response = await api.post<{ user: User; token: string }>('/login', { email, password });
@@ -173,7 +192,7 @@ export const bookCar = async (carId: number, data: {
   driver_license_number: string;
   notes?: string;
 }) => {
-  const response = await api.post<{ message: string; booking: CarBooking }>(`/cars/${carId}/book`, data);
+  const response = await api.post<{ message: string; booking: CarBooking; payment_url?: string }>(`/cars/${carId}/book`, data);
   return response.data;
 };
 

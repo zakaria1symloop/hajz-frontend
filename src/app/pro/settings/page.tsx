@@ -9,10 +9,12 @@ import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlineUser, HiOutlineLockClosed, HiOutlineBell, HiOutlineTrash, HiOutlineCheck, HiOutlineOfficeBuilding } from 'react-icons/hi';
 import { BsBriefcase } from 'react-icons/bs';
 import { FaUtensils, FaHotel, FaCar } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 
 export default function SettingsPage() {
   const router = useRouter();
   const { hotelOwner, restaurantOwner, companyOwner, hotel, restaurant, company, loading, logout, businessType, refreshHotel, refreshRestaurant, refreshCompany } = useProAuth();
+  const t = useTranslations('proSettings');
   const [activeTab, setActiveTab] = useState<'profile' | 'business' | 'password' | 'notifications'>('profile');
   const [saving, setSaving] = useState(false);
   const [togglingStatus, setTogglingStatus] = useState(false);
@@ -71,9 +73,9 @@ export default function SettingsPage() {
       await api.put(`${getApiPrefix()}/profile`, profileData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Profile updated successfully!');
+      toast.success(t('profileUpdated'));
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update profile');
+      toast.error(err.response?.data?.message || t('updateFailed'));
     } finally {
       setSaving(false);
     }
@@ -82,11 +84,11 @@ export default function SettingsPage() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordData.password !== passwordData.password_confirmation) {
-      toast.error('Passwords do not match');
+      toast.error(t('passwordsNoMatch'));
       return;
     }
     if (passwordData.password.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error(t('passwordTooShort'));
       return;
     }
 
@@ -96,14 +98,14 @@ export default function SettingsPage() {
       await api.put(`${getApiPrefix()}/password`, passwordData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Password changed successfully!');
+      toast.success(t('passwordChanged'));
       setPasswordData({
         current_password: '',
         password: '',
         password_confirmation: '',
       });
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to change password');
+      toast.error(err.response?.data?.message || t('passwordFailed'));
     } finally {
       setSaving(false);
     }
@@ -117,9 +119,9 @@ export default function SettingsPage() {
       await api.put(`${getApiPrefix()}/notifications`, notifications, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Notification settings updated!');
+      toast.success(t('notificationsSaved'));
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update settings');
+      toast.error(err.response?.data?.message || t('notificationsFailed'));
     } finally {
       setSaving(false);
     }
@@ -132,14 +134,14 @@ export default function SettingsPage() {
     if (!business) return;
 
     const newStatus = !business.is_active;
-    const action = newStatus ? 'open' : 'close';
-    const businessLabel = getBusinessTypeLabel().toLowerCase();
+    const action = newStatus ? t('open') : t('close');
+    const businessLabel = isHotel ? t('hotel') : isCarRental ? t('company') : t('restaurant');
 
     const confirmed = confirm(
-      `Are you sure you want to ${action} your ${businessLabel}? ${
+      `${t('confirmToggle', { action, business: businessLabel })} ${
         !newStatus
-          ? 'Customers will see it as "Not Available" but it will still be visible in listings.'
-          : 'Customers will be able to make bookings again.'
+          ? t('toggleClosed')
+          : t('toggleOpen')
       }`
     );
 
@@ -163,24 +165,26 @@ export default function SettingsPage() {
         await refreshRestaurant();
       }
 
-      toast.success(`${getBusinessTypeLabel()} is now ${newStatus ? 'open' : 'closed'} for bookings!`);
+      const businessLabelCap = isHotel ? t('Hotel') : isCarRental ? t('Company') : t('Restaurant');
+      toast.success(newStatus ? t('nowOpen', { business: businessLabelCap }) : t('nowClosed', { business: businessLabelCap }));
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update status');
+      toast.error(err.response?.data?.message || t('toggleFailed'));
     } finally {
       setTogglingStatus(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    const dataType = isHotel ? 'rooms' : isCarRental ? 'cars' : 'tables';
+    const dataType = isHotel ? t('rooms') : isCarRental ? t('cars') : t('tables');
+    const businessLabel = isHotel ? t('hotel') : isCarRental ? t('company') : t('restaurant');
     const confirmed = confirm(
-      `Are you sure you want to delete your account? This action cannot be undone and will remove all your ${getBusinessTypeLabel().toLowerCase()} data, ${dataType}, and reservations.`
+      `${t('confirmDeleteTitle')} ${t('confirmDeleteDesc', { business: businessLabel, dataType: dataType.toLowerCase() })}`
     );
     if (!confirmed) return;
 
-    const doubleConfirm = prompt('Type "DELETE" to confirm account deletion:');
+    const doubleConfirm = prompt(t('typeDelete'));
     if (doubleConfirm !== 'DELETE') {
-      toast.error('Account deletion cancelled');
+      toast.error(t('deleteCancelled'));
       return;
     }
 
@@ -189,11 +193,11 @@ export default function SettingsPage() {
       await api.delete(`${getApiPrefix()}/account`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Account deleted successfully');
+      toast.success(t('accountDeleted'));
       await logout();
       router.push('/pro/login');
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete account');
+      toast.error(err.response?.data?.message || t('deleteFailed'));
     }
   };
 
@@ -212,15 +216,15 @@ export default function SettingsPage() {
         <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: themeColor }}>
                 {isHotel ? <FaHotel size={14} className="text-white" /> : isCarRental ? <FaCar size={14} className="text-white" /> : <FaUtensils size={14} className="text-white" />}
               </div>
-              <span className="font-semibold text-gray-900">Settings</span>
+              <span className="font-semibold text-gray-900">{t('settings')}</span>
             </div>
           </div>
         </div>
@@ -240,7 +244,7 @@ export default function SettingsPage() {
               style={activeTab === 'profile' ? { color: themeColor, borderColor: themeColor } : {}}
             >
               <HiOutlineUser size={18} />
-              Profile
+              {t('profile')}
             </button>
             <button
               onClick={() => setActiveTab('business')}
@@ -252,7 +256,7 @@ export default function SettingsPage() {
               style={activeTab === 'business' ? { color: themeColor, borderColor: themeColor } : {}}
             >
               <HiOutlineOfficeBuilding size={18} />
-              Business
+              {t('business')}
             </button>
             <button
               onClick={() => setActiveTab('password')}
@@ -264,7 +268,7 @@ export default function SettingsPage() {
               style={activeTab === 'password' ? { color: themeColor, borderColor: themeColor } : {}}
             >
               <HiOutlineLockClosed size={18} />
-              Password
+              {t('password')}
             </button>
             <button
               onClick={() => setActiveTab('notifications')}
@@ -276,7 +280,7 @@ export default function SettingsPage() {
               style={activeTab === 'notifications' ? { color: themeColor, borderColor: themeColor } : {}}
             >
               <HiOutlineBell size={18} />
-              Notifications
+              {t('notifications')}
             </button>
           </div>
 
@@ -284,7 +288,7 @@ export default function SettingsPage() {
           {activeTab === 'profile' && (
             <form onSubmit={handleProfileSubmit} className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('fullName')}</label>
                 <input
                   type="text"
                   value={profileData.name}
@@ -296,7 +300,7 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('emailAddress')}</label>
                 <input
                   type="email"
                   value={profileData.email}
@@ -307,24 +311,24 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('phoneNumber')}</label>
                 <input
                   type="tel"
                   value={profileData.phone}
                   onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2"
-                  placeholder="+213 XXX XXX XXX"
+                  placeholder={t('phonePlaceholder')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Business License Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('businessLicense')}</label>
                 <input
                   type="text"
                   value={profileData.business_license}
                   onChange={(e) => setProfileData({ ...profileData, business_license: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2"
-                  placeholder="Optional"
+                  placeholder={t('optional')}
                 />
               </div>
 
@@ -335,10 +339,10 @@ export default function SettingsPage() {
                   className="flex items-center justify-center gap-2 w-full py-3 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
                   style={{ backgroundColor: themeColor }}
                 >
-                  {saving ? 'Saving...' : (
+                  {saving ? t('saving') : (
                     <>
                       <HiOutlineCheck size={18} />
-                      Save Changes
+                      {t('saveChanges')}
                     </>
                   )}
                 </button>
@@ -354,12 +358,12 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className={`text-lg font-semibold ${business?.is_active ? 'text-green-700' : 'text-red-700'}`}>
-                      {business?.is_active ? 'Open for Bookings' : 'Closed for Bookings'}
+                      {business?.is_active ? t('openForBookings') : t('closedForBookings')}
                     </h3>
                     <p className={`text-sm mt-1 ${business?.is_active ? 'text-green-600' : 'text-red-600'}`}>
                       {business?.is_active
-                        ? 'Customers can make reservations at your ' + getBusinessTypeLabel().toLowerCase()
-                        : 'Your ' + getBusinessTypeLabel().toLowerCase() + ' is visible but shows as "Not Available"'
+                        ? t('canMakeReservations', { business: isHotel ? t('hotel') : isCarRental ? t('company') : t('restaurant') })
+                        : t('showsNotAvailable', { business: isHotel ? t('hotel') : isCarRental ? t('company') : t('restaurant') })
                       }
                     </p>
                   </div>
@@ -370,11 +374,11 @@ export default function SettingsPage() {
               {/* Toggle Button */}
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
                 <div>
-                  <p className="font-medium text-gray-900">Accept Bookings</p>
+                  <p className="font-medium text-gray-900">{t('acceptBookings')}</p>
                   <p className="text-sm text-gray-500">
                     {business?.is_active
-                      ? 'Turn off to stop accepting new bookings'
-                      : 'Turn on to start accepting bookings again'
+                      ? t('turnOffBookings')
+                      : t('turnOnBookings')
                     }
                   </p>
                 </div>
@@ -397,15 +401,15 @@ export default function SettingsPage() {
               {business && (
                 <div className="border border-gray-200 rounded-xl overflow-hidden">
                   <div className="p-4 bg-gray-50 border-b border-gray-200">
-                    <h4 className="font-medium text-gray-900">Business Information</h4>
+                    <h4 className="font-medium text-gray-900">{t('businessInfo')}</h4>
                   </div>
                   <div className="p-4 space-y-3">
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Name</span>
+                      <span className="text-gray-500">{t('name')}</span>
                       <span className="font-medium text-gray-900">{business.name}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500">Status</span>
+                      <span className="text-gray-500">{t('status')}</span>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         business.verification_status === 'verified'
                           ? 'bg-green-100 text-green-700'
@@ -422,20 +426,20 @@ export default function SettingsPage() {
                     </div>
                     {isHotel && hotel && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Rooms</span>
-                        <span className="font-medium text-gray-900">{hotel.rooms_available || 0} available</span>
+                        <span className="text-gray-500">{t('rooms')}</span>
+                        <span className="font-medium text-gray-900">{hotel.rooms_available || 0} {t('available')}</span>
                       </div>
                     )}
                     {isCarRental && company && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Cars</span>
-                        <span className="font-medium text-gray-900">{(company as any).cars_count || 0} listed</span>
+                        <span className="text-gray-500">{t('cars')}</span>
+                        <span className="font-medium text-gray-900">{(company as any).cars_count || 0} {t('listed')}</span>
                       </div>
                     )}
                     {!isHotel && !isCarRental && restaurant && (
                       <div className="flex justify-between">
-                        <span className="text-gray-500">Tables</span>
-                        <span className="font-medium text-gray-900">{restaurant.total_tables || 0} total</span>
+                        <span className="text-gray-500">{t('tables')}</span>
+                        <span className="font-medium text-gray-900">{restaurant.total_tables || 0} {t('total')}</span>
                       </div>
                     )}
                   </div>
@@ -445,7 +449,7 @@ export default function SettingsPage() {
                       className="text-sm font-medium hover:underline"
                       style={{ color: themeColor }}
                     >
-                      Edit {getBusinessTypeLabel()} Details →
+                      {t('editDetails', { business: isHotel ? t('Hotel') : isCarRental ? t('Company') : t('Restaurant') })} →
                     </Link>
                   </div>
                 </div>
@@ -457,7 +461,7 @@ export default function SettingsPage() {
           {activeTab === 'password' && (
             <form onSubmit={handlePasswordSubmit} className="p-6 space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('currentPassword')}</label>
                 <input
                   type="password"
                   value={passwordData.current_password}
@@ -468,7 +472,7 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('newPassword')}</label>
                 <input
                   type="password"
                   value={passwordData.password}
@@ -477,11 +481,11 @@ export default function SettingsPage() {
                   required
                   minLength={8}
                 />
-                <p className="text-xs text-gray-400 mt-1">Minimum 8 characters</p>
+                <p className="text-xs text-gray-400 mt-1">{t('minCharacters')}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('confirmNewPassword')}</label>
                 <input
                   type="password"
                   value={passwordData.password_confirmation}
@@ -498,10 +502,10 @@ export default function SettingsPage() {
                   className="flex items-center justify-center gap-2 w-full py-3 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
                   style={{ backgroundColor: themeColor }}
                 >
-                  {saving ? 'Changing...' : (
+                  {saving ? t('changing') : (
                     <>
                       <HiOutlineLockClosed size={18} />
-                      Change Password
+                      {t('changePassword')}
                     </>
                   )}
                 </button>
@@ -513,14 +517,14 @@ export default function SettingsPage() {
           {activeTab === 'notifications' && (
             <form onSubmit={handleNotificationsSubmit} className="p-6 space-y-6">
               <p className="text-gray-600 text-sm">
-                Choose which email notifications you'd like to receive.
+                {t('emailNotifications')}
               </p>
 
               <div className="space-y-4">
                 <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                   <div>
-                    <p className="font-medium text-gray-900">New Booking</p>
-                    <p className="text-sm text-gray-500">Get notified when someone makes a {isHotel ? 'room' : isCarRental ? 'car' : 'table'} reservation</p>
+                    <p className="font-medium text-gray-900">{t('newBooking')}</p>
+                    <p className="text-sm text-gray-500">{t('newBookingDesc', { type: isHotel ? t('room') : isCarRental ? t('car') : t('table') })}</p>
                   </div>
                   <input
                     type="checkbox"
@@ -533,8 +537,8 @@ export default function SettingsPage() {
 
                 <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                   <div>
-                    <p className="font-medium text-gray-900">Booking Cancelled</p>
-                    <p className="text-sm text-gray-500">Get notified when a booking is cancelled</p>
+                    <p className="font-medium text-gray-900">{t('bookingCancelled')}</p>
+                    <p className="text-sm text-gray-500">{t('bookingCancelledDesc')}</p>
                   </div>
                   <input
                     type="checkbox"
@@ -547,8 +551,8 @@ export default function SettingsPage() {
 
                 <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                   <div>
-                    <p className="font-medium text-gray-900">Payment Received</p>
-                    <p className="text-sm text-gray-500">Get notified when payment is received</p>
+                    <p className="font-medium text-gray-900">{t('paymentReceived')}</p>
+                    <p className="text-sm text-gray-500">{t('paymentReceivedDesc')}</p>
                   </div>
                   <input
                     type="checkbox"
@@ -561,8 +565,8 @@ export default function SettingsPage() {
 
                 <label className="flex items-center justify-between p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors">
                   <div>
-                    <p className="font-medium text-gray-900">New Review</p>
-                    <p className="text-sm text-gray-500">Get notified when someone leaves a review</p>
+                    <p className="font-medium text-gray-900">{t('newReview')}</p>
+                    <p className="text-sm text-gray-500">{t('newReviewDesc')}</p>
                   </div>
                   <input
                     type="checkbox"
@@ -581,10 +585,10 @@ export default function SettingsPage() {
                   className="flex items-center justify-center gap-2 w-full py-3 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
                   style={{ backgroundColor: themeColor }}
                 >
-                  {saving ? 'Saving...' : (
+                  {saving ? t('saving') : (
                     <>
                       <HiOutlineCheck size={18} />
-                      Save Preferences
+                      {t('savePreferences')}
                     </>
                   )}
                 </button>
@@ -596,16 +600,16 @@ export default function SettingsPage() {
         {/* Danger Zone */}
         <div className="mt-8 bg-white rounded-2xl border border-red-200 overflow-hidden">
           <div className="p-6">
-            <h3 className="text-lg font-semibold text-red-600 mb-2">Danger Zone</h3>
+            <h3 className="text-lg font-semibold text-red-600 mb-2">{t('dangerZone')}</h3>
             <p className="text-gray-600 text-sm mb-4">
-              Once you delete your account, there is no going back. Please be certain.
+              {t('deleteWarning')}
             </p>
             <button
               onClick={handleDeleteAccount}
               className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
             >
               <HiOutlineTrash size={18} />
-              Delete Account
+              {t('deleteAccount')}
             </button>
           </div>
         </div>

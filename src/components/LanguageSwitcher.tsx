@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Globe, ChevronDown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { ChevronDown, Check } from 'lucide-react';
 
 const languages = [
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧', dir: 'ltr' },
@@ -10,8 +11,13 @@ const languages = [
   { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇩🇿', dir: 'rtl' },
 ];
 
-export default function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  variant?: 'light' | 'dark';
+}
+
+export default function LanguageSwitcher({ variant = 'light' }: LanguageSwitcherProps) {
   const router = useRouter();
+  const t = useTranslations('settings');
   const [isOpen, setIsOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('en');
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -67,36 +73,49 @@ export default function LanguageSwitcher() {
 
   const current = languages.find(l => l.code === currentLang) || languages[0];
 
+  const buttonStyles = variant === 'dark'
+    ? 'bg-white/10 hover:bg-white/20 border-white/20 text-white'
+    : 'bg-gray-50 hover:bg-gray-100 border-gray-200 text-gray-700';
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+        className={`flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-300 ${buttonStyles}`}
         aria-label="Change language"
       >
-        <Globe size={18} className="text-gray-600" />
-        <span className="text-sm font-medium text-gray-700">{current.flag}</span>
-        <ChevronDown size={14} className={`text-gray-500 transition ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="text-xl leading-none">{current.flag}</span>
+        <span className="text-sm font-medium hidden sm:inline">{current.code.toUpperCase()}</span>
+        <ChevronDown
+          size={14}
+          className={`opacity-60 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+        <div className="absolute end-0 mt-2 w-52 bg-white rounded-xl shadow-xl shadow-black/10 border border-gray-100 py-1 z-50 animate-fadeIn overflow-hidden">
+          <div className="px-3 py-2 border-b border-gray-100">
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{t('language')}</p>
+          </div>
           {languages.map((lang) => (
             <button
               key={lang.code}
               onClick={() => changeLanguage(lang.code)}
-              className={`w-full flex items-center justify-between px-4 py-2 hover:bg-gray-50 transition ${
-                currentLang === lang.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 transition-all duration-200 ${
+                currentLang === lang.code
+                  ? 'bg-[#2FB7EC]/10 text-[#2FB7EC]'
+                  : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
-              <div className="flex items-center space-x-3">
-                <span className="text-lg">{lang.flag}</span>
-                <span className="text-sm font-medium">{lang.nativeName}</span>
+              <span className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 text-xl">
+                {lang.flag}
+              </span>
+              <div className="flex-1 text-start">
+                <p className="text-sm font-medium">{lang.nativeName}</p>
+                <p className="text-xs text-gray-400">{lang.name}</p>
               </div>
               {currentLang === lang.code && (
-                <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
+                <Check size={16} className="text-[#2FB7EC]" />
               )}
             </button>
           ))}

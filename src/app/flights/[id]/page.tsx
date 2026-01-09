@@ -86,9 +86,9 @@ export default function FlightDetailPage() {
         <div className="absolute inset-0 bg-black/30"></div>
         <button
           onClick={() => router.back()}
-          className="absolute top-6 left-6 bg-white p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition shadow-sm"
+          className="absolute top-6 start-6 bg-white p-2.5 rounded-xl border border-gray-100 hover:bg-gray-50 transition shadow-sm"
         >
-          <ArrowLeft size={24} />
+          <ArrowLeft size={24} className="rtl:rotate-180" />
         </button>
       </div>
 

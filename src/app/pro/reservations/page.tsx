@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlineCalendar, HiOutlineUser, HiOutlineCheck, HiOutlineX, HiOutlineClock, HiOutlinePhone, HiOutlineMail } from 'react-icons/hi';
 import { BsBriefcase } from 'react-icons/bs';
 import { IoBedOutline } from 'react-icons/io5';
+import { useTranslations } from 'next-intl';
 
 interface Reservation {
   id: number;
@@ -48,6 +49,7 @@ const STATUS_COLORS: Record<string, string> = {
 export default function ReservationsPage() {
   const router = useRouter();
   const { hotelOwner, hotel, loading } = useProAuth();
+  const t = useTranslations('proReservations');
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loadingReservations, setLoadingReservations] = useState(true);
   const [filter, setFilter] = useState<string>('all');
@@ -115,11 +117,17 @@ export default function ReservationsPage() {
       await api.post(endpoint, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(`Reservation ${action.replace('_', ' ')}!`);
+      const messages: Record<string, string> = {
+        confirmed: t('reservationConfirmed'),
+        cancelled: t('reservationCancelled'),
+        checked_in: t('guestCheckedIn'),
+        checked_out: t('guestCheckedOut'),
+      };
+      toast.success(messages[action] || t('reservationConfirmed'));
       fetchReservations();
       setSelectedReservation(null);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update status');
+      toast.error(err.response?.data?.message || t('updateFailed'));
     }
   };
 
@@ -150,6 +158,15 @@ export default function ReservationsPage() {
     );
   }
 
+  const statusLabels: Record<string, string> = {
+    all: t('all'),
+    pending: t('pending'),
+    confirmed: t('confirmed'),
+    checked_in: t('checkedIn'),
+    checked_out: t('checkedOut'),
+    cancelled: t('cancelled'),
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -157,15 +174,15 @@ export default function ReservationsPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-[#2FB7EC] rounded-lg flex items-center justify-center">
                 <HiOutlineCalendar size={16} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Reservations</span>
+              <span className="font-semibold text-gray-900">{t('reservations')}</span>
             </div>
           </div>
         </div>
@@ -175,19 +192,19 @@ export default function ReservationsPage() {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Total</p>
+            <p className="text-sm text-gray-500 mb-1">{t('total')}</p>
             <p className="text-2xl font-bold text-gray-900">{reservations.length}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Pending</p>
+            <p className="text-sm text-gray-500 mb-1">{t('pending')}</p>
             <p className="text-2xl font-bold text-yellow-600">{reservations.filter(r => r.status === 'pending').length}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Confirmed</p>
+            <p className="text-sm text-gray-500 mb-1">{t('confirmed')}</p>
             <p className="text-2xl font-bold text-blue-600">{reservations.filter(r => r.status === 'confirmed').length}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Checked In</p>
+            <p className="text-sm text-gray-500 mb-1">{t('checkedIn')}</p>
             <p className="text-2xl font-bold text-green-600">{reservations.filter(r => r.status === 'checked_in').length}</p>
           </div>
         </div>
@@ -204,7 +221,7 @@ export default function ReservationsPage() {
                   : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
               }`}
             >
-              {status === 'all' ? 'All' : status.replace('_', ' ').charAt(0).toUpperCase() + status.replace('_', ' ').slice(1)}
+              {statusLabels[status]}
             </button>
           ))}
         </div>
@@ -215,9 +232,9 @@ export default function ReservationsPage() {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <HiOutlineCalendar size={32} className="text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Reservations</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noReservations')}</h3>
             <p className="text-gray-500">
-              {filter === 'all' ? 'You have no reservations yet' : `No ${filter.replace('_', ' ')} reservations`}
+              {filter === 'all' ? t('noReservationsYet') : t('noFilteredReservations', { status: statusLabels[filter] })}
             </p>
           </div>
         ) : (
@@ -237,24 +254,24 @@ export default function ReservationsPage() {
                       <h3 className="font-semibold text-gray-900">{reservation.room?.name || 'Room'}</h3>
                       <p className="text-sm text-gray-500">
                         {reservation.user?.name || reservation.guest_name || 'Guest'}
-                        {!reservation.user && reservation.guest_name && <span className="ml-1 text-xs text-orange-500">(Guest)</span>}
+                        {!reservation.user && reservation.guest_name && <span className="ms-1 text-xs text-orange-500">{t('guest')}</span>}
                       </p>
                       <div className="flex items-center gap-4 mt-2 text-sm text-gray-500">
                         <span className="flex items-center gap-1">
                           <HiOutlineCalendar size={14} />
                           {formatDate(reservation.check_in)} - {formatDate(reservation.check_out)}
                         </span>
-                        <span>{getNights(reservation.check_in, reservation.check_out)} nights</span>
-                        <span>{reservation.guests} guests</span>
+                        <span>{getNights(reservation.check_in, reservation.check_out)} {t('nights')}</span>
+                        <span>{reservation.guests} {t('guests')}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="text-right">
+                    <div className="text-end">
                       <p className="text-lg font-bold text-[#2FB7EC]">{reservation.total_price?.toLocaleString()} DZD</p>
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[reservation.status]}`}>
-                        {reservation.status.replace('_', ' ')}
+                        {statusLabels[reservation.status]}
                       </span>
                     </div>
                   </div>
@@ -270,7 +287,7 @@ export default function ReservationsPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-gray-900">Reservation Details</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{t('reservationDetails')}</h2>
               <button onClick={() => setSelectedReservation(null)} className="text-gray-400 hover:text-gray-600">
                 <HiOutlineX size={24} />
               </button>
@@ -279,18 +296,18 @@ export default function ReservationsPage() {
             <div className="p-6 space-y-6">
               {/* Status */}
               <div className="flex items-center justify-between">
-                <span className="text-gray-500">Status</span>
+                <span className="text-gray-500">{t('status')}</span>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${STATUS_COLORS[selectedReservation.status]}`}>
-                  {selectedReservation.status.replace('_', ' ')}
+                  {statusLabels[selectedReservation.status]}
                 </span>
               </div>
 
               {/* Guest Info */}
               <div className="bg-gray-50 rounded-xl p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="font-medium text-gray-900">Guest Information</h4>
+                  <h4 className="font-medium text-gray-900">{t('guestInfo')}</h4>
                   {!selectedReservation.user && (
-                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">Guest Booking</span>
+                    <span className="text-xs bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full">{t('guestBooking')}</span>
                   )}
                 </div>
                 <div className="space-y-2 text-sm">
@@ -313,30 +330,30 @@ export default function ReservationsPage() {
 
               {/* Booking Details */}
               <div className="bg-gray-50 rounded-xl p-4">
-                <h4 className="font-medium text-gray-900 mb-3">Booking Details</h4>
+                <h4 className="font-medium text-gray-900 mb-3">{t('bookingDetails')}</h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className="text-gray-500">Room</span>
+                    <span className="text-gray-500">{t('room')}</span>
                     <p className="font-medium text-gray-900">{selectedReservation.room?.name}</p>
                   </div>
                   <div>
-                    <span className="text-gray-500">Guests</span>
+                    <span className="text-gray-500">{t('guests')}</span>
                     <p className="font-medium text-gray-900">{selectedReservation.guests}</p>
                   </div>
                   <div>
-                    <span className="text-gray-500">Check-in</span>
+                    <span className="text-gray-500">{t('checkIn')}</span>
                     <p className="font-medium text-gray-900">{formatDate(selectedReservation.check_in)}</p>
                   </div>
                   <div>
-                    <span className="text-gray-500">Check-out</span>
+                    <span className="text-gray-500">{t('checkOut')}</span>
                     <p className="font-medium text-gray-900">{formatDate(selectedReservation.check_out)}</p>
                   </div>
                   <div>
-                    <span className="text-gray-500">Nights</span>
+                    <span className="text-gray-500">{t('nights')}</span>
                     <p className="font-medium text-gray-900">{getNights(selectedReservation.check_in, selectedReservation.check_out)}</p>
                   </div>
                   <div>
-                    <span className="text-gray-500">Total</span>
+                    <span className="text-gray-500">{t('total')}</span>
                     <p className="font-bold text-[#2FB7EC]">{selectedReservation.total_price?.toLocaleString()} DZD</p>
                   </div>
                 </div>
@@ -345,7 +362,7 @@ export default function ReservationsPage() {
               {/* Special Requests */}
               {selectedReservation.special_requests && (
                 <div className="bg-gray-50 rounded-xl p-4">
-                  <h4 className="font-medium text-gray-900 mb-2">Special Requests</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">{t('specialRequests')}</h4>
                   <p className="text-sm text-gray-600">{selectedReservation.special_requests}</p>
                 </div>
               )}
@@ -359,14 +376,14 @@ export default function ReservationsPage() {
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors"
                     >
                       <HiOutlineCheck size={18} />
-                      Confirm
+                      {t('confirm')}
                     </button>
                     <button
                       onClick={() => updateStatus(selectedReservation.id, 'cancelled')}
                       className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors"
                     >
                       <HiOutlineX size={18} />
-                      Decline
+                      {t('decline')}
                     </button>
                   </>
                 )}
@@ -376,7 +393,7 @@ export default function ReservationsPage() {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#2FB7EC] text-white rounded-xl hover:bg-[#26a5d8] transition-colors"
                   >
                     <HiOutlineCheck size={18} />
-                    Check In Guest
+                    {t('checkInGuest')}
                   </button>
                 )}
                 {selectedReservation.status === 'checked_in' && (
@@ -385,7 +402,7 @@ export default function ReservationsPage() {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors"
                   >
                     <HiOutlineCheck size={18} />
-                    Check Out Guest
+                    {t('checkOutGuest')}
                   </button>
                 )}
               </div>

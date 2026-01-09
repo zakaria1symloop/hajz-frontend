@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlineCheck, HiOutlineX, HiOutlineEye, HiOutlineClock, HiOutlineUsers, HiOutlineCalendar, HiOutlinePlus } from 'react-icons/hi';
 import { FaUtensils } from 'react-icons/fa';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface Table {
   id: number;
@@ -82,6 +83,8 @@ interface SelectedPlat {
 export default function TableReservationsPage() {
   const router = useRouter();
   const { restaurantOwner, restaurant, loading, businessType } = useProAuth();
+  const t = useTranslations('proTableReservations');
+  const locale = useLocale();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loadingData, setLoadingData] = useState(true);
@@ -117,6 +120,13 @@ export default function TableReservationsPage() {
     guests_count: 2,
     special_requests: '',
   });
+
+  // Set document direction based on locale
+  useEffect(() => {
+    const dir = locale === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = dir;
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   useEffect(() => {
     if (!loading && (!restaurantOwner || businessType !== 'restaurant')) {
@@ -156,7 +166,7 @@ export default function TableReservationsPage() {
       setStats(statsRes.data);
       setCommissionRate(walletRes.data.commission_rate || 10);
     } catch (err) {
-      toast.error('Failed to load reservations');
+      toast.error(t('failedToLoad'));
     } finally {
       setLoadingData(false);
     }
@@ -179,7 +189,7 @@ export default function TableReservationsPage() {
       });
       setSlotsData(res.data);
     } catch (err) {
-      toast.error('Failed to load available slots');
+      toast.error(t('failedToLoadSlots'));
     } finally {
       setLoadingSlots(false);
     }
@@ -243,11 +253,21 @@ export default function TableReservationsPage() {
       await api.post(`/restaurant-owner/reservations/${reservation.id}/${action}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success(`Reservation ${action === 'no-show' ? 'marked as no-show' : action + 'ed'} successfully!`);
+      const successMessages: Record<string, string> = {
+        'confirm': t('reservationConfirmed'),
+        'cancel': t('reservationCancelled'),
+        'no-show': t('markedAsNoShow')
+      };
+      toast.success(successMessages[action] || t('reservationConfirmed'));
       fetchData();
       setSelectedReservation(null);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || `Failed to ${action} reservation`);
+      const errorMessages: Record<string, string> = {
+        'confirm': t('failedToConfirm'),
+        'cancel': t('failedToCancel'),
+        'no-show': t('failedToMarkNoShow')
+      };
+      toast.error(err.response?.data?.message || errorMessages[action] || t('failedToConfirm'));
     }
   };
 
@@ -262,21 +282,21 @@ export default function TableReservationsPage() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Reservation completed and wallet credited!');
+      toast.success(t('completedAndCredited'));
       setShowCompleteModal(false);
       setReservationToComplete(null);
       setBillAmount('');
       setSelectedReservation(null);
       fetchData();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to complete reservation');
+      toast.error(err.response?.data?.message || t('failedToComplete'));
     }
   };
 
   const handleCreateReservation = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTable || selectedSlots.length === 0) {
-      toast.error('Please select a table and at least one time slot');
+      toast.error(t('selectTableAndSlot'));
       return;
     }
 
@@ -300,12 +320,12 @@ export default function TableReservationsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      toast.success('Reservation created successfully!');
+      toast.success(t('reservationCreated'));
       setShowCreateModal(false);
       resetForm();
       fetchData();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to create reservation');
+      toast.error(err.response?.data?.message || t('failedToCreate'));
     } finally {
       setCreating(false);
     }
@@ -390,15 +410,15 @@ export default function TableReservationsPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                 <FaUtensils size={14} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Table Reservations</span>
+              <span className="font-semibold text-gray-900">{t('tableReservations')}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -407,14 +427,14 @@ export default function TableReservationsPage() {
               className="px-4 py-2 text-orange-600 hover:bg-orange-50 rounded-lg font-medium transition-colors flex items-center gap-2"
             >
               <HiOutlineClock size={18} />
-              View Slots
+              {t('viewSlots')}
             </button>
             <button
               onClick={() => setShowCreateModal(true)}
               className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors flex items-center gap-2"
             >
               <HiOutlinePlus size={18} />
-              Add Reservation
+              {t('addReservation')}
             </button>
           </div>
         </div>
@@ -425,24 +445,24 @@ export default function TableReservationsPage() {
         {stats && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-white rounded-xl p-4 border border-gray-100">
-              <p className="text-sm text-gray-500">Today's Reservations</p>
+              <p className="text-sm text-gray-500">{t('todaysReservations')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.today.total}</p>
-              <p className="text-xs text-orange-600 mt-1">{stats.today.pending} pending</p>
+              <p className="text-xs text-orange-600 mt-1">{t('pendingCount', { count: stats.today.pending })}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100">
-              <p className="text-sm text-gray-500">This Month</p>
+              <p className="text-sm text-gray-500">{t('thisMonth')}</p>
               <p className="text-2xl font-bold text-gray-900">{stats.this_month.total}</p>
-              <p className="text-xs text-green-600 mt-1">{stats.this_month.completed} completed</p>
+              <p className="text-xs text-green-600 mt-1">{t('completedCount', { count: stats.this_month.completed })}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100">
-              <p className="text-sm text-gray-500">Cancelled</p>
+              <p className="text-sm text-gray-500">{t('cancelled')}</p>
               <p className="text-2xl font-bold text-red-600">{stats.this_month.cancelled}</p>
-              <p className="text-xs text-gray-500 mt-1">this month</p>
+              <p className="text-xs text-gray-500 mt-1">{t('thisMonthLabel')}</p>
             </div>
             <div className="bg-white rounded-xl p-4 border border-gray-100">
-              <p className="text-sm text-gray-500">Revenue</p>
+              <p className="text-sm text-gray-500">{t('revenue')}</p>
               <p className="text-2xl font-bold text-green-600">{stats.this_month.revenue?.toLocaleString() || 0} DZD</p>
-              <p className="text-xs text-gray-500 mt-1">this month</p>
+              <p className="text-xs text-gray-500 mt-1">{t('thisMonthLabel')}</p>
             </div>
           </div>
         )}
@@ -451,22 +471,22 @@ export default function TableReservationsPage() {
         <div className="bg-white rounded-xl border border-gray-100 p-4 mb-6">
           <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Status:</label>
+              <label className="text-sm text-gray-600">{t('status')}:</label>
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
               >
-                <option value="all">All</option>
-                <option value="pending">Pending</option>
-                <option value="confirmed">Confirmed</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-                <option value="no_show">No Show</option>
+                <option value="all">{t('all')}</option>
+                <option value="pending">{t('pending')}</option>
+                <option value="confirmed">{t('confirmed')}</option>
+                <option value="completed">{t('completed')}</option>
+                <option value="cancelled">{t('cancelled')}</option>
+                <option value="no_show">{t('noShow')}</option>
               </select>
             </div>
             <div className="flex items-center gap-2">
-              <label className="text-sm text-gray-600">Date:</label>
+              <label className="text-sm text-gray-600">{t('date')}:</label>
               <input
                 type="date"
                 value={dateFilter}
@@ -478,7 +498,7 @@ export default function TableReservationsPage() {
                   onClick={() => setDateFilter('')}
                   className="text-sm text-gray-500 hover:text-gray-700"
                 >
-                  Clear
+                  {t('clear')}
                 </button>
               )}
             </div>
@@ -491,14 +511,14 @@ export default function TableReservationsPage() {
             <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <HiOutlineCalendar size={28} className="text-orange-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No reservations found</h3>
-            <p className="text-gray-500 mb-4">No reservations match your current filters</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noReservationsFound')}</h3>
+            <p className="text-gray-500 mb-4">{t('noReservationsMatch')}</p>
             <button
               onClick={() => setShowCreateModal(true)}
               className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors inline-flex items-center gap-2"
             >
               <HiOutlinePlus size={18} />
-              Add First Reservation
+              {t('addFirstReservation')}
             </button>
           </div>
         ) : (
@@ -516,10 +536,10 @@ export default function TableReservationsPage() {
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold text-gray-900">
-                          {reservation.user?.name || reservation.guest_name || 'Guest'}
+                          {reservation.user?.name || reservation.guest_name || t('guest')}
                         </h3>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getStatusColor(reservation.status)}`}>
-                          {reservation.status.replace('_', ' ')}
+                          {t(`statuses.${reservation.status}`)}
                         </span>
                       </div>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
@@ -533,7 +553,7 @@ export default function TableReservationsPage() {
                         </span>
                         <span className="flex items-center gap-1">
                           <HiOutlineUsers size={14} />
-                          {reservation.guests_count} guests
+                          {reservation.guests_count} {t('guests')}
                         </span>
                         <span className="text-orange-600 font-medium">
                           {reservation.table?.name}
@@ -576,13 +596,13 @@ export default function TableReservationsPage() {
                           onClick={() => handleAction(reservation, 'complete')}
                           className="px-3 py-1.5 text-sm bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
                         >
-                          Complete
+                          {t('complete')}
                         </button>
                         <button
                           onClick={() => handleAction(reservation, 'no-show')}
                           className="px-3 py-1.5 text-sm bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
                         >
-                          No Show
+                          {t('markNoShow')}
                         </button>
                       </>
                     )}
@@ -599,7 +619,7 @@ export default function TableReservationsPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
-              <h2 className="text-lg font-semibold text-gray-900">Create Reservation</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('createReservation')}</h2>
               <button
                 onClick={() => { setShowCreateModal(false); resetForm(); }}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -611,7 +631,7 @@ export default function TableReservationsPage() {
             <form onSubmit={handleCreateReservation} className="p-6 space-y-6">
               {/* Date Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('selectDate')}</label>
                 <input
                   type="date"
                   value={slotsDate}
@@ -624,7 +644,7 @@ export default function TableReservationsPage() {
               {/* Step 1: Select Table */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Step 1: Select a Table
+                  {t('step1SelectTable')}
                 </label>
                 {loadingSlots ? (
                   <div className="flex items-center justify-center py-8">
@@ -637,21 +657,21 @@ export default function TableReservationsPage() {
                         key={tableData.table.id}
                         type="button"
                         onClick={() => handleTableSelect(tableData.table.id)}
-                        className={`p-4 rounded-xl border-2 text-left transition-all ${
+                        className={`p-4 rounded-xl border-2 text-start transition-all ${
                           selectedTable === tableData.table.id
                             ? 'border-orange-500 bg-orange-50'
                             : 'border-gray-200 hover:border-orange-300 hover:bg-gray-50'
                         }`}
                       >
                         <div className="font-medium text-gray-900">{tableData.table.name}</div>
-                        <div className="text-sm text-gray-500">{tableData.table.capacity} seats</div>
-                        <div className="text-xs text-green-600 mt-1">{tableData.available_count} slots free</div>
+                        <div className="text-sm text-gray-500">{tableData.table.capacity} {t('seats')}</div>
+                        <div className="text-xs text-green-600 mt-1">{t('slotsFree', { count: tableData.available_count })}</div>
                       </button>
                     ))}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    No tables available. Please add tables first.
+                    {t('noTablesAvailable')}
                   </div>
                 )}
               </div>
@@ -660,7 +680,7 @@ export default function TableReservationsPage() {
               {selectedTable && slotsData && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Step 2: Select Time Slot(s) - Click multiple for longer reservations
+                    {t('step2SelectSlots')}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {slotsData.tables.find(t => t.table.id === selectedTable)?.slots.map((slot) => (
@@ -684,10 +704,10 @@ export default function TableReservationsPage() {
                   {selectedSlots.length > 0 && (
                     <div className="mt-3 p-3 bg-orange-50 rounded-lg">
                       <p className="text-sm text-orange-800">
-                        <span className="font-medium">Duration:</span> {getSelectedDuration()} ({selectedSlots.length} slot{selectedSlots.length > 1 ? 's' : ''})
+                        <span className="font-medium">{t('duration')}:</span> {getSelectedDuration()} ({selectedSlots.length} {t('slots')})
                       </p>
                       <p className="text-xs text-orange-600 mt-1">
-                        From {formatTime([...selectedSlots].sort()[0])} to {formatTime([...selectedSlots].sort()[selectedSlots.length - 1])} + 1h
+                        {t('from')} {formatTime([...selectedSlots].sort()[0])} {t('to')} {formatTime([...selectedSlots].sort()[selectedSlots.length - 1])} + 1h
                       </p>
                     </div>
                   )}
@@ -698,7 +718,7 @@ export default function TableReservationsPage() {
               {selectedTable && selectedSlots.length > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Step 3: Pre-order Menu Items (Optional)
+                    {t('step3PreOrder')}
                   </label>
                   {loadingPlats ? (
                     <div className="flex items-center justify-center py-4">
@@ -736,11 +756,11 @@ export default function TableReservationsPage() {
                       })}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500 py-4 text-center">No menu items available</p>
+                    <p className="text-sm text-gray-500 py-4 text-center">{t('noMenuItems')}</p>
                   )}
                   {selectedPlats.length > 0 && (
                     <div className="mt-3 p-3 bg-green-50 rounded-lg flex justify-between items-center">
-                      <span className="text-sm text-green-800">Pre-order Total:</span>
+                      <span className="text-sm text-green-800">{t('preOrderTotal')}:</span>
                       <span className="font-bold text-green-700">{getPlatsTotal().toLocaleString()} DZD</span>
                     </div>
                   )}
@@ -750,18 +770,18 @@ export default function TableReservationsPage() {
               {/* Guest Details */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Guest Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('guestName')}</label>
                   <input
                     type="text"
                     required
                     value={formData.guest_name}
                     onChange={(e) => setFormData({ ...formData, guest_name: e.target.value })}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    placeholder="Enter guest name"
+                    placeholder={t('enterGuestName')}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('phoneNumber')}</label>
                   <input
                     type="tel"
                     value={formData.guest_phone}
@@ -774,7 +794,7 @@ export default function TableReservationsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('email')}</label>
                   <input
                     type="email"
                     value={formData.guest_email}
@@ -784,7 +804,7 @@ export default function TableReservationsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Number of Guests *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('numberOfGuests')}</label>
                   <input
                     type="number"
                     required
@@ -798,13 +818,13 @@ export default function TableReservationsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Special Requests</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('specialRequests')}</label>
                 <textarea
                   rows={3}
                   value={formData.special_requests}
                   onChange={(e) => setFormData({ ...formData, special_requests: e.target.value })}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
-                  placeholder="Birthday celebration, dietary requirements, etc."
+                  placeholder={t('specialRequestsPlaceholder')}
                 />
               </div>
 
@@ -814,14 +834,14 @@ export default function TableReservationsPage() {
                   onClick={() => { setShowCreateModal(false); resetForm(); }}
                   className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={creating || !selectedTable || selectedSlots.length === 0}
                   className="flex-1 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {creating ? 'Creating...' : selectedSlots.length > 0 ? `Create Reservation (${getSelectedDuration()})` : 'Create Reservation'}
+                  {creating ? t('creating') : selectedSlots.length > 0 ? t('createWithDuration', { duration: getSelectedDuration() }) : t('createReservationBtn')}
                 </button>
               </div>
             </form>
@@ -834,7 +854,7 @@ export default function TableReservationsPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
-              <h2 className="text-lg font-semibold text-gray-900">Time Slots Overview</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('timeSlotsOverview')}</h2>
               <button
                 onClick={() => setShowSlotsView(false)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -846,7 +866,7 @@ export default function TableReservationsPage() {
             <div className="p-6">
               {/* Date Selection */}
               <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Select Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('selectDate')}</label>
                 <input
                   type="date"
                   value={slotsDate}
@@ -865,16 +885,16 @@ export default function TableReservationsPage() {
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <p className="text-sm text-gray-500">
-                      Hours: {formatTime(slotsData.opening_time)} - {formatTime(slotsData.closing_time)}
+                      {t('hours')}: {formatTime(slotsData.opening_time)} - {formatTime(slotsData.closing_time)}
                     </p>
                     <div className="flex items-center gap-4 text-sm">
                       <span className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded bg-green-500"></span>
-                        Available
+                        {t('available')}
                       </span>
                       <span className="flex items-center gap-2">
                         <span className="w-3 h-3 rounded bg-red-500"></span>
-                        Booked
+                        {t('booked')}
                       </span>
                     </div>
                   </div>
@@ -884,7 +904,7 @@ export default function TableReservationsPage() {
                       <table className="w-full">
                         <thead>
                           <tr>
-                            <th className="text-left px-3 py-2 bg-gray-50 rounded-l-lg font-medium text-gray-700">Table</th>
+                            <th className="text-start px-3 py-2 bg-gray-50 rounded-s-lg font-medium text-gray-700">{t('table')}</th>
                             {slotsData.tables[0]?.slots.map((slot) => (
                               <th key={slot.time} className="px-2 py-2 bg-gray-50 font-medium text-gray-700 text-center text-xs">
                                 {formatTime(slot.time)}
@@ -897,7 +917,7 @@ export default function TableReservationsPage() {
                             <tr key={tableData.table.id} className="border-t border-gray-100">
                               <td className="px-3 py-3">
                                 <div className="font-medium text-gray-900">{tableData.table.name}</div>
-                                <div className="text-xs text-gray-500">{tableData.table.capacity} seats</div>
+                                <div className="text-xs text-gray-500">{tableData.table.capacity} {t('seats')}</div>
                               </td>
                               {tableData.slots.map((slot) => (
                                 <td key={slot.time} className="px-2 py-3 text-center">
@@ -905,7 +925,7 @@ export default function TableReservationsPage() {
                                     className={`inline-block w-6 h-6 rounded ${
                                       slot.available ? 'bg-green-500' : 'bg-red-500'
                                     }`}
-                                    title={slot.available ? 'Available' : 'Booked'}
+                                    title={slot.available ? t('available') : t('booked')}
                                   ></span>
                                 </td>
                               ))}
@@ -916,7 +936,7 @@ export default function TableReservationsPage() {
                     </div>
                   ) : (
                     <div className="text-center py-12 text-gray-500">
-                      No tables available. Please add tables first.
+                      {t('noTablesAvailable')}
                     </div>
                   )}
                 </div>
@@ -931,7 +951,7 @@ export default function TableReservationsPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
-              <h2 className="text-lg font-semibold text-gray-900">Reservation Details</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('reservationDetails')}</h2>
               <button
                 onClick={() => setSelectedReservation(null)}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -942,66 +962,61 @@ export default function TableReservationsPage() {
 
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Status</span>
+                <span className="text-sm text-gray-500">{t('status')}</span>
                 <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(selectedReservation.status)}`}>
-                  {selectedReservation.status.replace('_', ' ')}
+                  {t(`statuses.${selectedReservation.status}`)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Guest Name</span>
+                <span className="text-sm text-gray-500">{t('guestNameLabel')}</span>
                 <span className="font-medium text-gray-900">
-                  {selectedReservation.user?.name || selectedReservation.guest_name || 'Guest'}
+                  {selectedReservation.user?.name || selectedReservation.guest_name || t('guest')}
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Contact</span>
+                <span className="text-sm text-gray-500">{t('contact')}</span>
                 <span className="text-gray-900">
-                  {selectedReservation.user?.phone || selectedReservation.guest_phone || 'N/A'}
+                  {selectedReservation.user?.phone || selectedReservation.guest_phone || t('na')}
                 </span>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Email</span>
+                <span className="text-sm text-gray-500">{t('email')}</span>
                 <span className="text-gray-900">
-                  {selectedReservation.user?.email || selectedReservation.guest_email || 'N/A'}
+                  {selectedReservation.user?.email || selectedReservation.guest_email || t('na')}
                 </span>
               </div>
 
               <div className="border-t border-gray-100 pt-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-500">Table</span>
+                  <span className="text-sm text-gray-500">{t('table')}</span>
                   <span className="font-medium text-gray-900">{selectedReservation.table?.name}</span>
                 </div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-500">Date</span>
+                  <span className="text-sm text-gray-500">{t('date')}</span>
                   <span className="text-gray-900">
-                    {new Date(selectedReservation.reservation_date).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {new Date(selectedReservation.reservation_date).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-500">Time</span>
+                  <span className="text-sm text-gray-500">{t('time')}</span>
                   <span className="text-gray-900">{formatTime(selectedReservation.reservation_time)}</span>
                 </div>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-500">Duration</span>
-                  <span className="text-gray-900">{selectedReservation.duration_minutes} minutes</span>
+                  <span className="text-sm text-gray-500">{t('duration')}</span>
+                  <span className="text-gray-900">{t('durationMinutes', { count: selectedReservation.duration_minutes })}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-gray-500">Guests</span>
-                  <span className="text-gray-900">{selectedReservation.guests_count} people</span>
+                  <span className="text-sm text-gray-500">{t('guests')}</span>
+                  <span className="text-gray-900">{selectedReservation.guests_count} {t('people')}</span>
                 </div>
               </div>
 
               {selectedReservation.special_requests && (
                 <div className="border-t border-gray-100 pt-4">
-                  <span className="text-sm text-gray-500 block mb-1">Special Requests</span>
+                  <span className="text-sm text-gray-500 block mb-1">{t('specialRequests')}</span>
                   <p className="text-gray-900 bg-gray-50 rounded-lg p-3 text-sm">
                     {selectedReservation.special_requests}
                   </p>
@@ -1011,7 +1026,7 @@ export default function TableReservationsPage() {
               {selectedReservation.total_amount > 0 && (
                 <div className="border-t border-gray-100 pt-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">Total Amount</span>
+                    <span className="text-sm text-gray-500">{t('totalAmount')}</span>
                     <span className="font-bold text-lg text-orange-600">
                       {selectedReservation.total_amount.toLocaleString()} DZD
                     </span>
@@ -1027,13 +1042,13 @@ export default function TableReservationsPage() {
                       onClick={() => handleAction(selectedReservation, 'confirm')}
                       className="flex-1 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
                     >
-                      Confirm
+                      {t('confirm')}
                     </button>
                     <button
                       onClick={() => handleAction(selectedReservation, 'cancel')}
                       className="flex-1 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
                     >
-                      Cancel
+                      {t('cancel')}
                     </button>
                   </>
                 )}
@@ -1043,13 +1058,13 @@ export default function TableReservationsPage() {
                       onClick={() => handleAction(selectedReservation, 'complete')}
                       className="flex-1 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
                     >
-                      Mark Complete
+                      {t('markComplete')}
                     </button>
                     <button
                       onClick={() => handleAction(selectedReservation, 'no-show')}
                       className="flex-1 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
                     >
-                      No Show
+                      {t('markNoShow')}
                     </button>
                   </>
                 )}
@@ -1064,7 +1079,7 @@ export default function TableReservationsPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-md">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Complete Reservation</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('completeReservation')}</h2>
               <button
                 onClick={() => { setShowCompleteModal(false); setReservationToComplete(null); }}
                 className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
@@ -1076,19 +1091,19 @@ export default function TableReservationsPage() {
             <form onSubmit={handleCompleteWithBill} className="p-6 space-y-4">
               <div className="bg-orange-50 rounded-xl p-4">
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Guest:</span> {reservationToComplete.guest_name}
+                  <span className="font-medium">{t('guest')}:</span> {reservationToComplete.guest_name}
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Table:</span> {reservationToComplete.table?.name}
+                  <span className="font-medium">{t('table')}:</span> {reservationToComplete.table?.name}
                 </p>
                 <p className="text-sm text-gray-600">
-                  <span className="font-medium">Date:</span> {new Date(reservationToComplete.reservation_date).toLocaleDateString()}
+                  <span className="font-medium">{t('date')}:</span> {new Date(reservationToComplete.reservation_date).toLocaleDateString()}
                 </p>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Final Bill Amount (DZD)
+                  {t('finalBillAmount')}
                 </label>
                 <input
                   type="number"
@@ -1097,7 +1112,7 @@ export default function TableReservationsPage() {
                   min="0"
                   step="100"
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 text-lg font-semibold"
-                  placeholder="Enter total bill amount"
+                  placeholder={t('enterTotalBill')}
                   autoFocus
                 />
               </div>
@@ -1106,15 +1121,15 @@ export default function TableReservationsPage() {
               {billAmount && parseFloat(billAmount) > 0 && (
                 <div className="bg-gray-50 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Total Bill:</span>
+                    <span className="text-gray-600">{t('totalBill')}:</span>
                     <span className="font-medium">{parseFloat(billAmount).toLocaleString()} DZD</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Platform Fee ({commissionRate}%):</span>
+                    <span className="text-gray-600">{t('platformFee', { rate: commissionRate })}:</span>
                     <span className="text-red-600">-{getCommissionAmount(parseFloat(billAmount)).toLocaleString()} DZD</span>
                   </div>
                   <div className="border-t border-gray-200 pt-2 flex justify-between">
-                    <span className="font-medium text-gray-900">You'll Receive:</span>
+                    <span className="font-medium text-gray-900">{t('youllReceive')}:</span>
                     <span className="font-bold text-green-600">{getNetAmount(parseFloat(billAmount)).toLocaleString()} DZD</span>
                   </div>
                 </div>
@@ -1126,13 +1141,13 @@ export default function TableReservationsPage() {
                   onClick={() => { setShowCompleteModal(false); setReservationToComplete(null); }}
                   className="flex-1 py-3 border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors font-medium"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-medium"
                 >
-                  Complete & Credit Wallet
+                  {t('completeAndCredit')}
                 </button>
               </div>
             </form>

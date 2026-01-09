@@ -78,30 +78,30 @@ interface CarRental {
   primary_image_url?: string;
 }
 
-const AMENITIES = [
-  { id: 'wifi', label: 'Free WiFi', icon: FaWifi },
-  { id: 'parking', label: 'Free Parking', icon: FaParking },
-  { id: 'pool', label: 'Swimming Pool', icon: FaSwimmingPool },
-  { id: 'gym', label: 'Fitness Center', icon: FaDumbbell },
-  { id: 'spa', label: 'Spa & Wellness', icon: FaSpa },
-  { id: 'restaurant', label: 'Restaurant', icon: FaUtensils },
-  { id: 'room_service', label: 'Room Service', icon: FaConciergeBell },
-  { id: 'airport_shuttle', label: 'Airport Shuttle', icon: FaShuttleVan },
-  { id: 'ac', label: 'Air Conditioning', icon: FaSnowflake },
-  { id: 'bar', label: 'Bar/Lounge', icon: FaGlassMartini },
-  { id: 'breakfast', label: 'Breakfast Included', icon: FaCoffee },
-  { id: 'pet_friendly', label: 'Pet Friendly', icon: FaDog },
+const AMENITIES_CONFIG = [
+  { id: 'wifi', icon: FaWifi },
+  { id: 'parking', icon: FaParking },
+  { id: 'pool', icon: FaSwimmingPool },
+  { id: 'gym', icon: FaDumbbell },
+  { id: 'spa', icon: FaSpa },
+  { id: 'restaurant', icon: FaUtensils },
+  { id: 'room_service', icon: FaConciergeBell },
+  { id: 'airport_shuttle', icon: FaShuttleVan },
+  { id: 'ac', icon: FaSnowflake },
+  { id: 'bar', icon: FaGlassMartini },
+  { id: 'breakfast', icon: FaCoffee },
+  { id: 'pet_friendly', icon: FaDog },
 ];
 
-const CUISINE_TYPES = [
-  'Algerian', 'Mediterranean', 'French', 'Italian', 'Asian', 'Fast Food', 'Seafood', 'Grills', 'Pizza', 'International'
+const CUISINE_TYPES_IDS = [
+  'algerian', 'mediterranean', 'french', 'italian', 'asian', 'fastFood', 'seafood', 'grills', 'pizza', 'international'
 ];
 
-const PRICE_RANGES = [
-  { value: '1', label: 'Budget ($)' },
-  { value: '2', label: 'Mid-range ($$)' },
-  { value: '3', label: 'Upscale ($$$)' },
-  { value: '4', label: 'Fine Dining ($$$$)' },
+const PRICE_RANGES_CONFIG = [
+  { value: '1', id: 'budget' },
+  { value: '2', id: 'midRange' },
+  { value: '3', id: 'upscale' },
+  { value: '4', id: 'fineDining' },
 ];
 
 export default function ExplorePage() {
@@ -277,7 +277,7 @@ export default function ExplorePage() {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Link href="/" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <HiChevronLeft size={24} />
+                <HiChevronLeft size={24} className="rtl:rotate-180" />
               </Link>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
@@ -458,7 +458,7 @@ export default function ExplorePage() {
                   <div className="bg-white rounded-xl p-4 border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-3">{t('amenities')}</h3>
                     <div className="space-y-2 max-h-64 overflow-y-auto">
-                      {AMENITIES.map((amenity) => {
+                      {AMENITIES_CONFIG.map((amenity) => {
                         const Icon = amenity.icon;
                         return (
                           <label key={amenity.id} className="flex items-center gap-3 cursor-pointer group">
@@ -469,7 +469,7 @@ export default function ExplorePage() {
                               className="w-4 h-4 text-[#2FB7EC] rounded focus:ring-[#2FB7EC]"
                             />
                             <Icon size={16} className="text-gray-400 group-hover:text-[#2FB7EC]" />
-                            <span className="text-sm text-gray-600 group-hover:text-gray-900">{amenity.label}</span>
+                            <span className="text-sm text-gray-600 group-hover:text-gray-900">{t(`amenityLabels.${amenity.id}`)}</span>
                           </label>
                         );
                       })}
@@ -485,17 +485,17 @@ export default function ExplorePage() {
                   <div className="bg-white rounded-xl p-4 border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-3">{t('cuisineType')}</h3>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
-                      {CUISINE_TYPES.map((cuisine) => (
-                        <label key={cuisine} className="flex items-center gap-3 cursor-pointer group">
+                      {CUISINE_TYPES_IDS.map((cuisineId) => (
+                        <label key={cuisineId} className="flex items-center gap-3 cursor-pointer group">
                           <input
                             type="radio"
                             name="cuisineType"
-                            value={cuisine}
-                            checked={filters.cuisineType === cuisine}
+                            value={cuisineId}
+                            checked={filters.cuisineType === cuisineId}
                             onChange={(e) => setFilters({ ...filters, cuisineType: e.target.value })}
                             className="w-4 h-4 text-orange-500 focus:ring-orange-500"
                           />
-                          <span className="text-sm text-gray-600 group-hover:text-gray-900">{cuisine}</span>
+                          <span className="text-sm text-gray-600 group-hover:text-gray-900">{t(`cuisineTypes.${cuisineId}`)}</span>
                         </label>
                       ))}
                       {filters.cuisineType && (
@@ -513,7 +513,7 @@ export default function ExplorePage() {
                   <div className="bg-white rounded-xl p-4 border border-gray-200">
                     <h3 className="font-semibold text-gray-900 mb-3">{t('priceRange')}</h3>
                     <div className="space-y-2">
-                      {PRICE_RANGES.map((range) => (
+                      {PRICE_RANGES_CONFIG.map((range) => (
                         <label key={range.value} className="flex items-center gap-3 cursor-pointer group">
                           <input
                             type="radio"
@@ -523,7 +523,7 @@ export default function ExplorePage() {
                             onChange={(e) => setFilters({ ...filters, priceRange: e.target.value })}
                             className="w-4 h-4 text-orange-500 focus:ring-orange-500"
                           />
-                          <span className="text-sm text-gray-600 group-hover:text-gray-900">{range.label}</span>
+                          <span className="text-sm text-gray-600 group-hover:text-gray-900">{t(`priceRanges.${range.id}`)}</span>
                         </label>
                       ))}
                       {filters.priceRange && (

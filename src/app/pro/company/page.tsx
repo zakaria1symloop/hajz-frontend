@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlinePencil, HiOutlineCheck, HiOutlinePlus, HiOutlineLocationMarker, HiOutlinePhone, HiOutlineMail, HiOutlinePhotograph, HiOutlineTrash, HiOutlineStar, HiOutlineClipboardList } from 'react-icons/hi';
 import { FaCar } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 
 interface CompanyImage {
   id: number;
@@ -18,6 +19,7 @@ interface CompanyImage {
 export default function MyCompanyPage() {
   const router = useRouter();
   const { companyOwner, company, loading, refreshCompany, businessType } = useProAuth();
+  const t = useTranslations('proCompany');
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [images, setImages] = useState<CompanyImage[]>([]);
@@ -60,11 +62,11 @@ export default function MyCompanyPage() {
       await api.put('/company-owner/company', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Company updated successfully!');
+      toast.success(t('companyUpdated'));
       await refreshCompany();
       setEditing(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update company');
+      toast.error(err.response?.data?.message || t('updateFailed'));
     } finally {
       setSaving(false);
     }
@@ -90,11 +92,11 @@ export default function MyCompanyPage() {
         }
       });
 
-      toast.success('Images uploaded successfully!');
+      toast.success(t('imagesUploaded'));
       await refreshCompany();
       setImages(prev => [...prev, ...response.data.images]);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to upload images');
+      toast.error(err.response?.data?.message || t('uploadFailed'));
     } finally {
       setUploadingImages(false);
       if (fileInputRef.current) {
@@ -104,18 +106,18 @@ export default function MyCompanyPage() {
   };
 
   const handleDeleteImage = async (imageId: number) => {
-    if (!confirm('Are you sure you want to delete this image?')) return;
+    if (!confirm(t('confirmDeleteImage'))) return;
 
     try {
       const token = localStorage.getItem('pro_token');
       await api.delete(`/company-owner/company/images/${imageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Image deleted');
+      toast.success(t('imageDeleted'));
       setImages(prev => prev.filter(img => img.id !== imageId));
       await refreshCompany();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete image');
+      toast.error(err.response?.data?.message || t('deleteImageFailed'));
     }
   };
 
@@ -125,14 +127,14 @@ export default function MyCompanyPage() {
       await api.put(`/company-owner/company/images/${imageId}/primary`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Primary image updated');
+      toast.success(t('primaryImageUpdated'));
       setImages(prev => prev.map(img => ({
         ...img,
         is_primary: img.id === imageId
       })));
       await refreshCompany();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to set primary image');
+      toast.error(err.response?.data?.message || t('setPrimaryFailed'));
     }
   };
 
@@ -163,15 +165,15 @@ export default function MyCompanyPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
                 <FaCar size={14} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">My Company</span>
+              <span className="font-semibold text-gray-900">{t('myCompany')}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -184,7 +186,7 @@ export default function MyCompanyPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
               >
                 <HiOutlinePencil size={16} />
-                Edit
+                {t('edit')}
               </button>
             )}
           </div>
@@ -198,8 +200,8 @@ export default function MyCompanyPage() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <HiOutlinePhotograph size={20} className="text-green-500" />
-                <h2 className="font-semibold text-gray-900">Company Images</h2>
-                <span className="text-sm text-gray-500">({images.length} images)</span>
+                <h2 className="font-semibold text-gray-900">{t('companyImages')}</h2>
+                <span className="text-sm text-gray-500">({t('imagesCount', { count: images.length })})</span>
               </div>
               <div>
                 <input
@@ -218,12 +220,12 @@ export default function MyCompanyPage() {
                   {uploadingImages ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Uploading...
+                      {t('uploading')}
                     </>
                   ) : (
                     <>
                       <HiOutlinePlus size={16} />
-                      Add Images
+                      {t('addImages')}
                     </>
                   )}
                 </label>
@@ -235,8 +237,8 @@ export default function MyCompanyPage() {
             {images.length === 0 ? (
               <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
                 <HiOutlinePhotograph size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500 mb-2">No images uploaded yet</p>
-                <p className="text-sm text-gray-400">Upload images to showcase your company</p>
+                <p className="text-gray-500 mb-2">{t('noImagesYet')}</p>
+                <p className="text-sm text-gray-400">{t('uploadToShowcase')}</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -248,9 +250,9 @@ export default function MyCompanyPage() {
                       className="w-full h-full object-cover"
                     />
                     {image.is_primary && (
-                      <div className="absolute top-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full flex items-center gap-1">
+                      <div className="absolute top-2 start-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full flex items-center gap-1">
                         <HiOutlineStar size={12} />
-                        Primary
+                        {t('primary')}
                       </div>
                     )}
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -258,7 +260,7 @@ export default function MyCompanyPage() {
                         <button
                           onClick={() => handleSetPrimary(image.id)}
                           className="p-2 bg-white rounded-full hover:bg-green-100 transition-colors"
-                          title="Set as primary"
+                          title={t('setAsPrimary')}
                         >
                           <HiOutlineStar size={18} className="text-green-500" />
                         </button>
@@ -266,7 +268,7 @@ export default function MyCompanyPage() {
                       <button
                         onClick={() => handleDeleteImage(image.id)}
                         className="p-2 bg-white rounded-full hover:bg-red-100 transition-colors"
-                        title="Delete image"
+                        title={t('deleteImage')}
                       >
                         <HiOutlineTrash size={18} className="text-red-500" />
                       </button>
@@ -309,7 +311,7 @@ export default function MyCompanyPage() {
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Description */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('description')}</label>
                 {editing ? (
                   <textarea
                     value={formData.description}
@@ -318,13 +320,13 @@ export default function MyCompanyPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
                   />
                 ) : (
-                  <p className="text-gray-600">{company.description || 'No description provided'}</p>
+                  <p className="text-gray-600">{company.description || t('noDescription')}</p>
                 )}
               </div>
 
               {/* Address */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('address')}</label>
                 {editing ? (
                   <input
                     type="text"
@@ -339,7 +341,7 @@ export default function MyCompanyPage() {
 
               {/* City */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('city')}</label>
                 {editing ? (
                   <input
                     type="text"
@@ -355,8 +357,8 @@ export default function MyCompanyPage() {
               {/* Contact Info */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <HiOutlinePhone className="inline mr-1" size={16} />
-                  Phone
+                  <HiOutlinePhone className="inline me-1" size={16} />
+                  {t('phone')}
                 </label>
                 {editing ? (
                   <input
@@ -367,14 +369,14 @@ export default function MyCompanyPage() {
                     placeholder="+213 XXX XXX XXX"
                   />
                 ) : (
-                  <p className="text-gray-600">{formData.phone || 'Not provided'}</p>
+                  <p className="text-gray-600">{formData.phone || t('notProvided')}</p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <HiOutlineMail className="inline mr-1" size={16} />
-                  Email
+                  <HiOutlineMail className="inline me-1" size={16} />
+                  {t('email')}
                 </label>
                 {editing ? (
                   <input
@@ -384,7 +386,7 @@ export default function MyCompanyPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                   />
                 ) : (
-                  <p className="text-gray-600">{formData.email || 'Not provided'}</p>
+                  <p className="text-gray-600">{formData.email || t('notProvided')}</p>
                 )}
               </div>
             </div>
@@ -397,17 +399,17 @@ export default function MyCompanyPage() {
                   onClick={() => setEditing(false)}
                   className="px-6 py-2.5 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex items-center gap-2 px-6 py-2.5 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
                 >
-                  {saving ? 'Saving...' : (
+                  {saving ? t('saving') : (
                     <>
                       <HiOutlineCheck size={18} />
-                      Save Changes
+                      {t('saveChanges')}
                     </>
                   )}
                 </button>
@@ -424,8 +426,8 @@ export default function MyCompanyPage() {
               <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
                 <FaCar size={20} className="text-green-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Manage Cars</h3>
-              <p className="text-sm text-gray-500">Add, edit or remove cars</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('manageCars')}</h3>
+              <p className="text-sm text-gray-500">{t('addEditCars')}</p>
             </Link>
 
             <Link
@@ -435,8 +437,8 @@ export default function MyCompanyPage() {
               <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                 <HiOutlineClipboardList size={24} className="text-blue-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">View Bookings</h3>
-              <p className="text-sm text-gray-500">Manage car bookings</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('viewBookings')}</h3>
+              <p className="text-sm text-gray-500">{t('manageCarBookings')}</p>
             </Link>
 
             <Link
@@ -446,8 +448,8 @@ export default function MyCompanyPage() {
               <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
                 <HiOutlineCheck size={24} className="text-purple-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Settings</h3>
-              <p className="text-sm text-gray-500">Manage company settings</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('settings')}</h3>
+              <p className="text-sm text-gray-500">{t('manageCompanySettings')}</p>
             </Link>
           </div>
         </form>

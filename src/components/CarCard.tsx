@@ -107,7 +107,7 @@ export default function CarCard({ car }: CarCardProps) {
           {isAvailable ? (
             <button className="w-full bg-blue-500 group-hover:bg-blue-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/30">
               {t('bookNow')}
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <ArrowRight size={18} className="rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
             </button>
           ) : (
             <button className="w-full bg-gray-400 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-2 cursor-not-allowed">

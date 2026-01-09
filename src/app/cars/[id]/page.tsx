@@ -88,7 +88,7 @@ export default function CarDetailPage() {
 
     setBooking(true);
     try {
-      await bookCar(Number(params.id), {
+      const response = await bookCar(Number(params.id), {
         pickup_date: pickupDate,
         pickup_time: pickupTime,
         return_date: returnDate,
@@ -99,6 +99,14 @@ export default function CarDetailPage() {
         driver_license_number: driverLicense,
         notes: notes || undefined,
       });
+
+      // Check for SlickPay payment URL
+      if (response.payment_url) {
+        toast.success(t('redirectingToPayment'));
+        window.location.href = response.payment_url;
+        return;
+      }
+
       toast.success(t('bookingSuccess'));
       router.push('/cars');
     } catch (error: unknown) {
@@ -154,15 +162,15 @@ export default function CarDetailPage() {
           <>
             <button
               onClick={prevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition"
+              className="absolute start-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition"
             >
-              <ChevronLeft size={24} />
+              <ChevronLeft size={24} className="rtl:rotate-180" />
             </button>
             <button
               onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition"
+              className="absolute end-4 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition"
             >
-              <ChevronRight size={24} />
+              <ChevronRight size={24} className="rtl:rotate-180" />
             </button>
             <div className="absolute bottom-20 left-1/2 -translate-x-1/2 flex gap-2">
               {car.images.map((_, idx) => (

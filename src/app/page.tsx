@@ -373,7 +373,7 @@ export default function Home() {
               dir="rtl"
             >
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-[#2FB7EC] mb-1 sm:mb-4">
-                حجز
+                Hajz
               </h1>
               <p className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-white">
                 قرر تسافر والباقي خليه علينا
@@ -384,12 +384,12 @@ export default function Home() {
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
             >
-              Discover the best hotels and restaurants across Algeria
+              {t('home.hero.discoverBest')}
             </p>
           </div>
 
           {/* Search Card */}
-          <div className={`w-full transition-all duration-500 ease-out ${destinationFocused ? 'max-w-5xl' : 'max-w-4xl'} ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className={`w-full relative z-50 transition-all duration-500 ease-out ${destinationFocused ? 'max-w-5xl' : 'max-w-4xl'} ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             {/* Tabs */}
             <div className="flex justify-center mb-4 sm:mb-6">
               <div className="inline-flex bg-white/10 backdrop-blur-md rounded-full p-1 sm:p-1.5">
@@ -443,7 +443,7 @@ export default function Home() {
                       ? activeTab === 'hotels' ? 'text-[#2FB7EC]' : activeTab === 'restaurants' ? 'text-orange-500' : 'text-green-500'
                       : 'text-gray-400'
                   }`}>
-                    Wilaya
+                    {t('home.hero.wilaya')}
                   </label>
                   <div className="flex items-center gap-2 sm:gap-3">
                     <HiOutlineLocationMarker className={`flex-shrink-0 transition-all duration-300 group-hover:scale-110 ${
@@ -457,7 +457,7 @@ export default function Home() {
                         setSelectedWilaya(null);
                         setShowWilayaDropdown(true);
                       }}
-                      placeholder="Select a wilaya..."
+                      placeholder={t('home.hero.selectWilaya')}
                       className="w-full text-gray-800 font-medium placeholder-gray-400 outline-none text-sm sm:text-base bg-transparent"
                       onFocus={() => {
                         setDestinationFocused(true);
@@ -517,7 +517,7 @@ export default function Home() {
                   <>
                     <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                       <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                        Check-in
+                        {t('home.hero.checkIn')}
                       </label>
                       <div className="flex items-center gap-2 sm:gap-3">
                         <HiOutlineCalendar className="text-[#2FB7EC] flex-shrink-0 group-hover:scale-110 transition-transform duration-300" size={20} />
@@ -525,7 +525,7 @@ export default function Home() {
                           selected={checkInDate}
                           onChange={(date: Date | null) => setCheckInDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          placeholderText="Select date"
+                          placeholderText={t('home.hero.selectDate')}
                           className="w-full text-gray-800 font-medium placeholder-gray-400 outline-none text-sm sm:text-base cursor-pointer bg-transparent"
                           minDate={new Date()}
                         />
@@ -533,7 +533,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                       <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                        Check-out
+                        {t('home.hero.checkOut')}
                       </label>
                       <div className="flex items-center gap-2 sm:gap-3">
                         <HiOutlineCalendar className="text-[#2FB7EC] flex-shrink-0 group-hover:scale-110 transition-transform duration-300" size={20} />
@@ -541,7 +541,7 @@ export default function Home() {
                           selected={checkOutDate}
                           onChange={(date: Date | null) => setCheckOutDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          placeholderText="Select date"
+                          placeholderText={t('home.hero.selectDate')}
                           className="w-full text-gray-800 font-medium placeholder-gray-400 outline-none text-sm sm:text-base cursor-pointer bg-transparent"
                           minDate={checkInDate || new Date()}
                         />
@@ -555,7 +555,7 @@ export default function Home() {
                   <>
                     <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                       <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                        Date
+                        {t('home.hero.date')}
                       </label>
                       <div className="flex items-center gap-2 sm:gap-3">
                         <HiOutlineCalendar className="text-orange-500 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" size={20} />
@@ -563,7 +563,7 @@ export default function Home() {
                           selected={restaurantDate}
                           onChange={(date: Date | null) => setRestaurantDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          placeholderText="Select date"
+                          placeholderText={t('home.hero.selectDate')}
                           className="w-full text-gray-800 font-medium placeholder-gray-400 outline-none text-sm sm:text-base cursor-pointer bg-transparent"
                           minDate={new Date()}
                         />
@@ -571,7 +571,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                       <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                        Time
+                        {t('home.hero.time')}
                       </label>
                       <div className="flex items-center gap-2 sm:gap-3">
                         <IoTimeOutline className="text-orange-500 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" size={20} />
@@ -591,7 +591,7 @@ export default function Home() {
                   <>
                     <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                       <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                        Pickup Date
+                        {t('home.hero.pickupDate')}
                       </label>
                       <div className="flex items-center gap-2 sm:gap-3">
                         <HiOutlineCalendar className="text-green-500 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" size={20} />
@@ -599,7 +599,7 @@ export default function Home() {
                           selected={pickupDate}
                           onChange={(date: Date | null) => setPickupDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          placeholderText="Select date"
+                          placeholderText={t('home.hero.selectDate')}
                           className="w-full text-gray-800 font-medium placeholder-gray-400 outline-none text-sm sm:text-base cursor-pointer bg-transparent"
                           minDate={new Date()}
                         />
@@ -607,7 +607,7 @@ export default function Home() {
                     </div>
                     <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                       <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                        Return Date
+                        {t('home.hero.returnDate')}
                       </label>
                       <div className="flex items-center gap-2 sm:gap-3">
                         <HiOutlineCalendar className="text-green-500 flex-shrink-0 group-hover:scale-110 transition-transform duration-300" size={20} />
@@ -615,7 +615,7 @@ export default function Home() {
                           selected={returnDate}
                           onChange={(date: Date | null) => setReturnDate(date)}
                           dateFormat="yyyy-MM-dd"
-                          placeholderText="Select date"
+                          placeholderText={t('home.hero.selectDate')}
                           className="w-full text-gray-800 font-medium placeholder-gray-400 outline-none text-sm sm:text-base cursor-pointer bg-transparent"
                           minDate={pickupDate || new Date()}
                         />
@@ -628,7 +628,7 @@ export default function Home() {
                 {activeTab !== 'cars' && (
                   <div className="flex-1 p-3 sm:p-4 border-b md:border-b-0 md:border-r border-gray-100 relative group hover:bg-gray-50/50 rounded-lg sm:rounded-xl transition-colors duration-300">
                     <label className="text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider block mb-1.5 sm:mb-2">
-                      Guests
+                      {t('home.hero.guests')}
                     </label>
                     <div
                       className="flex items-center gap-2 sm:gap-3 cursor-pointer"
@@ -675,7 +675,7 @@ export default function Home() {
                     }`}
                   >
                     <FiSearch size={18} className="group-hover:rotate-12 transition-transform duration-300" />
-                    Search
+                    {t('home.hero.searchButton')}
                   </button>
                 </div>
               </div>
@@ -683,7 +683,7 @@ export default function Home() {
           </div>
 
           {/* Features Bar */}
-          <div className={`flex flex-wrap justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 transition-all duration-1000 delay-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+          <div className={`relative z-10 flex flex-wrap justify-center gap-4 sm:gap-8 mt-6 sm:mt-8 transition-all duration-1000 delay-700 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             <div className="flex items-center gap-2 text-white/90">
               <div className="w-8 h-8 rounded-full bg-[#2FB7EC]/20 flex items-center justify-center">
                 <svg className="w-4 h-4 text-[#2FB7EC]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -746,7 +746,7 @@ export default function Home() {
             </div>
           ) : popularDestinations.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No destinations available at the moment.</p>
+              <p className="text-gray-500">{t('home.destinations.noDestinations')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -796,7 +796,7 @@ export default function Home() {
               href="/wilayas"
               className="inline-flex items-center gap-2 bg-white text-gray-800 px-8 py-4 rounded-xl font-semibold border-2 border-gray-200 hover:border-[#2FB7EC] hover:text-[#2FB7EC] transition-all duration-300 hover:shadow-lg"
             >
-              View All Wilayas
+              {t('home.destinations.viewAllWilayas')}
               <HiChevronDown className="-rotate-90" size={20} />
             </Link>
           </div>
@@ -830,7 +830,7 @@ export default function Home() {
             </div>
           ) : hotels.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No hotels available at the moment.</p>
+              <p className="text-gray-500">{t('home.empty.noHotels')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -854,7 +854,7 @@ export default function Home() {
                     </div>
                     {hotel.rooms_count !== undefined && hotel.rooms_count > 0 && (
                       <div className="absolute top-3 left-3 bg-[#2FB7EC] text-white px-2.5 py-1 rounded-lg text-xs font-medium">
-                        {hotel.rooms_count} rooms
+                        {hotel.rooms_count} {t('explore.rooms')}
                       </div>
                     )}
                   </div>
@@ -904,7 +904,7 @@ export default function Home() {
 
                     {/* CTA */}
                     <button className="w-full bg-[#2FB7EC] group-hover:bg-[#26a5d8] text-white py-2.5 rounded-xl font-semibold text-sm transition-all">
-                      View Rooms
+                      {t('explore.viewRooms')}
                     </button>
                   </div>
                 </Link>
@@ -941,7 +941,7 @@ export default function Home() {
             </div>
           ) : restaurants.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No restaurants available at the moment.</p>
+              <p className="text-gray-500">{t('home.empty.noRestaurants')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1008,19 +1008,19 @@ export default function Home() {
                       {restaurant.tables_count !== undefined && restaurant.tables_count > 0 && (
                         <div className="flex items-center gap-1.5 bg-gray-100 px-2.5 py-1.5 rounded-lg">
                           <IoRestaurantOutline size={13} className="text-orange-500" />
-                          <span className="text-xs font-medium text-gray-600">{restaurant.tables_count} tables</span>
+                          <span className="text-xs font-medium text-gray-600">{restaurant.tables_count} {t('explore.tables')}</span>
                         </div>
                       )}
                       {restaurant.plats_count !== undefined && restaurant.plats_count > 0 && (
                         <div className="flex items-center gap-1.5 bg-orange-50 px-2.5 py-1.5 rounded-lg">
-                          <span className="text-xs font-medium text-orange-600">{restaurant.plats_count} dishes</span>
+                          <span className="text-xs font-medium text-orange-600">{restaurant.plats_count} {t('explore.dishes')}</span>
                         </div>
                       )}
                     </div>
 
                     {/* CTA Button */}
                     <button className="w-full bg-orange-500 group-hover:bg-orange-600 text-white py-2.5 rounded-xl font-semibold text-sm transition-all duration-300">
-                      Book a Table
+                      {t('explore.bookTable')}
                     </button>
                   </div>
                 </Link>
@@ -1045,7 +1045,7 @@ export default function Home() {
                 {t('home.featured.carsDesc')}
               </p>
             </div>
-            <Link href="/cars" className="mt-6 md:mt-0 inline-flex items-center gap-2 text-[#2FB7EC] font-semibold hover:gap-3 transition-all duration-300">
+            <Link href="/explore?type=cars" className="mt-6 md:mt-0 inline-flex items-center gap-2 text-[#2FB7EC] font-semibold hover:gap-3 transition-all duration-300">
               {t('home.featured.viewAll')}
               <HiChevronDown className="-rotate-90" size={20} />
             </Link>
@@ -1057,7 +1057,7 @@ export default function Home() {
             </div>
           ) : carRentals.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500">No car rental services available at the moment.</p>
+              <p className="text-gray-500">{t('home.empty.noCars')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -1077,7 +1077,7 @@ export default function Home() {
                     {carRental.cars_count !== undefined && carRental.cars_count > 0 && (
                       <div className="absolute top-3 left-3 bg-green-500 text-white px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1">
                         <IoCarOutline size={14} />
-                        {carRental.cars_count} cars
+                        {carRental.cars_count} {t('explore.cars')}
                       </div>
                     )}
                     {carRental.average_rating && (
@@ -1129,14 +1129,14 @@ export default function Home() {
                       )}
                       {carRental.min_price && (
                         <div className="flex items-center gap-1.5 bg-green-50 px-2.5 py-1.5 rounded-lg">
-                          <span className="text-xs font-medium text-green-600">From {carRental.min_price.toLocaleString()} DZD/day</span>
+                          <span className="text-xs font-medium text-green-600">{t('explore.fromPerDay', { price: carRental.min_price.toLocaleString() })}</span>
                         </div>
                       )}
                     </div>
 
                     {/* CTA */}
                     <button className="w-full bg-green-500 group-hover:bg-green-600 text-white py-2.5 rounded-xl font-semibold text-sm transition-all">
-                      View Cars
+                      {t('explore.viewCars')}
                     </button>
                   </div>
                 </Link>

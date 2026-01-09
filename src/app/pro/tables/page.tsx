@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineX, HiOutlineUsers, HiOutlineLocationMarker } from 'react-icons/hi';
 import { FaUtensils } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 
 interface Table {
   id: number;
@@ -21,20 +22,24 @@ interface Table {
   reservations_count?: number;
 }
 
-const LOCATIONS = [
-  'Indoor',
-  'Outdoor',
-  'Terrace',
-  'Private Room',
-  'Rooftop',
-  'Garden',
-  'Bar Area',
-  'VIP Section',
-];
+// Location values to translation key mapping
+const LOCATION_KEYS: Record<string, string> = {
+  'Indoor': 'indoor',
+  'Outdoor': 'outdoor',
+  'Terrace': 'terrace',
+  'Private Room': 'privateRoom',
+  'Rooftop': 'rooftop',
+  'Garden': 'garden',
+  'Bar Area': 'barArea',
+  'VIP Section': 'vipSection',
+};
+
+const LOCATIONS = Object.keys(LOCATION_KEYS);
 
 export default function TablesPage() {
   const router = useRouter();
   const { restaurantOwner, restaurant, loading, businessType } = useProAuth();
+  const t = useTranslations('proTables');
   const [tables, setTables] = useState<Table[]>([]);
   const [loadingTables, setLoadingTables] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -73,7 +78,7 @@ export default function TablesPage() {
       });
       setTables(response.data.tables || []);
     } catch (err) {
-      toast.error('Failed to load tables');
+      toast.error(t('loadFailed'));
     } finally {
       setLoadingTables(false);
     }
@@ -120,36 +125,36 @@ export default function TablesPage() {
         await api.put(`/restaurant-owner/tables/${editingTable.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Table updated successfully!');
+        toast.success(t('tableUpdated'));
       } else {
         await api.post('/restaurant-owner/tables', payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Table created successfully!');
+        toast.success(t('tableCreated'));
       }
 
       setShowModal(false);
       resetForm();
       fetchTables();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save table');
+      toast.error(err.response?.data?.message || t('saveFailed'));
     } finally {
       setSubmitting(false);
     }
   };
 
   const handleDelete = async (table: Table) => {
-    if (!confirm(`Are you sure you want to delete "${table.name}"?`)) return;
+    if (!confirm(t('confirmDelete', { name: table.name }))) return;
 
     try {
       const token = localStorage.getItem('pro_token');
       await api.delete(`/restaurant-owner/tables/${table.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Table deleted successfully!');
+      toast.success(t('tableDeleted'));
       fetchTables();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete table');
+      toast.error(err.response?.data?.message || t('deleteFailed'));
     }
   };
 
@@ -163,7 +168,7 @@ export default function TablesPage() {
       });
       fetchTables();
     } catch (err) {
-      toast.error('Failed to update availability');
+      toast.error(t('availabilityFailed'));
     }
   };
 
@@ -175,15 +180,22 @@ export default function TablesPage() {
     );
   }
 
+  // Helper to get translated location name
+  const getTranslatedLocation = (location: string | undefined) => {
+    if (!location) return t('unassigned');
+    const key = LOCATION_KEYS[location];
+    return key ? t(`locations.${key}`) : location;
+  };
+
   // Group tables by location
   const tablesByLocation = tables.reduce((acc, table) => {
-    const location = table.location || 'Unassigned';
+    const location = table.location || t('unassigned');
     if (!acc[location]) acc[location] = [];
     acc[location].push(table);
     return acc;
   }, {} as Record<string, Table[]>);
 
-  const totalCapacity = tables.reduce((sum, t) => sum + t.capacity, 0);
+  const totalCapacity = tables.reduce((sum, tbl) => sum + tbl.capacity, 0);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -192,15 +204,15 @@ export default function TablesPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                 <FaUtensils size={14} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Table Management</span>
+              <span className="font-semibold text-gray-900">{t('tableManagement')}</span>
             </div>
           </div>
           <button
@@ -211,7 +223,7 @@ export default function TablesPage() {
             className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
           >
             <HiOutlinePlus size={18} />
-            Add Table
+            {t('addTable')}
           </button>
         </div>
       </header>
@@ -220,16 +232,16 @@ export default function TablesPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500">Total Tables</p>
+            <p className="text-sm text-gray-500">{t('totalTables')}</p>
             <p className="text-2xl font-bold text-gray-900">{tables.length}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500">Total Capacity</p>
-            <p className="text-2xl font-bold text-orange-600">{totalCapacity} seats</p>
+            <p className="text-sm text-gray-500">{t('totalCapacity')}</p>
+            <p className="text-2xl font-bold text-orange-600">{totalCapacity} {t('seats')}</p>
           </div>
           <div className="bg-white rounded-xl p-4 border border-gray-100">
-            <p className="text-sm text-gray-500">Available</p>
-            <p className="text-2xl font-bold text-green-600">{tables.filter(t => t.is_available).length}</p>
+            <p className="text-sm text-gray-500">{t('available')}</p>
+            <p className="text-2xl font-bold text-green-600">{tables.filter(tbl => tbl.is_available).length}</p>
           </div>
         </div>
 
@@ -239,8 +251,8 @@ export default function TablesPage() {
             <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-4">
               <HiOutlineUsers size={28} className="text-orange-500" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No tables yet</h3>
-            <p className="text-gray-500 mb-6">Start managing reservations by adding your tables</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noTablesYet')}</h3>
+            <p className="text-gray-500 mb-6">{t('noTablesDesc')}</p>
             <button
               onClick={() => {
                 resetForm();
@@ -249,7 +261,7 @@ export default function TablesPage() {
               className="inline-flex items-center gap-2 px-6 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition-colors"
             >
               <HiOutlinePlus size={18} />
-              Add Your First Table
+              {t('addFirstTable')}
             </button>
           </div>
         ) : (
@@ -258,8 +270,8 @@ export default function TablesPage() {
               <div key={location}>
                 <div className="flex items-center gap-2 mb-4">
                   <HiOutlineLocationMarker size={18} className="text-gray-400" />
-                  <h2 className="text-lg font-semibold text-gray-900">{location}</h2>
-                  <span className="text-sm text-gray-500">({locationTables.length} tables)</span>
+                  <h2 className="text-lg font-semibold text-gray-900">{getTranslatedLocation(location)}</h2>
+                  <span className="text-sm text-gray-500">({locationTables.length} {t('tables')})</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {locationTables.map((table) => (
@@ -277,10 +289,10 @@ export default function TablesPage() {
                           <div className="flex items-center gap-3 text-sm mt-1">
                             <span className="flex items-center gap-1 text-gray-500">
                               <HiOutlineUsers size={14} />
-                              {table.capacity} seats
+                              {table.capacity} {t('seats')}
                             </span>
                             <span className="font-semibold text-orange-600">
-                              {table.price_per_hour?.toLocaleString()} DZD/h
+                              {table.price_per_hour?.toLocaleString()} {t('dzdHour')}
                             </span>
                           </div>
                         </div>
@@ -292,7 +304,7 @@ export default function TablesPage() {
                               : 'bg-red-100 text-red-700 hover:bg-red-200'
                           }`}
                         >
-                          {table.is_available ? 'Available' : 'Unavailable'}
+                          {table.is_available ? t('available') : t('unavailable')}
                         </button>
                       </div>
 
@@ -302,7 +314,7 @@ export default function TablesPage() {
 
                       {table.reservations_count !== undefined && table.reservations_count > 0 && (
                         <p className="text-xs text-orange-600 mb-3">
-                          {table.reservations_count} upcoming reservation(s)
+                          {t('upcomingReservations', { count: table.reservations_count })}
                         </p>
                       )}
 
@@ -335,7 +347,7 @@ export default function TablesPage() {
           <div className="bg-white rounded-2xl w-full max-w-md">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-900">
-                {editingTable ? 'Edit Table' : 'Add New Table'}
+                {editingTable ? t('editTable') : t('addNewTable')}
               </h2>
               <button
                 onClick={() => {
@@ -350,33 +362,33 @@ export default function TablesPage() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Table Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('tableName')}</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="e.g., Table 1, VIP Table A"
+                  placeholder={t('tableNamePlaceholder')}
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Capacity (seats) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('capacity')}</label>
                   <input
                     type="number"
                     value={formData.capacity}
                     onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     min="1"
-                    placeholder="Number of seats"
+                    placeholder={t('capacityPlaceholder')}
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price per Hour (DZD) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('pricePerHour')}</label>
                   <input
                     type="number"
                     value={formData.price_per_hour}
@@ -384,34 +396,34 @@ export default function TablesPage() {
                     className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                     min="0"
                     step="100"
-                    placeholder="e.g., 500"
+                    placeholder={t('pricePerHourPlaceholder')}
                     required
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('location')}</label>
                 <select
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
                 >
-                  <option value="">Select location</option>
+                  <option value="">{t('selectLocation')}</option>
                   {LOCATIONS.map((loc) => (
-                    <option key={loc} value={loc}>{loc}</option>
+                    <option key={loc} value={loc}>{t(`locations.${LOCATION_KEYS[loc]}`)}</option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('description')}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   rows={2}
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 resize-none"
-                  placeholder="Optional notes about this table..."
+                  placeholder={t('descriptionPlaceholder')}
                 />
               </div>
 
@@ -422,7 +434,7 @@ export default function TablesPage() {
                   onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })}
                   className="w-4 h-4 text-orange-500 rounded focus:ring-orange-500"
                 />
-                <span className="text-sm text-gray-700">Available for reservations</span>
+                <span className="text-sm text-gray-700">{t('availableForReservations')}</span>
               </label>
 
               <div className="flex justify-end gap-3 pt-4">
@@ -434,14 +446,14 @@ export default function TablesPage() {
                   }}
                   className="px-4 py-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
                   className="px-6 py-2.5 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors disabled:opacity-50"
                 >
-                  {submitting ? 'Saving...' : (editingTable ? 'Update Table' : 'Add Table')}
+                  {submitting ? t('saving') : (editingTable ? t('updateTable') : t('addTable'))}
                 </button>
               </div>
             </form>

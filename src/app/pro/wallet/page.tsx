@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlineCash, HiOutlineCreditCard, HiOutlineArrowUp, HiOutlineArrowDown, HiOutlineX, HiOutlineClock, HiOutlineExclamation, HiOutlineChevronDown, HiOutlineChevronUp } from 'react-icons/hi';
 import { FaCar } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 
 interface WalletData {
   available_balance: number;
@@ -69,6 +70,7 @@ interface WithdrawalRequest {
 export default function WalletPage() {
   const router = useRouter();
   const { hotelOwner, hotel, restaurantOwner, restaurant, companyOwner, company, loading, businessType } = useProAuth();
+  const t = useTranslations('proWallet');
   const [wallet, setWallet] = useState<WalletData>({
     available_balance: 0,
     pending_balance: 0,
@@ -169,15 +171,15 @@ export default function WalletPage() {
 
     const amount = parseFloat(withdrawAmount);
     if (isNaN(amount) || amount <= 0) {
-      toast.error('Please enter a valid amount');
+      toast.error(t('enterValidAmount'));
       return;
     }
     if (amount > wallet.available_balance) {
-      toast.error('Insufficient balance');
+      toast.error(t('insufficientBalance'));
       return;
     }
     if (!bankName.trim() || !accountNumber.trim() || !accountHolderName.trim()) {
-      toast.error('Please fill all bank details');
+      toast.error(t('fillBankDetails'));
       return;
     }
 
@@ -192,7 +194,7 @@ export default function WalletPage() {
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Withdrawal request submitted!');
+      toast.success(t('withdrawalSubmitted'));
       setShowWithdrawModal(false);
       setWithdrawAmount('');
       setBankName('');
@@ -200,7 +202,7 @@ export default function WalletPage() {
       setAccountHolderName('');
       fetchWalletData();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to submit withdrawal');
+      toast.error(err.response?.data?.message || t('withdrawalFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -249,6 +251,87 @@ export default function WalletPage() {
     return ['booking_credit', 'earning', 'balance_release'].includes(type);
   };
 
+  // Helper to translate transaction description
+  const getTranslatedDescription = (transaction: Transaction) => {
+    const desc = transaction.description || '';
+
+    // Pattern: "Reservation #17 - zakaria amrani (after 10% commission)"
+    const reservationMatch = desc.match(/Reservation #(\d+) - (.+?) \(after (\d+)% commission\)/i);
+    if (reservationMatch) {
+      return t('transactionDescriptions.reservationEarning', {
+        id: reservationMatch[1],
+        customer: reservationMatch[2],
+        rate: reservationMatch[3]
+      });
+    }
+
+    // Pattern: "Table reservation #5 - Customer Name"
+    const tableMatch = desc.match(/Table reservation #(\d+) - (.+)/i);
+    if (tableMatch) {
+      return t('transactionDescriptions.tableReservationEarning', {
+        id: tableMatch[1],
+        customer: tableMatch[2]
+      });
+    }
+
+    // Pattern: "Car booking #3 - Customer Name"
+    const carMatch = desc.match(/Car booking #(\d+) - (.+)/i);
+    if (carMatch) {
+      return t('transactionDescriptions.carBookingEarning', {
+        id: carMatch[1],
+        customer: carMatch[2]
+      });
+    }
+
+    // Pattern: "Balance released after checkout"
+    if (desc.toLowerCase().includes('balance released after checkout')) {
+      return t('transactionDescriptions.balanceReleased');
+    }
+
+    // Pattern: "Booking #16 payment received"
+    const bookingPaymentMatch = desc.match(/Booking #(\d+) payment received/i);
+    if (bookingPaymentMatch) {
+      return t('transactionDescriptions.bookingPaymentReceived', { id: bookingPaymentMatch[1] });
+    }
+
+    // Pattern: "Commission deducted by platform"
+    if (desc.toLowerCase().includes('commission deducted')) {
+      return t('transactionDescriptions.commissionDeducted');
+    }
+
+    // Pattern: "Withdrawal completed"
+    if (desc.toLowerCase().includes('withdrawal completed')) {
+      return t('transactionDescriptions.withdrawalCompleted');
+    }
+
+    // Pattern: "Reservation #5 refund"
+    const refundMatch = desc.match(/Reservation #(\d+) refund/i);
+    if (refundMatch) {
+      return t('transactionDescriptions.reservationRefund', { id: refundMatch[1] });
+    }
+
+    // Pattern: "Room booking #5 - Customer Name"
+    const roomBookingMatch = desc.match(/Room booking #(\d+) - (.+)/i);
+    if (roomBookingMatch) {
+      return t('transactionDescriptions.roomBookingEarning', {
+        id: roomBookingMatch[1],
+        customer: roomBookingMatch[2]
+      });
+    }
+
+    // Return original if no pattern matches
+    return desc;
+  };
+
+  // Helper to translate withdrawal status
+  const getTranslatedWithdrawalStatus = (status: string) => {
+    const statusKey = status.toLowerCase();
+    if (['pending', 'completed', 'approved', 'rejected'].includes(statusKey)) {
+      return t(`withdrawalStatuses.${statusKey}`);
+    }
+    return status;
+  };
+
   if (loading || loadingData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -264,15 +347,15 @@ export default function WalletPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: themeColor }}>
                 <HiOutlineCash size={16} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Wallet</span>
+              <span className="font-semibold text-gray-900">{t('wallet')}</span>
             </div>
           </div>
           <button
@@ -282,7 +365,7 @@ export default function WalletPage() {
             style={{ backgroundColor: themeColor }}
           >
             <HiOutlineCreditCard size={18} />
-            Withdraw
+            {t('withdraw')}
           </button>
         </div>
       </header>
@@ -295,7 +378,7 @@ export default function WalletPage() {
               <div className="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center">
                 <HiOutlineCash size={20} className="text-green-600" />
               </div>
-              <span className="text-sm text-gray-500">Available</span>
+              <span className="text-sm text-gray-500">{t('available')}</span>
             </div>
             <p className="text-2xl font-bold text-gray-900">{wallet.available_balance?.toLocaleString()} DZD</p>
           </div>
@@ -305,7 +388,7 @@ export default function WalletPage() {
               <div className="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center">
                 <HiOutlineClock size={20} className="text-yellow-600" />
               </div>
-              <span className="text-sm text-gray-500">Pending</span>
+              <span className="text-sm text-gray-500">{t('pending')}</span>
             </div>
             <p className="text-2xl font-bold text-gray-900">{wallet.pending_balance?.toLocaleString()} DZD</p>
           </div>
@@ -315,7 +398,7 @@ export default function WalletPage() {
               <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center">
                 <HiOutlineArrowDown size={20} className="text-blue-600" />
               </div>
-              <span className="text-sm text-gray-500">Total Earned</span>
+              <span className="text-sm text-gray-500">{t('totalEarned')}</span>
             </div>
             <p className="text-2xl font-bold text-gray-900">{wallet.total_earned?.toLocaleString()} DZD</p>
           </div>
@@ -325,7 +408,7 @@ export default function WalletPage() {
               <div className="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center">
                 <HiOutlineArrowUp size={20} className="text-purple-600" />
               </div>
-              <span className="text-sm text-gray-500">Withdrawn</span>
+              <span className="text-sm text-gray-500">{t('withdrawn')}</span>
             </div>
             <p className="text-2xl font-bold text-gray-900">{wallet.total_withdrawn?.toLocaleString()} DZD</p>
           </div>
@@ -338,8 +421,8 @@ export default function WalletPage() {
               <HiOutlineExclamation size={20} className="text-gray-600" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-700">Platform Commission</p>
-              <p className="text-xs text-gray-500">A {commissionRate}% fee is deducted from each completed reservation</p>
+              <p className="text-sm font-medium text-gray-700">{t('platformCommission')}</p>
+              <p className="text-xs text-gray-500">{t('commissionDesc', { rate: commissionRate })}</p>
             </div>
           </div>
           <div className="text-2xl font-bold" style={{ color: themeColor }}>{commissionRate}%</div>
@@ -356,7 +439,7 @@ export default function WalletPage() {
             }`}
             style={activeTab === 'transactions' ? { backgroundColor: themeColor } : {}}
           >
-            Transactions
+            {t('transactions')}
           </button>
           <button
             onClick={() => setActiveTab('withdrawals')}
@@ -367,7 +450,7 @@ export default function WalletPage() {
             }`}
             style={activeTab === 'withdrawals' ? { backgroundColor: themeColor } : {}}
           >
-            Withdrawal Requests
+            {t('withdrawalRequests')}
           </button>
         </div>
 
@@ -379,8 +462,8 @@ export default function WalletPage() {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <HiOutlineCash size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Transactions</h3>
-                <p className="text-gray-500">Your transactions will appear here once you start receiving bookings.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noTransactions')}</h3>
+                <p className="text-gray-500">{t('noTransactionsDesc')}</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -401,7 +484,7 @@ export default function WalletPage() {
                               {getTransactionIcon(transaction.type)}
                             </div>
                             <div>
-                              <p className="font-medium text-gray-900">{transaction.description}</p>
+                              <p className="font-medium text-gray-900">{getTranslatedDescription(transaction)}</p>
                               <p className="text-sm text-gray-500">{formatDate(transaction.created_at)}</p>
                             </div>
                           </div>
@@ -427,7 +510,7 @@ export default function WalletPage() {
                             {/* Booking Info */}
                             {(transaction.metadata?.booking_id || transaction.car_booking_id) && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Booking ID</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('bookingId')}</p>
                                 <p className="font-medium text-gray-900">#{transaction.metadata?.booking_id || transaction.car_booking_id}</p>
                               </div>
                             )}
@@ -435,7 +518,7 @@ export default function WalletPage() {
                             {/* Car Info */}
                             {(transaction.metadata?.car || transaction.car_booking?.car) && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Vehicle</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('vehicle')}</p>
                                 <div className="flex items-center gap-2">
                                   <FaCar className="text-gray-400" size={14} />
                                   <p className="font-medium text-gray-900">
@@ -448,7 +531,7 @@ export default function WalletPage() {
                             {/* Customer */}
                             {(transaction.metadata?.customer || transaction.car_booking?.customer_name) && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Customer</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('customer')}</p>
                                 <p className="font-medium text-gray-900">{transaction.metadata?.customer || transaction.car_booking?.customer_name}</p>
                               </div>
                             )}
@@ -456,7 +539,7 @@ export default function WalletPage() {
                             {/* Rental Period */}
                             {(transaction.metadata?.pickup_date || transaction.car_booking?.pickup_date) && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Rental Period</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('rentalPeriod')}</p>
                                 <p className="font-medium text-gray-900">
                                   {new Date(transaction.metadata?.pickup_date || transaction.car_booking?.pickup_date || '').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(transaction.metadata?.return_date || transaction.car_booking?.return_date || '').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                 </p>
@@ -466,15 +549,15 @@ export default function WalletPage() {
                             {/* Rental Days */}
                             {(transaction.metadata?.rental_days || transaction.car_booking?.rental_days) && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Duration</p>
-                                <p className="font-medium text-gray-900">{transaction.metadata?.rental_days || transaction.car_booking?.rental_days} days</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('duration')}</p>
+                                <p className="font-medium text-gray-900">{transaction.metadata?.rental_days || transaction.car_booking?.rental_days} {t('days')}</p>
                               </div>
                             )}
 
                             {/* Total Amount (before commission) */}
                             {transaction.metadata?.total_amount && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Gross Amount</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('grossAmount')}</p>
                                 <p className="font-medium text-gray-900">{Number(transaction.metadata.total_amount).toLocaleString()} DZD</p>
                               </div>
                             )}
@@ -482,7 +565,7 @@ export default function WalletPage() {
                             {/* Commission */}
                             {transaction.metadata?.commission_rate && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Commission ({transaction.metadata.commission_rate}%)</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('commission')} ({transaction.metadata.commission_rate}%)</p>
                                 <p className="font-medium text-red-500">-{Number(transaction.metadata.commission_amount).toLocaleString()} DZD</p>
                               </div>
                             )}
@@ -490,7 +573,7 @@ export default function WalletPage() {
                             {/* Net Amount */}
                             {transaction.metadata?.net_amount && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Net Amount</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('netAmount')}</p>
                                 <p className="font-medium text-green-600">+{Number(transaction.metadata.net_amount).toLocaleString()} DZD</p>
                               </div>
                             )}
@@ -498,13 +581,13 @@ export default function WalletPage() {
                             {/* Balance Before/After */}
                             {transaction.balance_before !== undefined && transaction.balance_before !== null && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Balance Before</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('balanceBefore')}</p>
                                 <p className="font-medium text-gray-900">{Number(transaction.balance_before).toLocaleString()} DZD</p>
                               </div>
                             )}
                             {transaction.balance_after !== undefined && transaction.balance_after !== null && (
                               <div className="bg-white rounded-lg p-3 border border-gray-100">
-                                <p className="text-xs text-gray-500 mb-1">Balance After</p>
+                                <p className="text-xs text-gray-500 mb-1">{t('balanceAfter')}</p>
                                 <p className="font-medium text-gray-900">{Number(transaction.balance_after).toLocaleString()} DZD</p>
                               </div>
                             )}
@@ -528,8 +611,8 @@ export default function WalletPage() {
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <HiOutlineCreditCard size={32} className="text-gray-400" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No Withdrawal Requests</h3>
-                <p className="text-gray-500">Your withdrawal requests will appear here.</p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noWithdrawals')}</h3>
+                <p className="text-gray-500">{t('noWithdrawalsDesc')}</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -541,17 +624,17 @@ export default function WalletPage() {
                           <HiOutlineCreditCard size={20} className="text-purple-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Withdrawal to {request.bank_name}</p>
+                          <p className="font-medium text-gray-900">{t('withdrawTo', { bank: request.bank_name })}</p>
                           <p className="text-sm text-gray-500">{formatDate(request.created_at)}</p>
                           {request.account_number && (
-                            <p className="text-sm text-gray-400">Account: ***{request.account_number.slice(-4)}</p>
+                            <p className="text-sm text-gray-400">{t('account')}: ***{request.account_number.slice(-4)}</p>
                           )}
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-end">
                         <p className="font-bold text-gray-900">{request.amount?.toLocaleString()} DZD</p>
                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${getStatusBadge(request.status)}`}>
-                          {request.status}
+                          {getTranslatedWithdrawalStatus(request.status)}
                         </span>
                       </div>
                     </div>
@@ -568,7 +651,7 @@ export default function WalletPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl w-full max-w-sm">
             <div className="p-4 border-b border-gray-100 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Withdraw Funds</h2>
+              <h2 className="text-lg font-semibold text-gray-900">{t('withdrawFunds')}</h2>
               <button onClick={() => setShowWithdrawModal(false)} className="text-gray-400 hover:text-gray-600">
                 <HiOutlineX size={20} />
               </button>
@@ -577,13 +660,13 @@ export default function WalletPage() {
             <form onSubmit={handleWithdraw} className="p-4 space-y-3">
               {/* Available Balance Info */}
               <div className="bg-gray-50 rounded-lg p-3 flex justify-between items-center">
-                <span className="text-sm text-gray-500">Available</span>
+                <span className="text-sm text-gray-500">{t('available')}</span>
                 <span className="text-lg font-bold" style={{ color: themeColor }}>{wallet.available_balance?.toLocaleString()} DZD</span>
               </div>
 
               {/* Amount */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Amount (DZD)</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">{t('amountDzd')}</label>
                 <input
                   type="number"
                   value={withdrawAmount}
@@ -593,21 +676,21 @@ export default function WalletPage() {
                   step={100}
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2"
                   style={{ '--tw-ring-color': themeColor } as any}
-                  placeholder="Min: 1,000 DZD"
+                  placeholder={t('minAmount')}
                   required
                 />
               </div>
 
               {/* Bank Name */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Bank</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">{t('bank')}</label>
                 <select
                   value={bankName}
                   onChange={(e) => setBankName(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2"
                   required
                 >
-                  <option value="">Select Bank</option>
+                  <option value="">{t('selectBank')}</option>
                   <option value="BNA">BNA</option>
                   <option value="CPA">CPA</option>
                   <option value="BEA">BEA</option>
@@ -624,33 +707,33 @@ export default function WalletPage() {
 
               {/* Account Number */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">RIB Number</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">{t('ribNumber')}</label>
                 <input
                   type="text"
                   value={accountNumber}
                   onChange={(e) => setAccountNumber(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2"
-                  placeholder="Enter your RIB"
+                  placeholder={t('enterRib')}
                   required
                 />
               </div>
 
               {/* Account Holder Name */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Account Holder</label>
+                <label className="block text-xs font-medium text-gray-700 mb-1">{t('accountHolder')}</label>
                 <input
                   type="text"
                   value={accountHolderName}
                   onChange={(e) => setAccountHolderName(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2"
-                  placeholder="Name on account"
+                  placeholder={t('nameOnAccount')}
                   required
                 />
               </div>
 
               {/* Notice */}
               <p className="text-xs text-gray-500 bg-yellow-50 p-2 rounded-lg">
-                Processed within 2-5 business days
+                {t('processingTime')}
               </p>
 
               {/* Submit Button */}
@@ -660,7 +743,7 @@ export default function WalletPage() {
                 className="w-full py-2.5 text-white rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
                 style={{ backgroundColor: themeColor }}
               >
-                {submitting ? 'Processing...' : 'Request Withdrawal'}
+                {submitting ? t('processing') : t('requestWithdrawal')}
               </button>
             </form>
           </div>

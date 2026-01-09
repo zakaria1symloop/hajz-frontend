@@ -9,6 +9,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlineUsers, HiOutlineX, HiOutlinePhotograph, HiOutlineUpload, HiOutlineCalendar, HiOutlineChevronLeft, HiOutlineChevronRight } from 'react-icons/hi';
 import { IoBedOutline } from 'react-icons/io5';
+import { useTranslations } from 'next-intl';
 
 interface RoomImage {
   id: number;
@@ -76,6 +77,7 @@ const ROOM_AMENITIES = [
 export default function RoomsPage() {
   const router = useRouter();
   const { hotelOwner, hotel, loading } = useProAuth();
+  const t = useTranslations('proRooms');
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -203,35 +205,35 @@ export default function RoomsPage() {
         await api.put(`/hotel-owner/rooms/${editingRoom.id}`, payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Room updated successfully!');
+        toast.success(t('roomUpdated'));
       } else {
         await api.post('/hotel-owner/rooms', payload, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Room created successfully!');
+        toast.success(t('roomCreated'));
       }
 
       setShowModal(false);
       fetchRooms();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save room');
+      toast.error(err.response?.data?.message || t('saveFailed'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (roomId: number) => {
-    if (!confirm('Are you sure you want to delete this room?')) return;
+    if (!confirm(t('confirmDeleteRoom'))) return;
 
     try {
       const token = localStorage.getItem('pro_token');
       await api.delete(`/hotel-owner/rooms/${roomId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Room deleted successfully!');
+      toast.success(t('roomDeleted'));
       fetchRooms();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete room');
+      toast.error(err.response?.data?.message || t('deleteFailed'));
     }
   };
 
@@ -255,7 +257,7 @@ export default function RoomsPage() {
           'Content-Type': 'multipart/form-data',
         }
       });
-      toast.success('Images uploaded successfully!');
+      toast.success(t('imagesUploaded'));
       fetchRooms();
       // Update selected room with new images
       const response = await api.get(`/hotel-owner/rooms/${selectedRoom.id}`, {
@@ -263,7 +265,7 @@ export default function RoomsPage() {
       });
       setSelectedRoom(response.data.room || response.data);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to upload images');
+      toast.error(err.response?.data?.message || t('uploadFailed'));
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
@@ -273,14 +275,14 @@ export default function RoomsPage() {
   };
 
   const handleDeleteImage = async (imageId: number) => {
-    if (!confirm('Delete this image?')) return;
+    if (!confirm(t('confirmDeleteImage'))) return;
 
     try {
       const token = localStorage.getItem('pro_token');
       await api.delete(`/hotel-owner/rooms/images/${imageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Image deleted!');
+      toast.success(t('imageDeleted'));
       fetchRooms();
       if (selectedRoom) {
         setSelectedRoom({
@@ -289,7 +291,7 @@ export default function RoomsPage() {
         });
       }
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete image');
+      toast.error(err.response?.data?.message || t('deleteImageFailed'));
     }
   };
 
@@ -392,11 +394,11 @@ export default function RoomsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      toast.success('Dates blocked successfully!');
+      toast.success(t('datesBlocked'));
       setSelectedDates([]);
       await fetchCalendar(selectedRoom.id, calendarMonth);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to block dates');
+      toast.error(err.response?.data?.message || t('blockFailed'));
     }
   };
 
@@ -413,11 +415,11 @@ export default function RoomsPage() {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      toast.success('Dates unblocked successfully!');
+      toast.success(t('datesUnblocked'));
       setSelectedDates([]);
       await fetchCalendar(selectedRoom.id, calendarMonth);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to unblock dates');
+      toast.error(err.response?.data?.message || t('unblockFailed'));
     }
   };
 
@@ -486,15 +488,15 @@ export default function RoomsPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-[#2FB7EC] rounded-lg flex items-center justify-center">
                 <IoBedOutline size={16} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Rooms</span>
+              <span className="font-semibold text-gray-900">{t('rooms')}</span>
             </div>
           </div>
           <button
@@ -502,7 +504,7 @@ export default function RoomsPage() {
             className="flex items-center gap-2 px-4 py-2 bg-[#2FB7EC] text-white rounded-lg hover:bg-[#26a5d8] transition-colors"
           >
             <HiOutlinePlus size={18} />
-            Add Room
+            {t('addRoom')}
           </button>
         </div>
       </header>
@@ -513,14 +515,14 @@ export default function RoomsPage() {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <IoBedOutline size={32} className="text-gray-400" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Rooms Yet</h3>
-            <p className="text-gray-500 mb-6">Add your first room to start receiving bookings</p>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('noRoomsYet')}</h3>
+            <p className="text-gray-500 mb-6">{t('noRoomsDesc')}</p>
             <button
               onClick={openAddModal}
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#2FB7EC] text-white rounded-xl font-medium hover:bg-[#26a5d8] transition-colors"
             >
               <HiOutlinePlus size={20} />
-              Add Your First Room
+              {t('addFirstRoom')}
             </button>
           </div>
         ) : (
@@ -552,7 +554,7 @@ export default function RoomsPage() {
                       <div className="text-white flex items-center gap-2">
                         <HiOutlinePhotograph size={24} />
                         <span className="font-medium">
-                          {room.images?.length || 0} photos
+                          {t('photos', { count: room.images?.length || 0 })}
                         </span>
                       </div>
                     </div>
@@ -566,14 +568,14 @@ export default function RoomsPage() {
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                         room.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
                       }`}>
-                        {room.is_active ? 'Active' : 'Inactive'}
+                        {room.is_active ? t('active') : t('inactive')}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-4 text-sm text-gray-500 mb-4">
                       <div className="flex items-center gap-1">
                         <HiOutlineUsers size={16} />
-                        <span>{room.capacity} guests</span>
+                        <span>{t('guests', { count: room.capacity })}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <IoBedOutline size={16} />
@@ -584,34 +586,34 @@ export default function RoomsPage() {
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <div>
                         <span className="text-xl font-bold text-[#2FB7EC]">{room.price_per_night?.toLocaleString()}</span>
-                        <span className="text-gray-400 text-sm ml-1">DZD/night</span>
+                        <span className="text-gray-400 text-sm ms-1">{t('dzdNight')}</span>
                       </div>
                       <div className="flex gap-1">
                         <button
                           onClick={() => openAvailabilityModal(room)}
                           className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                          title="Availability Calendar"
+                          title={t('availabilityCalendar')}
                         >
                           <HiOutlineCalendar size={18} />
                         </button>
                         <button
                           onClick={() => openImageModal(room)}
                           className="p-2 text-gray-400 hover:text-[#2FB7EC] hover:bg-[#2FB7EC]/10 rounded-lg transition-colors"
-                          title="Manage Images"
+                          title={t('manageImages')}
                         >
                           <HiOutlinePhotograph size={18} />
                         </button>
                         <button
                           onClick={() => openEditModal(room)}
                           className="p-2 text-gray-400 hover:text-[#2FB7EC] hover:bg-[#2FB7EC]/10 rounded-lg transition-colors"
-                          title="Edit Room"
+                          title={t('editRoom')}
                         >
                           <HiOutlinePencil size={18} />
                         </button>
                         <button
                           onClick={() => handleDelete(room.id)}
                           className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete Room"
+                          title={t('deleteRoom')}
                         >
                           <HiOutlineTrash size={18} />
                         </button>
@@ -631,7 +633,7 @@ export default function RoomsPage() {
           <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h2 className="text-xl font-semibold text-gray-900">
-                {editingRoom ? 'Edit Room' : 'Add New Room'}
+                {editingRoom ? t('editRoom') : t('addNewRoom')}
               </h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
                 <HiOutlineX size={24} />
@@ -640,7 +642,7 @@ export default function RoomsPage() {
 
             <form onSubmit={handleSubmit} className="p-6 space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Room Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('roomName')}</label>
                 <input
                   type="text"
                   value={formData.name}
@@ -653,7 +655,7 @@ export default function RoomsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Room Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('roomType')}</label>
                   <select
                     value={formData.room_type}
                     onChange={(e) => setFormData({ ...formData, room_type: e.target.value })}
@@ -665,7 +667,7 @@ export default function RoomsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Bed Type</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('bedType')}</label>
                   <select
                     value={formData.bed_type}
                     onChange={(e) => setFormData({ ...formData, bed_type: e.target.value })}
@@ -680,7 +682,7 @@ export default function RoomsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Price per Night (DZD) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('pricePerNight')}</label>
                   <input
                     type="number"
                     value={formData.price_per_night}
@@ -691,7 +693,7 @@ export default function RoomsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Capacity (Guests)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('capacity')}</label>
                   <input
                     type="number"
                     value={formData.capacity}
@@ -704,7 +706,7 @@ export default function RoomsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Size (sqm)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('size')}</label>
                 <input
                   type="number"
                   value={formData.size_sqm}
@@ -715,7 +717,7 @@ export default function RoomsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('description')}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -726,7 +728,7 @@ export default function RoomsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Amenities</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('amenities')}</label>
                 <div className="flex flex-wrap gap-2">
                   {ROOM_AMENITIES.map(amenity => (
                     <button
@@ -753,7 +755,7 @@ export default function RoomsPage() {
                   onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
                   className="w-5 h-5 rounded border-gray-300 text-[#2FB7EC] focus:ring-[#2FB7EC]"
                 />
-                <label htmlFor="is_active" className="text-sm text-gray-700">Room is available for booking</label>
+                <label htmlFor="is_active" className="text-sm text-gray-700">{t('roomAvailable')}</label>
               </div>
 
               <div className="flex gap-3 pt-4">
@@ -762,14 +764,14 @@ export default function RoomsPage() {
                   onClick={() => setShowModal(false)}
                   className="flex-1 px-4 py-3 border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 px-4 py-3 bg-[#2FB7EC] text-white rounded-xl hover:bg-[#26a5d8] transition-colors disabled:opacity-50"
                 >
-                  {saving ? 'Saving...' : (editingRoom ? 'Update Room' : 'Add Room')}
+                  {saving ? t('saving') : (editingRoom ? t('updateRoom') : t('addRoom'))}
                 </button>
               </div>
             </form>
@@ -783,7 +785,7 @@ export default function RoomsPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Room Images</h2>
+                <h2 className="text-xl font-semibold text-gray-900">{t('roomImages')}</h2>
                 <p className="text-sm text-gray-500">{selectedRoom.name}</p>
               </div>
               <button onClick={() => setShowImageModal(false)} className="text-gray-400 hover:text-gray-600">
@@ -812,8 +814,8 @@ export default function RoomsPage() {
                   ) : (
                     <>
                       <HiOutlineUpload size={32} className="text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-500">Click to upload images</span>
-                      <span className="text-xs text-gray-400 mt-1">JPEG, PNG, WebP up to 5MB</span>
+                      <span className="text-sm text-gray-500">{t('clickToUpload')}</span>
+                      <span className="text-xs text-gray-400 mt-1">{t('uploadFormats')}</span>
                     </>
                   )}
                 </label>
@@ -834,8 +836,8 @@ export default function RoomsPage() {
                         }}
                       />
                       {image.is_primary && (
-                        <div className="absolute top-2 left-2 px-2 py-1 bg-[#2FB7EC] text-white text-xs font-medium rounded">
-                          Primary
+                        <div className="absolute top-2 start-2 px-2 py-1 bg-[#2FB7EC] text-white text-xs font-medium rounded">
+                          {t('primary')}
                         </div>
                       )}
                       <button
@@ -850,7 +852,7 @@ export default function RoomsPage() {
               ) : (
                 <div className="text-center py-8">
                   <HiOutlinePhotograph size={48} className="text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-500">No images uploaded yet</p>
+                  <p className="text-gray-500">{t('noImagesYet')}</p>
                 </div>
               )}
             </div>
@@ -864,7 +866,7 @@ export default function RoomsPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">Room Availability</h2>
+                <h2 className="text-xl font-semibold text-gray-900">{t('roomAvailability')}</h2>
                 <p className="text-sm text-gray-500">{selectedRoom.name}</p>
               </div>
               <button onClick={() => setShowAvailabilityModal(false)} className="text-gray-400 hover:text-gray-600">
@@ -896,19 +898,19 @@ export default function RoomsPage() {
               <div className="flex items-center gap-4 mb-4 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
-                  <span className="text-gray-600">Available</span>
+                  <span className="text-gray-600">{t('available')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
-                  <span className="text-gray-600">Blocked</span>
+                  <span className="text-gray-600">{t('blocked')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-blue-100 border border-blue-300 rounded"></div>
-                  <span className="text-gray-600">Booked</span>
+                  <span className="text-gray-600">{t('booked')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-[#2FB7EC] rounded"></div>
-                  <span className="text-gray-600">Selected</span>
+                  <span className="text-gray-600">{t('selected')}</span>
                 </div>
               </div>
 
@@ -965,19 +967,19 @@ export default function RoomsPage() {
                     onClick={handleBlockDates}
                     className="flex-1 py-3 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors"
                   >
-                    Block Selected ({selectedDates.length})
+                    {t('blockSelected', { count: selectedDates.length })}
                   </button>
                   <button
                     onClick={handleUnblockDates}
                     className="flex-1 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
                   >
-                    Unblock Selected ({selectedDates.length})
+                    {t('unblockSelected', { count: selectedDates.length })}
                   </button>
                 </div>
               )}
 
               <p className="mt-4 text-xs text-gray-400 text-center">
-                Click on dates to select them, then use the buttons to block or unblock
+                {t('calendarInstructions')}
               </p>
             </div>
           </div>

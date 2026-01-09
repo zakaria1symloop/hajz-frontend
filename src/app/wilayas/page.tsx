@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { HiOutlineSearch, HiOutlineLocationMarker, HiChevronLeft, HiOutlineEye, HiOutlineEyeOff } from 'react-icons/hi';
 import { IoBedOutline, IoRestaurantOutline, IoCarOutline } from 'react-icons/io5';
 import api from '@/lib/api';
@@ -21,6 +22,7 @@ interface Wilaya {
 }
 
 export default function WilayasPage() {
+  const t = useTranslations('wilayas');
   const [wilayas, setWilayas] = useState<Wilaya[]>([]);
   const [filteredWilayas, setFilteredWilayas] = useState<Wilaya[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,21 +104,21 @@ export default function WilayasPage() {
             href="/"
             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
           >
-            <HiChevronLeft size={20} />
-            Back to Home
+            <HiChevronLeft size={20} className="rtl:rotate-180" />
+            {t('backToHome')}
           </Link>
 
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <HiOutlineLocationMarker size={28} />
-                <span className="text-white/80 font-medium">Explore Algeria</span>
+                <span className="text-white/80 font-medium">{t('title')}</span>
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3">
-                All Wilayas
+                {t('subtitle')}
               </h1>
               <p className="text-white/80 text-lg max-w-xl">
-                Discover hotels, restaurants, and car rentals across all 58 wilayas of Algeria
+                {t('description')}
               </p>
             </div>
 
@@ -128,7 +130,7 @@ export default function WilayasPage() {
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search wilayas..."
+                  placeholder={t('searchPlaceholder')}
                   className="w-full pl-12 pr-4 py-4 rounded-xl bg-white text-gray-800 placeholder-gray-400 outline-none focus:ring-2 focus:ring-white/50 shadow-lg"
                 />
               </div>
@@ -143,7 +145,7 @@ export default function WilayasPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <p className="text-gray-600">
-                Showing <span className="font-semibold text-gray-900">{filteredWilayas.length}</span> wilayas
+                {t('showingWilayas', { count: filteredWilayas.length })}
               </p>
               {emptyWilayasCount > 0 && (
                 <button
@@ -155,22 +157,22 @@ export default function WilayasPage() {
                   }`}
                 >
                   {showEmpty ? <HiOutlineEyeOff size={16} /> : <HiOutlineEye size={16} />}
-                  {showEmpty ? 'Hide' : 'Show'} empty ({emptyWilayasCount})
+                  {showEmpty ? t('hide') : t('show')} {t('empty')} ({emptyWilayasCount})
                 </button>
               )}
             </div>
             <div className="flex items-center gap-6 text-sm text-gray-500">
               <div className="flex items-center gap-2">
                 <IoBedOutline size={18} className="text-[#2FB7EC]" />
-                <span>{totalHotels} Hotels</span>
+                <span>{totalHotels} {t('hotels')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <IoRestaurantOutline size={18} className="text-orange-500" />
-                <span>{totalRestaurants} Restaurants</span>
+                <span>{totalRestaurants} {t('restaurants')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <IoCarOutline size={18} className="text-green-500" />
-                <span>{totalCarRentals} Car Rentals</span>
+                <span>{totalCarRentals} {t('carRentals')}</span>
               </div>
             </div>
           </div>
@@ -186,16 +188,16 @@ export default function WilayasPage() {
         ) : filteredWilayas.length === 0 ? (
           <div className="text-center py-20">
             <HiOutlineLocationMarker size={48} className="text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No wilayas found</h3>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">{t('noWilayasFound')}</h3>
             <p className="text-gray-500">
-              {search ? 'Try adjusting your search term' : 'No wilayas with services available'}
+              {t('tryAdjusting')}
             </p>
             {!showEmpty && emptyWilayasCount > 0 && (
               <button
                 onClick={() => setShowEmpty(true)}
                 className="mt-4 text-[#2FB7EC] font-medium hover:underline"
               >
-                Show all {wilayas.length} wilayas
+                {t('showAll', { count: wilayas.length })}
               </button>
             )}
           </div>
@@ -227,7 +229,7 @@ export default function WilayasPage() {
                 {/* No Services Badge */}
                 {wilaya.total_services_count === 0 && (
                   <div className="absolute top-4 right-4 bg-gray-800/80 text-white px-3 py-1 rounded-full text-xs font-medium">
-                    Coming Soon
+                    {t('comingSoon')}
                   </div>
                 )}
 

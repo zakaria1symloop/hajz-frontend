@@ -8,10 +8,12 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlinePencil, HiOutlineCheck, HiOutlineX, HiOutlinePhotograph, HiOutlinePlus, HiOutlineTrash, HiOutlineStar, HiOutlineLocationMarker, HiOutlineClock, HiOutlinePhone, HiOutlineMail, HiOutlineGlobe } from 'react-icons/hi';
 import { BsBriefcase } from 'react-icons/bs';
+import { useTranslations } from 'next-intl';
 
 export default function MyHotelPage() {
   const router = useRouter();
   const { hotelOwner, hotel, loading, refreshHotel } = useProAuth();
+  const t = useTranslations('proHotel');
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -62,11 +64,11 @@ export default function MyHotelPage() {
       await api.put('/hotel-owner/hotel', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Hotel updated successfully!');
+      toast.success(t('hotelUpdated'));
       await refreshHotel();
       setEditing(false);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update hotel');
+      toast.error(err.response?.data?.message || t('updateFailed'));
     } finally {
       setSaving(false);
     }
@@ -93,15 +95,15 @@ export default function MyHotelPage() {
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-[#2FB7EC] rounded-lg flex items-center justify-center">
                 <BsBriefcase size={16} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">My Hotel</span>
+              <span className="font-semibold text-gray-900">{t('myHotel')}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -114,7 +116,7 @@ export default function MyHotelPage() {
                 className="flex items-center gap-2 px-4 py-2 bg-[#2FB7EC] text-white rounded-lg hover:bg-[#26a5d8] transition-colors"
               >
                 <HiOutlinePencil size={16} />
-                Edit
+                {t('edit')}
               </button>
             )}
           </div>
@@ -167,7 +169,7 @@ export default function MyHotelPage() {
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Description */}
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('description')}</label>
                 {editing ? (
                   <textarea
                     value={formData.description}
@@ -176,13 +178,13 @@ export default function MyHotelPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC] resize-none"
                   />
                 ) : (
-                  <p className="text-gray-600">{hotel.description || 'No description provided'}</p>
+                  <p className="text-gray-600">{hotel.description || t('noDescription')}</p>
                 )}
               </div>
 
               {/* Address */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('address')}</label>
                 {editing ? (
                   <input
                     type="text"
@@ -198,7 +200,7 @@ export default function MyHotelPage() {
               {/* City & State */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('city')}</label>
                   {editing ? (
                     <input
                       type="text"
@@ -211,7 +213,7 @@ export default function MyHotelPage() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('state')}</label>
                   {editing ? (
                     <input
                       type="text"
@@ -229,8 +231,8 @@ export default function MyHotelPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <HiOutlineClock className="inline mr-1" size={16} />
-                    Check-in
+                    <HiOutlineClock className="inline me-1" size={16} />
+                    {t('checkIn')}
                   </label>
                   {editing ? (
                     <input
@@ -245,8 +247,8 @@ export default function MyHotelPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <HiOutlineClock className="inline mr-1" size={16} />
-                    Check-out
+                    <HiOutlineClock className="inline me-1" size={16} />
+                    {t('checkOut')}
                   </label>
                   {editing ? (
                     <input
@@ -264,8 +266,8 @@ export default function MyHotelPage() {
               {/* Contact Info */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <HiOutlinePhone className="inline mr-1" size={16} />
-                  Phone
+                  <HiOutlinePhone className="inline me-1" size={16} />
+                  {t('phone')}
                 </label>
                 {editing ? (
                   <input
@@ -276,14 +278,14 @@ export default function MyHotelPage() {
                     placeholder="+213 XXX XXX XXX"
                   />
                 ) : (
-                  <p className="text-gray-600">{formData.phone || 'Not provided'}</p>
+                  <p className="text-gray-600">{formData.phone || t('notProvided')}</p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <HiOutlineMail className="inline mr-1" size={16} />
-                  Email
+                  <HiOutlineMail className="inline me-1" size={16} />
+                  {t('email')}
                 </label>
                 {editing ? (
                   <input
@@ -293,7 +295,7 @@ export default function MyHotelPage() {
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#2FB7EC]"
                   />
                 ) : (
-                  <p className="text-gray-600">{formData.email || 'Not provided'}</p>
+                  <p className="text-gray-600">{formData.email || t('notProvided')}</p>
                 )}
               </div>
             </div>
@@ -306,17 +308,17 @@ export default function MyHotelPage() {
                   onClick={() => setEditing(false)}
                   className="px-6 py-2.5 text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex items-center gap-2 px-6 py-2.5 bg-[#2FB7EC] text-white rounded-lg hover:bg-[#26a5d8] transition-colors disabled:opacity-50"
                 >
-                  {saving ? 'Saving...' : (
+                  {saving ? t('saving') : (
                     <>
                       <HiOutlineCheck size={18} />
-                      Save Changes
+                      {t('saveChanges')}
                     </>
                   )}
                 </button>
@@ -333,8 +335,8 @@ export default function MyHotelPage() {
               <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                 <HiOutlinePlus size={24} className="text-blue-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Manage Rooms</h3>
-              <p className="text-sm text-gray-500">Add, edit or remove rooms</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('manageRooms')}</h3>
+              <p className="text-sm text-gray-500">{t('addEditRooms')}</p>
             </Link>
 
             <Link
@@ -344,8 +346,8 @@ export default function MyHotelPage() {
               <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
                 <HiOutlineCheck size={24} className="text-green-600" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">View Reservations</h3>
-              <p className="text-sm text-gray-500">Manage bookings</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('viewReservations')}</h3>
+              <p className="text-sm text-gray-500">{t('manageBookings')}</p>
             </Link>
 
             <Link
@@ -355,8 +357,8 @@ export default function MyHotelPage() {
               <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
                 <span className="text-purple-600 font-bold">DZD</span>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Wallet</h3>
-              <p className="text-sm text-gray-500">View earnings & withdraw</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('wallet')}</h3>
+              <p className="text-sm text-gray-500">{t('viewEarnings')}</p>
             </Link>
           </div>
         </form>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit } from "next/font/google";
+import { Outfit, Changa } from "next/font/google";
 import "./globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages } from 'next-intl/server';
@@ -8,6 +8,7 @@ import LayoutWrapper from "@/components/LayoutWrapper";
 import ToastProvider from "@/components/ToastProvider";
 
 const outfit = Outfit({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const changa = Changa({ subsets: ["arabic"], weight: ["400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
   title: "Hajz - Book Hotels, Flights & Restaurants",
@@ -25,7 +26,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={isRTL ? 'rtl' : 'ltr'}>
-      <body className={`${outfit.className} antialiased bg-white`}>
+      <body className={`${isRTL ? changa.className : outfit.className} antialiased bg-white`}>
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <ToastProvider />

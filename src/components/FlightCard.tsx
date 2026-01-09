@@ -92,7 +92,7 @@ export default function FlightCard({ flight }: FlightCardProps) {
             </div>
             <button className="bg-amber-500 group-hover:bg-amber-600 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-amber-500/30">
               {t('bookFlight')}
-              <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              <ArrowRight size={18} className="rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>
         </div>

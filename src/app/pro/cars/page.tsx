@@ -8,6 +8,7 @@ import api from '@/lib/api';
 import toast from 'react-hot-toast';
 import { HiOutlineArrowLeft, HiOutlinePlus, HiOutlinePencil, HiOutlineTrash, HiOutlinePhotograph, HiOutlineStar, HiOutlineCheck, HiOutlineX } from 'react-icons/hi';
 import { FaCar } from 'react-icons/fa';
+import { useTranslations } from 'next-intl';
 
 interface CarImage {
   id: number;
@@ -45,6 +46,7 @@ const fuelTypes = ['gasoline', 'diesel', 'electric', 'hybrid'];
 export default function CarsManagementPage() {
   const router = useRouter();
   const { companyOwner, company, loading, businessType } = useProAuth();
+  const t = useTranslations('proCars');
   const [cars, setCars] = useState<Car[]>([]);
   const [loadingCars, setLoadingCars] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -168,36 +170,36 @@ export default function CarsManagementPage() {
         await api.put(`/company-owner/cars/${editingCar.id}`, data, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Car updated successfully!');
+        toast.success(t('carUpdated'));
       } else {
         await api.post('/company-owner/cars', data, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        toast.success('Car added successfully!');
+        toast.success(t('carCreated'));
       }
 
       fetchCars();
       setShowAddModal(false);
       resetForm();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to save car');
+      toast.error(err.response?.data?.message || t('saveFailed'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (carId: number) => {
-    if (!confirm('Are you sure you want to delete this car?')) return;
+    if (!confirm(t('confirmDelete'))) return;
 
     try {
       const token = localStorage.getItem('pro_token');
       await api.delete(`/company-owner/cars/${carId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Car deleted successfully!');
+      toast.success(t('carDeleted'));
       fetchCars();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete car');
+      toast.error(err.response?.data?.message || t('deleteFailed'));
     }
   };
 
@@ -207,10 +209,10 @@ export default function CarsManagementPage() {
       await api.post(`/company-owner/cars/${carId}/toggle-availability`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Availability updated!');
+      toast.success(t('availabilityUpdated'));
       fetchCars();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to update availability');
+      toast.error(err.response?.data?.message || t('availabilityFailed'));
     }
   };
 
@@ -233,10 +235,10 @@ export default function CarsManagementPage() {
         }
       });
 
-      toast.success('Images uploaded successfully!');
+      toast.success(t('imagesUploaded'));
       fetchCars();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to upload images');
+      toast.error(err.response?.data?.message || t('uploadFailed'));
     } finally {
       setUploadingImages(false);
     }
@@ -248,10 +250,10 @@ export default function CarsManagementPage() {
       await api.delete(`/company-owner/cars/${carId}/images/${imageId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Image deleted');
+      toast.success(t('imageDeleted'));
       fetchCars();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to delete image');
+      toast.error(err.response?.data?.message || t('deleteImageFailed'));
     }
   };
 
@@ -261,10 +263,10 @@ export default function CarsManagementPage() {
       await api.put(`/company-owner/cars/${carId}/images/${imageId}/primary`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      toast.success('Primary image updated');
+      toast.success(t('primaryUpdated'));
       fetchCars();
     } catch (err: any) {
-      toast.error(err.response?.data?.message || 'Failed to set primary image');
+      toast.error(err.response?.data?.message || t('setPrimaryFailed'));
     }
   };
 
@@ -288,16 +290,16 @@ export default function CarsManagementPage() {
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors">
-              <HiOutlineArrowLeft size={20} />
-              Dashboard
+            <Link href="/pro/dashboard" className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors rtl:flex-row-reverse">
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
+              {t('dashboard')}
             </Link>
             <div className="w-px h-6 bg-gray-200" />
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
                 <FaCar size={14} className="text-white" />
               </div>
-              <span className="font-semibold text-gray-900">Cars Management</span>
+              <span className="font-semibold text-gray-900">{t('carsManagement')}</span>
             </div>
           </div>
           <button
@@ -305,7 +307,7 @@ export default function CarsManagementPage() {
             className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
           >
             <HiOutlinePlus size={18} />
-            Add Car
+            {t('addCar')}
           </button>
         </div>
       </header>
@@ -318,14 +320,14 @@ export default function CarsManagementPage() {
         ) : cars.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
             <FaCar size={56} className="mx-auto text-gray-300 mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Cars Yet</h3>
-            <p className="text-gray-500 mb-6">Add your first car to start receiving bookings</p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noCarsYet')}</h3>
+            <p className="text-gray-500 mb-6">{t('noCarsDesc')}</p>
             <button
               onClick={() => setShowAddModal(true)}
               className="inline-flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
             >
               <HiOutlinePlus size={20} />
-              Add Your First Car
+              {t('addFirstCar')}
             </button>
           </div>
         ) : (
@@ -346,10 +348,10 @@ export default function CarsManagementPage() {
                     </div>
                   )}
                   {/* Status Badge */}
-                  <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium ${
+                  <div className={`absolute top-3 end-3 px-3 py-1 rounded-full text-xs font-medium ${
                     car.is_available ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
                   }`}>
-                    {car.is_available ? 'Available' : 'Not Available'}
+                    {car.is_available ? t('available') : t('notAvailable')}
                   </div>
                 </div>
 
@@ -359,16 +361,16 @@ export default function CarsManagementPage() {
                     {car.brand} {car.model}
                   </h3>
                   <p className="text-gray-500 text-sm mb-3">
-                    {car.year} • {car.type} • {car.transmission} • {car.seats} seats
+                    {car.year} • {t(`carTypes.${car.type}`)} • {t(`transmissions.${car.transmission}`)} • {car.seats} {t('seats').replace(' *', '')}
                   </p>
 
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <span className="text-xl font-bold text-green-600">{car.price_per_day.toLocaleString()}</span>
-                      <span className="text-gray-500 text-sm ml-1">DZD/day</span>
+                      <span className="text-gray-500 text-sm ms-1">{t('dzdDay')}</span>
                     </div>
                     {car.mileage_limit && (
-                      <span className="text-sm text-gray-500">{car.mileage_limit} km/day</span>
+                      <span className="text-sm text-gray-500">{car.mileage_limit} {t('kmDay')}</span>
                     )}
                   </div>
 
@@ -382,7 +384,7 @@ export default function CarsManagementPage() {
                           : 'bg-green-50 text-green-600 hover:bg-green-100'
                       }`}
                     >
-                      {car.is_available ? 'Set Unavailable' : 'Set Available'}
+                      {car.is_available ? t('setUnavailable') : t('setAvailable')}
                     </button>
                     <button
                       onClick={() => handleEdit(car)}
@@ -416,7 +418,7 @@ export default function CarsManagementPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
               <h2 className="text-xl font-bold text-gray-900">
-                {editingCar ? 'Edit Car' : 'Add New Car'}
+                {editingCar ? t('editCar') : t('addNewCar')}
               </h2>
               <button
                 onClick={() => { setShowAddModal(false); resetForm(); }}
@@ -430,24 +432,24 @@ export default function CarsManagementPage() {
               {/* Brand & Model */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Brand *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('brand')}</label>
                   <input
                     type="text"
                     value={formData.brand}
                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Toyota, BMW, etc."
+                    placeholder={t('brandPlaceholder')}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Model *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('model')}</label>
                   <input
                     type="text"
                     value={formData.model}
                     onChange={(e) => setFormData({ ...formData, model: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Corolla, X5, etc."
+                    placeholder={t('modelPlaceholder')}
                     required
                   />
                 </div>
@@ -456,7 +458,7 @@ export default function CarsManagementPage() {
               {/* Year & Type */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Year *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('year')}</label>
                   <input
                     type="number"
                     value={formData.year}
@@ -468,7 +470,7 @@ export default function CarsManagementPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Type *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('type')}</label>
                   <select
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
@@ -476,7 +478,7 @@ export default function CarsManagementPage() {
                     required
                   >
                     {carTypes.map((type) => (
-                      <option key={type} value={type} className="capitalize">{type}</option>
+                      <option key={type} value={type}>{t(`carTypes.${type}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -485,20 +487,20 @@ export default function CarsManagementPage() {
               {/* Transmission & Fuel */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Transmission *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('transmission')}</label>
                   <select
                     value={formData.transmission}
                     onChange={(e) => setFormData({ ...formData, transmission: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
                     required
                   >
-                    {transmissions.map((t) => (
-                      <option key={t} value={t} className="capitalize">{t}</option>
+                    {transmissions.map((trans) => (
+                      <option key={trans} value={trans}>{t(`transmissions.${trans}`)}</option>
                     ))}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Fuel Type *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('fuelType')}</label>
                   <select
                     value={formData.fuel_type}
                     onChange={(e) => setFormData({ ...formData, fuel_type: e.target.value })}
@@ -506,7 +508,7 @@ export default function CarsManagementPage() {
                     required
                   >
                     {fuelTypes.map((f) => (
-                      <option key={f} value={f} className="capitalize">{f}</option>
+                      <option key={f} value={f}>{t(`fuelTypes.${f}`)}</option>
                     ))}
                   </select>
                 </div>
@@ -515,7 +517,7 @@ export default function CarsManagementPage() {
               {/* Seats & Doors */}
               <div className="grid grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Seats *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('seats')}</label>
                   <input
                     type="number"
                     value={formData.seats}
@@ -527,7 +529,7 @@ export default function CarsManagementPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Doors *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('doors')}</label>
                   <input
                     type="number"
                     value={formData.doors}
@@ -539,23 +541,23 @@ export default function CarsManagementPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('color')}</label>
                   <input
                     type="text"
                     value={formData.color}
                     onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Black"
+                    placeholder={t('colorPlaceholder')}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Plate</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('plate')}</label>
                   <input
                     type="text"
                     value={formData.license_plate}
                     onChange={(e) => setFormData({ ...formData, license_plate: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="XXX-XXX"
+                    placeholder={t('platePlaceholder')}
                   />
                 </div>
               </div>
@@ -563,7 +565,7 @@ export default function CarsManagementPage() {
               {/* Pricing */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price per Day (DZD) *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('pricePerDay')}</label>
                   <input
                     type="number"
                     value={formData.price_per_day}
@@ -574,7 +576,7 @@ export default function CarsManagementPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Deposit (DZD)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('deposit')}</label>
                   <input
                     type="number"
                     value={formData.deposit_amount}
@@ -588,24 +590,24 @@ export default function CarsManagementPage() {
               {/* Mileage */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Mileage Limit (km/day)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('mileageLimit')}</label>
                   <input
                     type="number"
                     value={formData.mileage_limit}
                     onChange={(e) => setFormData({ ...formData, mileage_limit: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Leave empty for unlimited"
+                    placeholder={t('mileageLimitPlaceholder')}
                     min="0"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Extra KM Price (DZD)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('extraKmPrice')}</label>
                   <input
                     type="number"
                     value={formData.extra_km_price}
                     onChange={(e) => setFormData({ ...formData, extra_km_price: e.target.value })}
                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Price per extra km"
+                    placeholder={t('extraKmPricePlaceholder')}
                     min="0"
                   />
                 </div>
@@ -614,7 +616,7 @@ export default function CarsManagementPage() {
               {/* Rental Days */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Min Rental Days</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('minRentalDays')}</label>
                   <input
                     type="number"
                     value={formData.min_rental_days}
@@ -624,7 +626,7 @@ export default function CarsManagementPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Max Rental Days</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t('maxRentalDays')}</label>
                   <input
                     type="number"
                     value={formData.max_rental_days}
@@ -637,13 +639,13 @@ export default function CarsManagementPage() {
 
               {/* Features */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Features (comma separated)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('features')}</label>
                 <input
                   type="text"
                   value={formData.features}
                   onChange={(e) => setFormData({ ...formData, features: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="AC, GPS, Bluetooth, etc."
+                  placeholder={t('featuresPlaceholder')}
                 />
               </div>
 
@@ -654,17 +656,17 @@ export default function CarsManagementPage() {
                   onClick={() => { setShowAddModal(false); resetForm(); }}
                   className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
                 >
-                  {saving ? 'Saving...' : (
+                  {saving ? t('saving') : (
                     <>
                       <HiOutlineCheck size={18} />
-                      {editingCar ? 'Update Car' : 'Add Car'}
+                      {editingCar ? t('updateCar') : t('addCar')}
                     </>
                   )}
                 </button>
@@ -680,7 +682,7 @@ export default function CarsManagementPage() {
           <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white">
               <h2 className="text-xl font-bold text-gray-900">
-                {selectedCar.brand} {selectedCar.model} - Images
+                {selectedCar.brand} {selectedCar.model} - {t('images')}
               </h2>
               <button
                 onClick={() => setSelectedCar(null)}
@@ -708,12 +710,12 @@ export default function CarsManagementPage() {
                   {uploadingImages ? (
                     <>
                       <div className="animate-spin rounded-full h-5 w-5 border-2 border-green-500 border-t-transparent"></div>
-                      Uploading...
+                      {t('uploading')}
                     </>
                   ) : (
                     <>
                       <HiOutlinePlus size={20} />
-                      Add Images
+                      {t('addImages')}
                     </>
                   )}
                 </label>
@@ -730,9 +732,9 @@ export default function CarsManagementPage() {
                         className="w-full h-full object-cover"
                       />
                       {image.is_primary && (
-                        <div className="absolute top-2 left-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full flex items-center gap-1">
+                        <div className="absolute top-2 start-2 px-2 py-1 bg-green-500 text-white text-xs rounded-full flex items-center gap-1">
                           <HiOutlineStar size={12} />
-                          Primary
+                          {t('primary')}
                         </div>
                       )}
                       <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
@@ -740,7 +742,6 @@ export default function CarsManagementPage() {
                           <button
                             onClick={() => handleSetPrimaryImage(selectedCar.id, image.id)}
                             className="p-2 bg-white rounded-full hover:bg-green-100 transition-colors"
-                            title="Set as primary"
                           >
                             <HiOutlineStar size={18} className="text-green-500" />
                           </button>
@@ -748,7 +749,6 @@ export default function CarsManagementPage() {
                         <button
                           onClick={() => handleDeleteImage(selectedCar.id, image.id)}
                           className="p-2 bg-white rounded-full hover:bg-red-100 transition-colors"
-                          title="Delete image"
                         >
                           <HiOutlineTrash size={18} className="text-red-500" />
                         </button>
@@ -759,7 +759,7 @@ export default function CarsManagementPage() {
               ) : (
                 <div className="text-center py-12 bg-gray-50 rounded-xl">
                   <HiOutlinePhotograph size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500">No images uploaded yet</p>
+                  <p className="text-gray-500">{t('noImagesYet')}</p>
                 </div>
               )}
             </div>
