@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
@@ -90,11 +91,16 @@ export default function Header() {
             {/* Logo */}
             <Link
               href="/"
-              className={`text-2xl font-extrabold tracking-tight transition-all duration-500 hover:scale-105 ${
-                !isFloatingHeader || useScrolledStyle ? 'text-[#2FB7EC]' : 'text-white'
-              }`}
+              className="transition-all duration-500 hover:scale-105"
             >
-              <span className="inline-block animate-fadeIn">Hajz</span>
+              <Image
+                src={!isFloatingHeader || useScrolledStyle ? '/images/Hajz.png' : '/images/Hajz-Ice-White.png'}
+                alt="Hajz"
+                width={80}
+                height={32}
+                className="h-8 w-auto object-contain"
+                priority
+              />
             </Link>
 
             {/* Right Side */}

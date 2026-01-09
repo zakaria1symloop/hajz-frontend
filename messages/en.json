@@ -433,7 +433,12 @@
     "orContinueWith": "Or continue with",
     "orSignUpWithEmail": "Or sign up with email",
     "signUpWith": "Sign up with",
-    "google": "Google"
+    "google": "Google",
+    "acceptTermsText": "I agree to the",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
+    "and": "and",
+    "acceptTermsRequired": "You must accept the terms and privacy policy to continue"
   },
   "reservations": {
     "title": "My Reservations",
@@ -507,17 +512,21 @@
     "languageChanged": "Language changed"
   },
   "footer": {
-    "description": "Your trusted partner for booking hotels, flights, and restaurants across Algeria and beyond.",
+    "description": "Simplifying planning and booking by providing diverse options and competitive prices.",
+    "vision": "Our long-term goal: We aim to develop innovative solutions that make travel an immersive and personalized experience, while continuing to build strong partnerships with service providers to deliver the best services, expand our offerings to meet all traveler needs, and achieve leadership in the Algerian tourism sector.",
     "quickLinks": "Quick Links",
-    "support": "Support",
-    "helpCenter": "Help Center",
-    "terms": "Terms of Service",
-    "privacy": "Privacy Policy",
-    "cancellation": "Cancellation Policy",
+    "hotels": "Hotels",
+    "restaurants": "Restaurants",
+    "carRentals": "Car Rentals",
+    "destinations": "Destinations",
+    "legal": "Legal",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
     "contactUs": "Contact Us",
+    "address": "Algeria",
     "rights": "All rights reserved.",
-    "aboutUs": "About Us",
-    "faq": "FAQ"
+    "madeWith": "Made with",
+    "inAlgeria": "in Algeria"
   },
   "profile": {
     "title": "My Profile",
@@ -1641,5 +1650,45 @@
     "Hotel": "Hotel",
     "Company": "Company",
     "Restaurant": "Restaurant"
+  },
+  "pages": {
+    "backToHome": "Back to Home",
+    "termsOfUse": "Terms of Use",
+    "privacyPolicy": "Privacy Policy",
+    "lastUpdated": "Last updated",
+    "terms": {
+      "acceptance": "Acceptance of Terms",
+      "acceptanceText": "By accessing and using the Hajz platform, you agree to be bound by these Terms of Use and all applicable laws and regulations. If you do not agree with any of these terms, you are prohibited from using or accessing this site.",
+      "services": "Our Services",
+      "servicesText": "Hajz provides a platform for booking hotels, restaurants, and car rentals across Algeria. We act as an intermediary between users and service providers, facilitating the booking process.",
+      "userAccount": "User Account",
+      "userAccountText": "To use certain features of our platform, you must create an account. You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.",
+      "booking": "Booking and Reservations",
+      "bookingText": "All bookings made through Hajz are subject to availability and confirmation by the service provider. Prices displayed are subject to change until a booking is confirmed.",
+      "payment": "Payment",
+      "paymentText": "Payments are processed securely through our payment partners (Chargily Pay). By making a payment, you authorize us to charge your selected payment method for the total amount of your booking.",
+      "cancellation": "Cancellation Policy",
+      "cancellationText": "Cancellation policies vary by service provider. Please review the specific cancellation policy before completing your booking. Refunds, if applicable, will be processed according to the provider's policy.",
+      "liability": "Limitation of Liability",
+      "liabilityText": "Hajz is not liable for any direct, indirect, incidental, or consequential damages arising from your use of our platform or services booked through our platform.",
+      "contact": "Contact Us",
+      "contactText": "If you have any questions about these Terms of Use, please contact us at support@hajz.dz"
+    },
+    "privacy": {
+      "dataCollection": "Data Collection",
+      "dataCollectionText": "We collect personal information that you provide directly to us, including your name, email address, phone number, and payment information. We also collect information about your usage of our platform.",
+      "dataUsage": "How We Use Your Data",
+      "dataUsageText": "We use your personal information to process bookings, communicate with you about your reservations, improve our services, and send you marketing communications (with your consent).",
+      "dataProtection": "Data Protection",
+      "dataProtectionText": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction.",
+      "cookies": "Cookies",
+      "cookiesText": "We use cookies and similar technologies to enhance your experience on our platform, analyze usage patterns, and deliver personalized content and advertisements.",
+      "thirdParty": "Third-Party Services",
+      "thirdPartyText": "We may share your information with service providers (hotels, restaurants, car rental companies) to fulfill your bookings. We also use third-party payment processors to handle transactions securely.",
+      "userRights": "Your Rights",
+      "userRightsText": "You have the right to access, correct, or delete your personal information. You can also object to certain processing activities and request data portability.",
+      "contact": "Contact Us",
+      "contactText": "For any privacy-related inquiries, please contact us at privacy@hajz.dz"
+    }
   }
 }

@@ -429,7 +429,12 @@
     "orContinueWith": "Ou continuer avec",
     "orSignUpWithEmail": "Ou inscrivez-vous avec email",
     "signUpWith": "S'inscrire avec",
-    "google": "Google"
+    "google": "Google",
+    "acceptTermsText": "J'accepte les",
+    "termsOfUse": "Conditions d'Utilisation",
+    "privacyPolicy": "Politique de Confidentialité",
+    "and": "et",
+    "acceptTermsRequired": "Vous devez accepter les conditions et la politique de confidentialité pour continuer"
   },
   "reservations": {
     "title": "Mes Réservations",
@@ -503,17 +508,21 @@
     "languageChanged": "Langue changée"
   },
   "footer": {
-    "description": "Votre partenaire de confiance pour réserver hôtels, vols et restaurants à travers l'Algérie.",
+    "description": "Simplifier la planification et la réservation en offrant des options diverses et des prix compétitifs.",
+    "vision": "Notre objectif à long terme : Nous visons à développer des solutions innovantes qui font du voyage une expérience immersive et personnalisée, tout en continuant à construire des partenariats solides avec les prestataires de services pour offrir les meilleurs services, élargir nos offres pour répondre à tous les besoins des voyageurs, et atteindre le leadership dans le secteur touristique algérien.",
     "quickLinks": "Liens Rapides",
-    "support": "Support",
-    "helpCenter": "Centre d'Aide",
-    "terms": "Conditions d'Utilisation",
-    "privacy": "Politique de Confidentialité",
-    "cancellation": "Politique d'Annulation",
+    "hotels": "Hôtels",
+    "restaurants": "Restaurants",
+    "carRentals": "Location de Voitures",
+    "destinations": "Destinations",
+    "legal": "Légal",
+    "termsOfUse": "Conditions d'Utilisation",
+    "privacyPolicy": "Politique de Confidentialité",
     "contactUs": "Nous Contacter",
+    "address": "Algérie",
     "rights": "Tous droits réservés.",
-    "aboutUs": "À Propos",
-    "faq": "FAQ"
+    "madeWith": "Fait avec",
+    "inAlgeria": "en Algérie"
   },
   "profile": {
     "title": "Mon Profil",
@@ -1638,5 +1647,45 @@
     "Hotel": "Hôtel",
     "Company": "Entreprise",
     "Restaurant": "Restaurant"
+  },
+  "pages": {
+    "backToHome": "Retour à l'accueil",
+    "termsOfUse": "Conditions d'Utilisation",
+    "privacyPolicy": "Politique de Confidentialité",
+    "lastUpdated": "Dernière mise à jour",
+    "terms": {
+      "acceptance": "Acceptation des Conditions",
+      "acceptanceText": "En accédant et en utilisant la plateforme Hajz, vous acceptez d'être lié par ces Conditions d'Utilisation et toutes les lois et réglementations applicables. Si vous n'acceptez pas l'une de ces conditions, il vous est interdit d'utiliser ou d'accéder à ce site.",
+      "services": "Nos Services",
+      "servicesText": "Hajz fournit une plateforme de réservation d'hôtels, de restaurants et de locations de voitures à travers l'Algérie. Nous agissons comme intermédiaire entre les utilisateurs et les prestataires de services, facilitant le processus de réservation.",
+      "userAccount": "Compte Utilisateur",
+      "userAccountText": "Pour utiliser certaines fonctionnalités de notre plateforme, vous devez créer un compte. Vous êtes responsable du maintien de la confidentialité des informations de votre compte et de toutes les activités qui se produisent sous votre compte.",
+      "booking": "Réservation",
+      "bookingText": "Toutes les réservations effectuées via Hajz sont soumises à la disponibilité et à la confirmation par le prestataire de services. Les prix affichés sont susceptibles de changer jusqu'à ce qu'une réservation soit confirmée.",
+      "payment": "Paiement",
+      "paymentText": "Les paiements sont traités de manière sécurisée par nos partenaires de paiement (Chargily Pay). En effectuant un paiement, vous nous autorisez à débiter le montant total de votre réservation sur le mode de paiement sélectionné.",
+      "cancellation": "Politique d'Annulation",
+      "cancellationText": "Les politiques d'annulation varient selon le prestataire de services. Veuillez consulter la politique d'annulation spécifique avant de finaliser votre réservation. Les remboursements, le cas échéant, seront traités conformément à la politique du prestataire.",
+      "liability": "Limitation de Responsabilité",
+      "liabilityText": "Hajz n'est pas responsable des dommages directs, indirects, accessoires ou consécutifs résultant de votre utilisation de notre plateforme ou des services réservés via notre plateforme.",
+      "contact": "Contactez-nous",
+      "contactText": "Si vous avez des questions concernant ces Conditions d'Utilisation, veuillez nous contacter à support@hajz.dz"
+    },
+    "privacy": {
+      "dataCollection": "Collecte de Données",
+      "dataCollectionText": "Nous collectons les informations personnelles que vous nous fournissez directement, y compris votre nom, adresse e-mail, numéro de téléphone et informations de paiement. Nous collectons également des informations sur votre utilisation de notre plateforme.",
+      "dataUsage": "Utilisation de Vos Données",
+      "dataUsageText": "Nous utilisons vos informations personnelles pour traiter les réservations, communiquer avec vous concernant vos réservations, améliorer nos services et vous envoyer des communications marketing (avec votre consentement).",
+      "dataProtection": "Protection des Données",
+      "dataProtectionText": "Nous mettons en œuvre des mesures techniques et organisationnelles appropriées pour protéger vos informations personnelles contre tout accès, modification, divulgation ou destruction non autorisés.",
+      "cookies": "Cookies",
+      "cookiesText": "Nous utilisons des cookies et des technologies similaires pour améliorer votre expérience sur notre plateforme, analyser les tendances d'utilisation et diffuser du contenu et des publicités personnalisés.",
+      "thirdParty": "Services Tiers",
+      "thirdPartyText": "Nous pouvons partager vos informations avec des prestataires de services (hôtels, restaurants, sociétés de location de voitures) pour exécuter vos réservations. Nous utilisons également des processeurs de paiement tiers pour gérer les transactions de manière sécurisée.",
+      "userRights": "Vos Droits",
+      "userRightsText": "Vous avez le droit d'accéder, de corriger ou de supprimer vos informations personnelles. Vous pouvez également vous opposer à certaines activités de traitement et demander la portabilité des données.",
+      "contact": "Contactez-nous",
+      "contactText": "Pour toute question relative à la confidentialité, veuillez nous contacter à privacy@hajz.dz"
+    }
   }
 }

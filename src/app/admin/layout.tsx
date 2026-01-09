@@ -82,7 +82,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   if (isLoginPage) {
-    return <>{children}</>;
+    return <div dir="ltr">{children}</div>;
   }
 
   if (loading) {
@@ -122,7 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const isBookingsActive = pathname.startsWith('/admin/bookings');
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" dir="ltr">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div

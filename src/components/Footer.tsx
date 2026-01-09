@@ -1,14 +1,132 @@
 'use client';
 
+import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
+import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from 'react-icons/hi';
+import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
 
 export default function Footer() {
   const t = useTranslations('footer');
 
   return (
-    <footer className="bg-white border-t border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 py-4 text-center">
-        <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Hajz. {t('rights')}</p>
+    <footer className="bg-gray-900 text-white">
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand & Description */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="inline-block mb-4">
+              <Image
+                src="/images/Hajz-Ice-White.png"
+                alt="Hajz"
+                width={100}
+                height={40}
+                className="h-10 w-auto"
+              />
+            </Link>
+            <p className="text-gray-400 text-sm leading-relaxed mb-4">
+              {t('description')}
+            </p>
+            <p className="text-gray-400 text-sm leading-relaxed">
+              {t('vision')}
+            </p>
+
+            {/* Social Links */}
+            <div className="flex gap-4 mt-6">
+              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                <FaFacebook size={20} />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                <FaInstagram size={20} />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                <FaTwitter size={20} />
+              </a>
+              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                <FaLinkedin size={20} />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-white font-semibold mb-4">{t('quickLinks')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/explore?type=hotels" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('hotels')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/explore?type=restaurants" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('restaurants')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/explore?type=cars" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('carRentals')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/wilayas" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('destinations')}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Legal & Contact */}
+          <div>
+            <h3 className="text-white font-semibold mb-4">{t('legal')}</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/terms" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('termsOfUse')}
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('privacyPolicy')}
+                </Link>
+              </li>
+            </ul>
+
+            <h3 className="text-white font-semibold mb-4 mt-6">{t('contactUs')}</h3>
+            <ul className="space-y-2">
+              <li className="flex items-center gap-2 text-gray-400 text-sm">
+                <HiOutlineMail size={16} className="text-[#2FB7EC]" />
+                <a href="mailto:contact@hajz.dz" className="hover:text-[#2FB7EC] transition-colors">
+                  contact@hajz.dz
+                </a>
+              </li>
+              <li className="flex items-center gap-2 text-gray-400 text-sm">
+                <HiOutlinePhone size={16} className="text-[#2FB7EC]" />
+                <a href="tel:+213123456789" className="hover:text-[#2FB7EC] transition-colors" dir="ltr">
+                  +213 123 456 789
+                </a>
+              </li>
+              <li className="flex items-start gap-2 text-gray-400 text-sm">
+                <HiOutlineLocationMarker size={16} className="text-[#2FB7EC] flex-shrink-0 mt-0.5" />
+                <span>{t('address')}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-2">
+            <p className="text-gray-500 text-sm">
+              &copy; {new Date().getFullYear()} Hajz. {t('rights')}
+            </p>
+            <p className="text-gray-500 text-sm">
+              {t('madeWith')} <span className="text-red-500">♥</span> {t('inAlgeria')}
+            </p>
+          </div>
+        </div>
       </div>
     </footer>
   );

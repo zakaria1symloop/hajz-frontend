@@ -266,7 +266,7 @@ export default function Home() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
       return `${baseUrl}/storage/${img.image_path}`;
     }
-    return 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80';
+    return null; // Return null for placeholder
   };
 
   const getRestaurantImage = (restaurant: Restaurant) => {
@@ -278,7 +278,7 @@ export default function Home() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
       return `${baseUrl}/storage/${img.image_path}`;
     }
-    return 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80';
+    return null; // Return null for placeholder
   };
 
   const formatTime = (time?: string) => {
@@ -320,7 +320,7 @@ export default function Home() {
       const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
       return `${baseUrl}/storage/${img.image_path}`;
     }
-    return 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80';
+    return null; // Return null for placeholder
   };
 
   const handleSearch = () => {
@@ -866,12 +866,18 @@ export default function Home() {
                   className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#2FB7EC]/30 hover:shadow-xl transition-all duration-300 cursor-pointer"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getHotelImage(hotel)}
-                      alt={hotel.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    {getHotelImage(hotel) ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={getHotelImage(hotel)!}
+                        alt={hotel.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                        <Image src="/images/Hajz.png" alt="Hajz" width={100} height={40} className="opacity-30" />
+                      </div>
+                    )}
                     <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg">
                       {Array.from({ length: hotel.star_rating || 3 }).map((_, i) => (
                         <IoStarSharp key={i} size={12} className="text-yellow-400" />
@@ -977,12 +983,18 @@ export default function Home() {
                   className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all duration-500 cursor-pointer"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getRestaurantImage(restaurant)}
-                      alt={restaurant.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    {getRestaurantImage(restaurant) ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={getRestaurantImage(restaurant)!}
+                        alt={restaurant.name}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
+                        <Image src="/images/Hajz.png" alt="Hajz" width={100} height={40} className="opacity-30" />
+                      </div>
+                    )}
                     <div className="absolute top-3 left-3 bg-orange-500 text-white px-3 py-1 rounded-lg text-xs font-semibold">
                       {restaurant.cuisine_type}
                     </div>
@@ -1093,12 +1105,18 @@ export default function Home() {
                   className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={getCarRentalImage(carRental)}
-                      alt={carRental.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
+                    {getCarRentalImage(carRental) ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={getCarRentalImage(carRental)!}
+                        alt={carRental.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
+                        <Image src="/images/Hajz.png" alt="Hajz" width={100} height={40} className="opacity-30" />
+                      </div>
+                    )}
                     {carRental.cars_count !== undefined && carRental.cars_count > 0 && (
                       <div className="absolute top-3 left-3 bg-green-500 text-white px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1">
                         <IoCarOutline size={14} />

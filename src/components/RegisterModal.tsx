@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { HiOutlineX, HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone } from 'react-icons/hi';
 import { FcGoogle } from 'react-icons/fc';
@@ -28,6 +29,7 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
   });
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [acceptTerms, setAcceptTerms] = useState(false);
 
   const handleGoogleSignup = async () => {
     setGoogleLoading(true);
@@ -45,6 +47,11 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
 
     if (formData.password !== formData.password_confirmation) {
       toast.error(tToast('passwordMismatch'));
+      return;
+    }
+
+    if (!acceptTerms) {
+      toast.error(t('acceptTermsRequired'));
       return;
     }
 
@@ -204,6 +211,27 @@ export default function RegisterModal({ isOpen, onClose, onSwitchToLogin }: Regi
                   required
                 />
               </div>
+            </div>
+
+            {/* Terms & Conditions */}
+            <div className="flex items-start gap-3 py-2">
+              <input
+                type="checkbox"
+                id="acceptTerms"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                className="mt-1 h-4 w-4 text-[#2FB7EC] border-gray-300 rounded focus:ring-[#2FB7EC]"
+              />
+              <label htmlFor="acceptTerms" className="text-sm text-gray-600">
+                {t('acceptTermsText')}{' '}
+                <Link href="/terms" target="_blank" className="text-[#2FB7EC] hover:underline font-medium">
+                  {t('termsOfUse')}
+                </Link>
+                {' '}{t('and')}{' '}
+                <Link href="/privacy" target="_blank" className="text-[#2FB7EC] hover:underline font-medium">
+                  {t('privacyPolicy')}
+                </Link>
+              </label>
             </div>
 
             {/* Submit */}
