@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import LoginModal from '@/components/LoginModal';
+import RegisterModal from '@/components/RegisterModal';
 
 interface Restaurant {
   id: number;
@@ -115,6 +117,10 @@ export default function RestaurantDetailsPage() {
   // Food selection
   const [selectedPlats, setSelectedPlats] = useState<SelectedPlat[]>([]);
   const [showFoodModal, setShowFoodModal] = useState(false);
+
+  // Auth modals
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   // Active menu category
   const [activeCategory, setActiveCategory] = useState<string>('');
@@ -964,7 +970,7 @@ export default function RestaurantDetailsPage() {
                 <p className="text-center text-sm text-gray-500 mt-4">
                   {t('alreadyHaveAccount')}{' '}
                   <button
-                    onClick={() => router.push('/login')}
+                    onClick={() => setShowLoginModal(true)}
                     className="text-orange-500 hover:underline"
                   >
                     {t('signIn')}
@@ -1049,6 +1055,26 @@ export default function RestaurantDetailsPage() {
           </div>
         </div>
       )}
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSwitchToRegister={() => {
+          setShowLoginModal(false);
+          setShowRegisterModal(true);
+        }}
+      />
+
+      {/* Register Modal */}
+      <RegisterModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSwitchToLogin={() => {
+          setShowRegisterModal(false);
+          setShowLoginModal(true);
+        }}
+      />
     </div>
   );
 }

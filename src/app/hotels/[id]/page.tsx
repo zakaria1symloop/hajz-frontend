@@ -10,6 +10,8 @@ import { MapPin, Star, Wifi, Car, Dumbbell, UtensilsCrossed, Waves, Shield, Cale
 import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import toast from 'react-hot-toast';
+import LoginModal from '@/components/LoginModal';
+import RegisterModal from '@/components/RegisterModal';
 
 interface Room {
   id: number;
@@ -109,6 +111,8 @@ export default function HotelDetailPage() {
     show: boolean;
     reservationId?: number;
   }>({ show: false });
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -797,7 +801,7 @@ export default function HotelDetailPage() {
                 <p className="text-center text-xs sm:text-sm text-gray-500">
                   {t('alreadyHaveAccount')}{' '}
                   <button
-                    onClick={() => router.push('/login')}
+                    onClick={() => setShowLoginModal(true)}
                     className="text-[#2FB7EC] hover:underline"
                   >
                     {t('signIn')}
@@ -969,6 +973,26 @@ export default function HotelDetailPage() {
           }
         }
       `}</style>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSwitchToRegister={() => {
+          setShowLoginModal(false);
+          setShowRegisterModal(true);
+        }}
+      />
+
+      {/* Register Modal */}
+      <RegisterModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSwitchToLogin={() => {
+          setShowRegisterModal(false);
+          setShowLoginModal(true);
+        }}
+      />
     </div>
   );
 }
