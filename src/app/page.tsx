@@ -290,12 +290,23 @@ export default function Home() {
   const translateAmenity = (amenity: string) => {
     // Normalize the key (lowercase, handle variations)
     const key = amenity.toLowerCase().trim();
-    const translationKey = `amenityLabels.${key}`;
-    const translated = t(translationKey);
-    // If translation exists (not same as key), return it
-    if (translated !== translationKey) {
-      return translated;
+
+    // Try different key formats
+    const keyVariations = [
+      key,                          // original lowercase
+      key.replace(/ /g, '_'),       // spaces to underscores
+      key.replace(/_/g, ' '),       // underscores to spaces
+    ];
+
+    for (const k of keyVariations) {
+      const translationKey = `amenityLabels.${k}`;
+      const translated = t(translationKey);
+      // If translation exists (not same as key path), return it
+      if (translated && translated !== translationKey && !translated.startsWith('amenityLabels.')) {
+        return translated;
+      }
     }
+
     // Fallback: format the raw string nicely (remove underscores, capitalize)
     return amenity.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   };
