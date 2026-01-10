@@ -10,6 +10,7 @@ interface Settings {
   site_name: string;
   support_email: string;
   support_phone: string;
+  address: string;
 }
 
 export default function AdminSettingsPage() {
@@ -19,6 +20,7 @@ export default function AdminSettingsPage() {
     site_name: 'Hajz',
     support_email: 'support@hajz.dz',
     support_phone: '+213 123 456 789',
+    address: 'Algiers, Algeria',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -112,6 +114,17 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setSettings({ ...settings, support_phone: e.target.value })}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
               />
+            </div>
+            <div>
+              <label className="block text-sm text-gray-600 mb-1">Address</label>
+              <textarea
+                value={settings.address}
+                onChange={(e) => setSettings({ ...settings, address: e.target.value })}
+                rows={2}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                placeholder="Enter business address"
+              />
+              <p className="text-gray-400 text-xs mt-1">Displayed in website footer</p>
             </div>
           </div>
         </div>

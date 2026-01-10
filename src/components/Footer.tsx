@@ -12,6 +12,7 @@ interface SiteSettings {
   site_name: string;
   support_email: string;
   support_phone: string;
+  address: string;
 }
 
 export default function Footer() {
@@ -20,6 +21,7 @@ export default function Footer() {
     site_name: 'Hajz',
     support_email: 'contact@hajz.dz',
     support_phone: '+213 50478',
+    address: 'Algiers, Algeria',
   });
 
   useEffect(() => {
@@ -135,7 +137,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2 text-gray-400 text-sm">
                 <HiOutlineLocationMarker size={16} className="text-[#2FB7EC] flex-shrink-0 mt-0.5" />
-                <span>{t('address')}</span>
+                <span>{settings.address}</span>
               </li>
             </ul>
           </div>
