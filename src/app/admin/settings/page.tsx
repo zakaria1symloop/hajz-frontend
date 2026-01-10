@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
-import { IoSettingsOutline, IoSaveOutline } from 'react-icons/io5';
+import { IoSettingsOutline, IoSaveOutline, IoLogoFacebook, IoLogoInstagram, IoLogoTwitter, IoLogoLinkedin } from 'react-icons/io5';
 
 interface Settings {
   commission_rate: number;
@@ -11,6 +11,10 @@ interface Settings {
   support_email: string;
   support_phone: string;
   address: string;
+  facebook_url: string;
+  instagram_url: string;
+  twitter_url: string;
+  linkedin_url: string;
 }
 
 export default function AdminSettingsPage() {
@@ -21,6 +25,10 @@ export default function AdminSettingsPage() {
     support_email: 'support@hajz.dz',
     support_phone: '+213 123 456 789',
     address: 'Algiers, Algeria',
+    facebook_url: '',
+    instagram_url: '',
+    twitter_url: '',
+    linkedin_url: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -161,6 +169,69 @@ export default function AdminSettingsPage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Social Media Settings */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          <IoLogoFacebook size={20} className="text-blue-600" />
+          Social Media Links
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
+              <IoLogoFacebook size={16} className="text-blue-600" />
+              Facebook URL
+            </label>
+            <input
+              type="url"
+              value={settings.facebook_url}
+              onChange={(e) => setSettings({ ...settings, facebook_url: e.target.value })}
+              placeholder="https://facebook.com/yourpage"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
+              <IoLogoInstagram size={16} className="text-pink-600" />
+              Instagram URL
+            </label>
+            <input
+              type="url"
+              value={settings.instagram_url}
+              onChange={(e) => setSettings({ ...settings, instagram_url: e.target.value })}
+              placeholder="https://instagram.com/yourpage"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
+              <IoLogoTwitter size={16} className="text-sky-500" />
+              Twitter/X URL
+            </label>
+            <input
+              type="url"
+              value={settings.twitter_url}
+              onChange={(e) => setSettings({ ...settings, twitter_url: e.target.value })}
+              placeholder="https://twitter.com/yourpage"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1 flex items-center gap-2">
+              <IoLogoLinkedin size={16} className="text-blue-700" />
+              LinkedIn URL
+            </label>
+            <input
+              type="url"
+              value={settings.linkedin_url}
+              onChange={(e) => setSettings({ ...settings, linkedin_url: e.target.value })}
+              placeholder="https://linkedin.com/company/yourpage"
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+        <p className="text-gray-400 text-xs mt-3">Leave empty to hide the social media icon in the footer</p>
       </div>
     </div>
   );

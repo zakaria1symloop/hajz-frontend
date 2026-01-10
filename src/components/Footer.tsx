@@ -13,6 +13,10 @@ interface SiteSettings {
   support_email: string;
   support_phone: string;
   address: string;
+  facebook_url: string;
+  instagram_url: string;
+  twitter_url: string;
+  linkedin_url: string;
 }
 
 export default function Footer() {
@@ -22,6 +26,10 @@ export default function Footer() {
     support_email: 'contact@hajz.dz',
     support_phone: '+213 50478',
     address: 'Algiers, Algeria',
+    facebook_url: '',
+    instagram_url: '',
+    twitter_url: '',
+    linkedin_url: '',
   });
 
   useEffect(() => {
@@ -63,18 +71,26 @@ export default function Footer() {
 
             {/* Social Links */}
             <div className="flex gap-4 mt-6">
-              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
-                <FaFacebook size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
-                <FaInstagram size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
-                <FaTwitter size={20} />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
-                <FaLinkedin size={20} />
-              </a>
+              {settings.facebook_url && (
+                <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                  <FaFacebook size={20} />
+                </a>
+              )}
+              {settings.instagram_url && (
+                <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                  <FaInstagram size={20} />
+                </a>
+              )}
+              {settings.twitter_url && (
+                <a href={settings.twitter_url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                  <FaTwitter size={20} />
+                </a>
+              )}
+              {settings.linkedin_url && (
+                <a href={settings.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#2FB7EC] transition-colors">
+                  <FaLinkedin size={20} />
+                </a>
+              )}
             </div>
           </div>
 
