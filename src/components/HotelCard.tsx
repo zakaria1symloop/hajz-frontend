@@ -21,16 +21,42 @@ export default function HotelCard({ hotel }: HotelCardProps) {
 
   const isAvailable = hotel.is_active !== false;
 
+  // Get hotel image from images array or single image field
+  const getHotelImage = () => {
+    // Check for images array first
+    if (hotel.images && hotel.images.length > 0) {
+      const primary = hotel.images.find((img: any) => img.is_primary) || hotel.images[0];
+      return primary.url || primary.image_url || null;
+    }
+    // Fallback to single image field
+    if (hotel.image) return hotel.image;
+    return null;
+  };
+
+  const hotelImage = getHotelImage();
+
   return (
     <Link href={`/hotels/${hotel.id}`}>
       <div className={`bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-blue-200/50 transition-all duration-300 group hover:-translate-y-1 ${!isAvailable ? 'opacity-75' : ''}`}>
         <div className="relative h-52 overflow-hidden">
-          <Image
-            src={hotel.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800'}
-            alt={hotel.name}
-            fill
-            className={`object-cover group-hover:scale-110 transition-transform duration-500 ${!isAvailable ? 'grayscale-[30%]' : ''}`}
-          />
+          {hotelImage ? (
+            <Image
+              src={hotelImage}
+              alt={hotel.name}
+              fill
+              className={`object-cover group-hover:scale-110 transition-transform duration-500 ${!isAvailable ? 'grayscale-[30%]' : ''}`}
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-[#2FB7EC] to-[#1a6b8a] flex items-center justify-center">
+              <Image
+                src="/images/Hajz-Ice-White.png"
+                alt="Hajz"
+                width={120}
+                height={48}
+                className="opacity-50"
+              />
+            </div>
+          )}
 
           {/* Not Available badge */}
           {!isAvailable && (

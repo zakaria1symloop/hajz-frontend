@@ -7,6 +7,14 @@ export interface User {
   created_at?: string;
 }
 
+export interface HotelImage {
+  id: number;
+  image_path: string;
+  url?: string;
+  image_url?: string;
+  is_primary: boolean;
+}
+
 export interface Hotel {
   id: number;
   name: string;
@@ -17,6 +25,7 @@ export interface Hotel {
   price_per_night: number;
   rating: number;
   image: string | null;
+  images?: HotelImage[];
   amenities: string[] | null;
   rooms_available: number;
   is_active: boolean;
