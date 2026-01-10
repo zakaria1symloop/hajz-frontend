@@ -1,13 +1,40 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from 'react-icons/hi';
 import { FaFacebook, FaInstagram, FaTwitter, FaLinkedin } from 'react-icons/fa';
+import api from '@/lib/api';
+
+interface SiteSettings {
+  site_name: string;
+  support_email: string;
+  support_phone: string;
+}
 
 export default function Footer() {
   const t = useTranslations('footer');
+  const [settings, setSettings] = useState<SiteSettings>({
+    site_name: 'Hajz',
+    support_email: 'contact@hajz.dz',
+    support_phone: '+213 50478',
+  });
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await api.get('/settings/public');
+        if (response.data) {
+          setSettings(response.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   return (
     <footer className="bg-gray-900 text-white">
@@ -96,14 +123,14 @@ export default function Footer() {
             <ul className="space-y-2">
               <li className="flex items-center gap-2 text-gray-400 text-sm">
                 <HiOutlineMail size={16} className="text-[#2FB7EC]" />
-                <a href="mailto:contact@hajz.dz" className="hover:text-[#2FB7EC] transition-colors">
-                  contact@hajz.dz
+                <a href={`mailto:${settings.support_email}`} className="hover:text-[#2FB7EC] transition-colors">
+                  {settings.support_email}
                 </a>
               </li>
               <li className="flex items-center gap-2 text-gray-400 text-sm">
                 <HiOutlinePhone size={16} className="text-[#2FB7EC]" />
-                <a href="tel:+21350478" className="hover:text-[#2FB7EC] transition-colors" dir="ltr">
-                  +213 50478
+                <a href={`tel:${settings.support_phone.replace(/\s/g, '')}`} className="hover:text-[#2FB7EC] transition-colors" dir="ltr">
+                  {settings.support_phone}
                 </a>
               </li>
               <li className="flex items-start gap-2 text-gray-400 text-sm">
