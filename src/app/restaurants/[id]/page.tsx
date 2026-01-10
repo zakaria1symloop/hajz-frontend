@@ -309,7 +309,7 @@ export default function RestaurantDetailsPage() {
         })),
       });
 
-      // Check for SlickPay payment URL
+      // Check for Chargily payment URL
       if (response.data.payment_url) {
         toast.success(t('redirectingToPayment'));
         window.location.href = response.data.payment_url;

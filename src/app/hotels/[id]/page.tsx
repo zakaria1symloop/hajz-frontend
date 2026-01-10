@@ -179,12 +179,18 @@ export default function HotelDetailPage() {
   const fetchHotelDetails = async () => {
     try {
       const response = await api.get(`/hotels/${params.id}`);
-      const hotelData = response.data.hotel || response.data;
-      setHotel(hotelData);
+      let hotelData = response.data.hotel || response.data;
 
-      // Fetch rooms for this hotel
+      // Fetch rooms for this hotel (this endpoint also returns hotel with images)
       const roomsResponse = await api.get(`/hotels/${params.id}/rooms`);
       const roomsData = roomsResponse.data.rooms || roomsResponse.data.data || roomsResponse.data || [];
+
+      // Merge hotel images from rooms endpoint if available
+      if (roomsResponse.data.hotel?.images) {
+        hotelData = { ...hotelData, images: roomsResponse.data.hotel.images };
+      }
+
+      setHotel(hotelData);
       setRooms(Array.isArray(roomsData) ? roomsData : []);
     } catch (error) {
       console.error('Failed to fetch hotel:', error);
@@ -285,14 +291,14 @@ export default function HotelDetailPage() {
       const endpoint = user ? '/reservations' : '/reservations/guest';
       const response = await api.post(endpoint, bookingData);
 
-      // Check for SlickPay payment URL
+      // Check for Chargily payment URL
       if (response.data.payment_url) {
         toast.success(t('redirectingToPayment'));
         window.location.href = response.data.payment_url;
       } else if (response.data.checkout_url) {
         window.location.href = response.data.checkout_url;
       } else {
-        // No payment URL - show success (shouldn't happen with SlickPay)
+        // No payment URL - show success
         setShowBookingModal(false);
         setBookingSuccess({
           show: true,
