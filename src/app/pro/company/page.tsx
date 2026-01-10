@@ -141,7 +141,10 @@ export default function MyCompanyPage() {
   const getImageUrl = (path: string) => {
     if (!path) return '/placeholder-car.jpg';
     if (path.startsWith('http')) return path;
-    return `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}/storage/${path}`;
+    // Handle paths that might already have /storage/ prefix
+    const cleanPath = path.replace(/^\/?(storage\/)?/, '');
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    return `${baseUrl}/storage/${cleanPath}`;
   };
 
   if (loading) {

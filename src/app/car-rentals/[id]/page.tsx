@@ -31,6 +31,8 @@ import {
 } from 'lucide-react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import LoginModal from '@/components/LoginModal';
+import RegisterModal from '@/components/RegisterModal';
 
 interface CarRentalCompany {
   id: number;
@@ -115,6 +117,8 @@ export default function CarRentalDetailsPage() {
     carName?: string;
     totalPrice?: number;
   }>({ show: false });
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   // Generate time options (every 30 minutes)
   const timeOptions = [];
@@ -164,7 +168,10 @@ export default function CarRentalDetailsPage() {
   const getImageUrl = (path: string) => {
     if (!path) return '/placeholder-car.jpg';
     if (path.startsWith('http')) return path;
-    return `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}/storage/${path}`;
+    // Handle paths that might already have /storage/ prefix
+    const cleanPath = path.replace(/^\/?(storage\/)?/, '');
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    return `${baseUrl}/storage/${cleanPath}`;
   };
 
   // Format date as YYYY-MM-DD without timezone conversion
@@ -275,6 +282,17 @@ export default function CarRentalDetailsPage() {
         notes: notes,
       });
 
+      // Check for payment URL (Chargily)
+      if (response.data.payment_url) {
+        toast.success(t('redirectingToPayment'));
+        window.location.href = response.data.payment_url;
+        return;
+      } else if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
+        return;
+      }
+
+      // No payment URL - show success
       setShowBookingModal(false);
       setBookingSuccess({
         show: true,
@@ -763,6 +781,18 @@ export default function CarRentalDetailsPage() {
                     </div>
                   </div>
 
+                  {!user && (
+                    <p className="text-center text-sm text-gray-500 mb-4">
+                      {t('alreadyHaveAccount')}{' '}
+                      <button
+                        onClick={() => setShowLoginModal(true)}
+                        className="text-green-600 hover:underline font-medium"
+                      >
+                        {t('signIn')}
+                      </button>
+                    </p>
+                  )}
+
                   <button
                     onClick={handleBooking}
                     disabled={bookingLoading}
@@ -837,6 +867,26 @@ export default function CarRentalDetailsPage() {
           </div>
         </div>
       )}
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSwitchToRegister={() => {
+          setShowLoginModal(false);
+          setShowRegisterModal(true);
+        }}
+      />
+
+      {/* Register Modal */}
+      <RegisterModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSwitchToLogin={() => {
+          setShowRegisterModal(false);
+          setShowLoginModal(true);
+        }}
+      />
     </div>
   );
 }

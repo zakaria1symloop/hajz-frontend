@@ -14,8 +14,16 @@ export default function CarCard({ car }: CarCardProps) {
   const t = useTranslations('cars');
   const isAvailable = car.is_available !== false && car.company?.is_active !== false;
 
+  const getImageUrl = (path: string | undefined) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.replace(/^\/?(storage\/)?/, '');
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    return `${baseUrl}/storage/${cleanPath}`;
+  };
+
   const primaryImage = car.images?.find(img => img.is_primary) || car.images?.[0];
-  const imageUrl = primaryImage?.url || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
+  const imageUrl = primaryImage?.url || getImageUrl(primaryImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
 
   return (
     <Link href={`/cars/${car.id}`}>

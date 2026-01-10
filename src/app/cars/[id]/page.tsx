@@ -11,14 +11,20 @@ import {
 } from 'lucide-react';
 import { getCar, checkCarAvailability, bookCar } from '@/lib/api';
 import type { Car } from '@/types';
+import { useAuth } from '@/context/AuthContext';
+import LoginModal from '@/components/LoginModal';
+import RegisterModal from '@/components/RegisterModal';
 
 export default function CarDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { user } = useAuth();
   const t = useTranslations('cars');
   const [car, setCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
 
   // Booking state
   const [pickupDate, setPickupDate] = useState('');
@@ -100,10 +106,13 @@ export default function CarDetailPage() {
         notes: notes || undefined,
       });
 
-      // Check for SlickPay payment URL
+      // Check for payment URL (Chargily)
       if (response.payment_url) {
         toast.success(t('redirectingToPayment'));
         window.location.href = response.payment_url;
+        return;
+      } else if (response.checkout_url) {
+        window.location.href = response.checkout_url;
         return;
       }
 
@@ -141,8 +150,17 @@ export default function CarDetailPage() {
     return null;
   }
 
+  const getImageUrl = (path: string | undefined) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.replace(/^\/?(storage\/)?/, '');
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    return `${baseUrl}/storage/${cleanPath}`;
+  };
+
   const isAvailable = car.is_available !== false && car.company?.is_active !== false;
-  const imageUrl = car.images?.[currentImageIndex]?.url || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
+  const currentImage = car.images?.[currentImageIndex];
+  const imageUrl = currentImage?.url || getImageUrl(currentImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -507,6 +525,18 @@ export default function CarDetailPage() {
                         />
                       </div>
 
+                      {!user && (
+                        <p className="text-center text-sm text-gray-500">
+                          {t('alreadyHaveAccount')}{' '}
+                          <button
+                            onClick={() => setShowLoginModal(true)}
+                            className="text-blue-600 hover:underline font-medium"
+                          >
+                            {t('signIn')}
+                          </button>
+                        </p>
+                      )}
+
                       <button
                         onClick={handleBook}
                         disabled={booking}
@@ -527,6 +557,26 @@ export default function CarDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSwitchToRegister={() => {
+          setShowLoginModal(false);
+          setShowRegisterModal(true);
+        }}
+      />
+
+      {/* Register Modal */}
+      <RegisterModal
+        isOpen={showRegisterModal}
+        onClose={() => setShowRegisterModal(false)}
+        onSwitchToLogin={() => {
+          setShowRegisterModal(false);
+          setShowLoginModal(true);
+        }}
+      />
     </div>
   );
 }

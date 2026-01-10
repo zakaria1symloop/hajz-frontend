@@ -113,6 +113,7 @@ export default function HotelDetailPage() {
   }>({ show: false });
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [failedRoomImages, setFailedRoomImages] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     if (params.id) {
@@ -195,8 +196,16 @@ export default function HotelDetailPage() {
   const getRoomImageUrl = (room: Room) => {
     if (!room.images || room.images.length === 0) return null;
     const primary = room.images.find(img => img.is_primary) || room.images[0];
-    if (primary.image_path?.startsWith('http')) return primary.image_path;
-    return `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}/storage/${primary.image_path}`;
+    if (!primary?.image_path) return null;
+    if (primary.image_path.startsWith('http')) return primary.image_path;
+    // Handle paths that might already have /storage/ prefix
+    const cleanPath = primary.image_path.replace(/^\/?(storage\/)?/, '');
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    return `${baseUrl}/storage/${cleanPath}`;
+  };
+
+  const handleRoomImageError = (roomId: number) => {
+    setFailedRoomImages(prev => new Set(prev).add(roomId));
   };
 
   const getHotelImageUrl = () => {
@@ -403,8 +412,15 @@ export default function HotelDetailPage() {
                           <div className="flex gap-3 mb-3">
                             {/* Room Image */}
                             <div className="w-20 h-20 relative rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                              {roomImage ? (
-                                <Image src={roomImage} alt={room.name} fill className="object-cover" />
+                              {roomImage && !failedRoomImages.has(room.id) ? (
+                                <Image
+                                  src={roomImage}
+                                  alt={room.name}
+                                  fill
+                                  className="object-cover"
+                                  unoptimized
+                                  onError={() => handleRoomImageError(room.id)}
+                                />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
                                   <Bed size={24} className="text-gray-300" />
@@ -447,8 +463,15 @@ export default function HotelDetailPage() {
                         <div className="hidden sm:flex gap-4">
                           {/* Room Image */}
                           <div className="w-32 h-24 relative rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
-                            {roomImage ? (
-                              <Image src={roomImage} alt={room.name} fill className="object-cover" />
+                            {roomImage && !failedRoomImages.has(room.id) ? (
+                              <Image
+                                src={roomImage}
+                                alt={room.name}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                                onError={() => handleRoomImageError(room.id)}
+                              />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
                                 <Bed size={32} className="text-gray-300" />
@@ -564,6 +587,8 @@ export default function HotelDetailPage() {
                     disabled={!selectedRoom}
                     withPortal
                     portalId="datepicker-portal"
+                    onFocus={(e) => e.target.blur()}
+                    customInput={<input type="text" inputMode="none" readOnly className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent cursor-pointer text-base bg-white" />}
                   />
                 </div>
                 <div>
@@ -591,6 +616,8 @@ export default function HotelDetailPage() {
                     disabled={!selectedRoom || !checkInDate}
                     withPortal
                     portalId="datepicker-portal"
+                    onFocus={(e) => e.target.blur()}
+                    customInput={<input type="text" inputMode="none" readOnly className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2FB7EC] focus:border-transparent cursor-pointer text-base bg-white" />}
                   />
                 </div>
 

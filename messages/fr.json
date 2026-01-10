@@ -400,7 +400,9 @@
     "minPrice": "Prix Min (DZD)",
     "maxPrice": "Prix Max (DZD)",
     "clearFilters": "Effacer les filtres",
-    "notAcceptingBookings": "Réservations Non Acceptées"
+    "notAcceptingBookings": "Réservations Non Acceptées",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Se connecter"
   },
   "auth": {
     "welcomeBack": "Bon Retour",
@@ -847,7 +849,10 @@
     "bookingId": "ID de Réservation",
     "car": "Voiture",
     "total": "Total",
-    "done": "Terminé"
+    "done": "Terminé",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "signIn": "Se connecter",
+    "redirectingToPayment": "Redirection vers le paiement..."
   },
   "proDashboard": {
     "hajzPro": "Hajz Pro",
