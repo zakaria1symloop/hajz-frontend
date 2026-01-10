@@ -23,7 +23,7 @@ export default function CarCard({ car }: CarCardProps) {
   };
 
   const primaryImage = car.images?.find(img => img.is_primary) || car.images?.[0];
-  const imageUrl = primaryImage?.url || getImageUrl(primaryImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
+  const imageUrl = primaryImage?.image_url || getImageUrl(primaryImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
 
   return (
     <Link href={`/cars/${car.id}`}>

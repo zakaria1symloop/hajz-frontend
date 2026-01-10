@@ -160,7 +160,7 @@ export default function CarDetailPage() {
 
   const isAvailable = car.is_available !== false && car.company?.is_active !== false;
   const currentImage = car.images?.[currentImageIndex];
-  const imageUrl = currentImage?.url || getImageUrl(currentImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
+  const imageUrl = currentImage?.image_url || getImageUrl(currentImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
 
   return (
     <div className="min-h-screen bg-gray-50">

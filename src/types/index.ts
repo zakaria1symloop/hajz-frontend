@@ -96,7 +96,7 @@ export interface PaginatedResponse<T> {
 export interface CarImage {
   id: number;
   image_path: string;
-  url: string;
+  image_url: string;
   is_primary: boolean;
 }
 
