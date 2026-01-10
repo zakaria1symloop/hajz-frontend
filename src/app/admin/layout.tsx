@@ -20,6 +20,7 @@ import {
   IoCloseOutline,
   IoChevronDownOutline,
   IoLocationOutline,
+  IoDocumentTextOutline,
 } from 'react-icons/io5';
 
 interface Admin {
@@ -115,6 +116,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Wilayas', href: '/admin/wilayas', icon: IoLocationOutline },
     { name: 'Wallet', href: '/admin/wallet', icon: IoWalletOutline },
     { name: 'Admins', href: '/admin/admins', icon: IoShieldCheckmark },
+    { name: 'Legal Pages', href: '/admin/legal', icon: IoDocumentTextOutline },
     { name: 'Settings', href: '/admin/settings', icon: IoSettingsOutline },
   ];
 
