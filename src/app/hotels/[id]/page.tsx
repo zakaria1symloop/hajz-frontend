@@ -24,7 +24,7 @@ interface Room {
   size_sqm: number;
   amenities: string[];
   is_active: boolean;
-  images?: { id: number; image_path: string; is_primary: boolean }[];
+  images?: { id: number; image_path: string; url?: string; is_primary: boolean }[];
 }
 
 interface Hotel {
