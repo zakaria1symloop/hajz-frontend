@@ -223,18 +223,19 @@ export default function ExplorePage() {
     router.replace(`/explore?${params.toString()}`, { scroll: false });
   }, [activeType, selectedWilaya, searchQuery, router]);
 
-  const getImageUrl = (item: Hotel | Restaurant | CarRental) => {
+  const getImageUrl = (item: Hotel | Restaurant | CarRental): string | null => {
     if ((item as any).primary_image_url) return (item as any).primary_image_url;
     if (item.images && item.images.length > 0) {
       const img = item.images[0];
       if ((img as any).url) return (img as any).url;
       if (img.image_path?.startsWith('http')) return img.image_path;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
-      return `${baseUrl}/storage/${img.image_path}`;
+      if (img.image_path) {
+        const cleanPath = img.image_path.replace(/^\/?(storage\/)?/, '');
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
+        return `${baseUrl}/storage/${cleanPath}`;
+      }
     }
-    if (activeType === 'hotels') return 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80';
-    if (activeType === 'restaurants') return 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80';
-    return 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&q=80';
+    return null;
   };
 
   const formatTime = (time?: string) => {
@@ -631,11 +632,17 @@ export default function ExplorePage() {
                         className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-[#2FB7EC]/30 hover:shadow-xl transition-all duration-300"
                       >
                         <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={getImageUrl(hotel)}
-                            alt={hotel.name}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
+                          {getImageUrl(hotel) ? (
+                            <img
+                              src={getImageUrl(hotel)!}
+                              alt={hotel.name}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-[#2FB7EC] to-[#1a6b8a] flex items-center justify-center">
+                              <img src="/images/Hajz-Ice-White.png" alt="Hajz" className="w-24 h-auto opacity-50" />
+                            </div>
+                          )}
                           <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-lg">
                             {Array.from({ length: hotel.star_rating || 3 }).map((_, i) => (
                               <IoStarSharp key={i} size={12} className="text-yellow-400" />
@@ -710,11 +717,17 @@ export default function ExplorePage() {
                         className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-orange-200 hover:shadow-xl transition-all duration-300"
                       >
                         <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={getImageUrl(restaurant)}
-                            alt={restaurant.name}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
+                          {getImageUrl(restaurant) ? (
+                            <img
+                              src={getImageUrl(restaurant)!}
+                              alt={restaurant.name}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center">
+                              <img src="/images/Hajz-Ice-White.png" alt="Hajz" className="w-24 h-auto opacity-50" />
+                            </div>
+                          )}
                           <div className="absolute top-3 left-3 bg-orange-500 text-white px-2.5 py-1 rounded-lg text-xs font-medium">
                             {restaurant.cuisine_type || 'Restaurant'}
                           </div>
@@ -793,11 +806,17 @@ export default function ExplorePage() {
                         className="group bg-white rounded-2xl overflow-hidden border border-gray-100 hover:border-green-200 hover:shadow-xl transition-all duration-300"
                       >
                         <div className="relative h-48 overflow-hidden">
-                          <img
-                            src={getImageUrl(car)}
-                            alt={car.name}
-                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
+                          {getImageUrl(car) ? (
+                            <img
+                              src={getImageUrl(car)!}
+                              alt={car.name}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center">
+                              <img src="/images/Hajz-Ice-White.png" alt="Hajz" className="w-24 h-auto opacity-50" />
+                            </div>
+                          )}
                           {car.cars_count !== undefined && car.cars_count > 0 && (
                             <div className="absolute top-3 left-3 bg-green-500 text-white px-2.5 py-1 rounded-lg text-xs font-medium flex items-center gap-1">
                               <IoCarOutline size={14} />

@@ -442,8 +442,8 @@ export default function RestaurantDetailsPage() {
             )}
           </>
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100">
-            <Utensils size={64} className="text-gray-300" />
+          <div className="w-full h-full bg-gradient-to-br from-orange-500 to-orange-700 flex items-center justify-center">
+            <img src="/images/Hajz-Ice-White.png" alt="Hajz" className="w-32 h-auto opacity-50" />
           </div>
         )}
       </div>

@@ -40,7 +40,7 @@ interface Hotel {
   price_per_night: number;
   rooms_available: number;
   amenities: string[];
-  images?: { id: number; url: string; is_primary: boolean }[];
+  images?: { id: number; url?: string; image_path?: string; is_primary: boolean }[];
   rooms?: Room[];
 }
 
@@ -221,7 +221,14 @@ export default function HotelDetailPage() {
       return null;
     }
     const primary = hotel.images.find(img => img.is_primary) || hotel.images[0];
-    return primary.url || null;
+    // Check for full URL first
+    if (primary?.url) return primary.url;
+    if (!primary?.image_path) return null;
+    if (primary.image_path.startsWith('http')) return primary.image_path;
+    // Handle paths that might already have /storage/ prefix
+    const cleanPath = primary.image_path.replace(/^\/?(storage\/)?/, '');
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
+    return `${baseUrl}/storage/${cleanPath}`;
   };
 
   const openBookingModal = () => {
