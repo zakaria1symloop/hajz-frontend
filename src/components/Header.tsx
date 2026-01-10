@@ -12,6 +12,7 @@ import { BsBriefcase } from 'react-icons/bs';
 import LanguageSwitcher from './LanguageSwitcher';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
+import api from '@/lib/api';
 
 // Pages that have light backgrounds and need dark header
 const LIGHT_BG_PAGES = ['/explore', '/wilayas', '/hotels', '/restaurants', '/cars', '/profile', '/reservations', '/settings'];
@@ -28,7 +29,23 @@ export default function Header() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [supportPhone, setSupportPhone] = useState('+213 123 456 789');
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch support phone from settings
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await api.get('/settings/public');
+        if (response.data?.support_phone) {
+          setSupportPhone(response.data.support_phone);
+        }
+      } catch (error) {
+        console.error('Failed to fetch settings:', error);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   // Check if current page has light background
   const isLightBgPage = LIGHT_BG_PAGES.some(page => pathname?.startsWith(page));
@@ -107,7 +124,7 @@ export default function Header() {
             <div className="hidden md:flex items-center gap-3">
               {/* Phone Number */}
               <a
-                href="tel:+213123456789"
+                href={`tel:${supportPhone.replace(/\s/g, '')}`}
                 className={`flex items-center gap-2 transition-all duration-500 group ${
                   !isFloatingHeader || useScrolledStyle ? 'text-gray-600 hover:text-[#2FB7EC]' : 'text-white/90 hover:text-white'
                 }`}
@@ -117,7 +134,7 @@ export default function Header() {
                 }`}>
                   <HiOutlinePhone size={16} className="group-hover:rotate-12 transition-transform duration-300" />
                 </span>
-                <span className="font-medium text-sm" dir="ltr">+213 123 456 789</span>
+                <span className="font-medium text-sm" dir="ltr">{supportPhone}</span>
               </a>
 
               {/* Language Switcher */}
@@ -275,13 +292,13 @@ export default function Header() {
             <div className={`pt-4 border-t ${!isFloatingHeader || useScrolledStyle ? 'border-gray-100' : 'border-white/10'}`}>
               <div className="flex flex-col gap-3">
                 <a
-                  href="tel:+213123456789"
+                  href={`tel:${supportPhone.replace(/\s/g, '')}`}
                   className={`flex items-center gap-3 py-3 px-3 rounded-xl transition-all duration-300 ${
                     !isFloatingHeader || useScrolledStyle ? 'text-gray-600 hover:bg-gray-50' : 'text-white hover:bg-white/10'
                   }`}
                 >
                   <HiOutlinePhone size={20} />
-                  <span className="font-medium" dir="ltr">+213 123 456 789</span>
+                  <span className="font-medium" dir="ltr">{supportPhone}</span>
                 </a>
 
                 <div className="py-2 px-3">
