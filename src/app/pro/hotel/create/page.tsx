@@ -126,7 +126,7 @@ export default function CreateHotelPage() {
               href="/pro/dashboard"
               className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors"
             >
-              <HiOutlineArrowLeft size={20} />
+              <HiOutlineArrowLeft size={20} className="rtl:rotate-180" />
               Back
             </Link>
             <div className="w-px h-6 bg-gray-200" />

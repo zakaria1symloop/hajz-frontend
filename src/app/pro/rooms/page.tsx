@@ -881,7 +881,7 @@ export default function RoomsPage() {
                   onClick={() => handleMonthChange('prev')}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <HiOutlineChevronLeft size={20} />
+                  <HiOutlineChevronLeft size={20} className="rtl:rotate-180" />
                 </button>
                 <h3 className="text-lg font-semibold text-gray-900">
                   {calendarMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
@@ -890,7 +890,7 @@ export default function RoomsPage() {
                   onClick={() => handleMonthChange('next')}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <HiOutlineChevronRight size={20} />
+                  <HiOutlineChevronRight size={20} className="rtl:rotate-180" />
                 </button>
               </div>
 
