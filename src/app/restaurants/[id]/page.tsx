@@ -339,7 +339,8 @@ export default function RestaurantDetailsPage() {
   const getImageUrl = (path: string) => {
     if (!path) return '/placeholder-restaurant.jpg';
     if (path.startsWith('http')) return path;
-    return `${process.env.NEXT_PUBLIC_API_URL?.replace('/api', '')}/storage/${path}`;
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
+    return `${baseUrl}/storage/${path}`;
   };
 
   const nextImage = () => {
