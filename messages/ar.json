@@ -459,7 +459,18 @@
     "cancelFailed": "فشل إلغاء الحجز",
     "guest": "ضيف",
     "guests": "ضيوف",
-    "backToSettings": "العودة للإعدادات"
+    "backToSettings": "العودة للإعدادات",
+    "status": {
+      "pending": "قيد الانتظار",
+      "confirmed": "مؤكد",
+      "cancelled": "ملغى",
+      "completed": "مكتمل",
+      "picked_up": "تم الاستلام",
+      "returned": "تم الإرجاع",
+      "no_show": "لم يحضر",
+      "checked_in": "مسجل دخول",
+      "checked_out": "مسجل خروج"
+    }
   },
   "common": {
     "loading": "جاري التحميل...",

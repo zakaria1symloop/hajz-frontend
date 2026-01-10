@@ -459,7 +459,18 @@
     "cancelFailed": "Échec de l'annulation",
     "guest": "invité",
     "guests": "invités",
-    "backToSettings": "Retour aux Paramètres"
+    "backToSettings": "Retour aux Paramètres",
+    "status": {
+      "pending": "En attente",
+      "confirmed": "Confirmé",
+      "cancelled": "Annulé",
+      "completed": "Terminé",
+      "picked_up": "Récupéré",
+      "returned": "Retourné",
+      "no_show": "Non présenté",
+      "checked_in": "Enregistré",
+      "checked_out": "Sorti"
+    }
   },
   "common": {
     "loading": "Chargement...",

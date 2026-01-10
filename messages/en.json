@@ -463,7 +463,18 @@
     "cancelFailed": "Failed to cancel reservation",
     "guest": "guest",
     "guests": "guests",
-    "backToSettings": "Back to Settings"
+    "backToSettings": "Back to Settings",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "cancelled": "Cancelled",
+      "completed": "Completed",
+      "picked_up": "Picked Up",
+      "returned": "Returned",
+      "no_show": "No Show",
+      "checked_in": "Checked In",
+      "checked_out": "Checked Out"
+    }
   },
   "common": {
     "loading": "Loading...",
