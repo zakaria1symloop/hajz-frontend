@@ -196,6 +196,8 @@ export default function HotelDetailPage() {
   const getRoomImageUrl = (room: Room) => {
     if (!room.images || room.images.length === 0) return null;
     const primary = room.images.find(img => img.is_primary) || room.images[0];
+    // Check for full URL first (API returns 'url' for room images)
+    if (primary?.url) return primary.url;
     if (!primary?.image_path) return null;
     if (primary.image_path.startsWith('http')) return primary.image_path;
     // Handle paths that might already have /storage/ prefix
@@ -210,10 +212,10 @@ export default function HotelDetailPage() {
 
   const getHotelImageUrl = () => {
     if (!hotel?.images || hotel.images.length === 0) {
-      return 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920';
+      return null;
     }
     const primary = hotel.images.find(img => img.is_primary) || hotel.images[0];
-    return primary.url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920';
+    return primary.url || null;
   };
 
   const openBookingModal = () => {
@@ -329,12 +331,24 @@ export default function HotelDetailPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Image */}
       <div className="relative h-[400px] md:h-[500px]">
-        <Image
-          src={getHotelImageUrl()}
-          alt={hotel.name}
-          fill
-          className="object-cover"
-        />
+        {getHotelImageUrl() ? (
+          <Image
+            src={getHotelImageUrl()!}
+            alt={hotel.name}
+            fill
+            className="object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-[#2FB7EC] to-[#1a6b8a] flex items-center justify-center">
+            <Image
+              src="/images/Hajz-Ice-White.png"
+              alt="Hajz"
+              width={200}
+              height={80}
+              className="opacity-50"
+            />
+          </div>
+        )}
         <div className="absolute inset-0 bg-black/30"></div>
         <button
           onClick={() => router.back()}

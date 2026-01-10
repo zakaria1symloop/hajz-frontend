@@ -23,18 +23,30 @@ export default function CarCard({ car }: CarCardProps) {
   };
 
   const primaryImage = car.images?.find(img => img.is_primary) || car.images?.[0];
-  const imageUrl = primaryImage?.image_url || getImageUrl(primaryImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
+  const imageUrl = primaryImage?.image_url || getImageUrl(primaryImage?.image_path) || null;
 
   return (
     <Link href={`/cars/${car.id}`}>
       <div className={`bg-white rounded-3xl overflow-hidden shadow-lg shadow-gray-200/50 hover:shadow-xl hover:shadow-blue-200/50 transition-all duration-300 group hover:-translate-y-1 ${!isAvailable ? 'opacity-75' : ''}`}>
         <div className="relative h-52 overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt={`${car.brand} ${car.model}`}
-            fill
-            className={`object-cover group-hover:scale-110 transition-transform duration-500 ${!isAvailable ? 'grayscale-[30%]' : ''}`}
-          />
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={`${car.brand} ${car.model}`}
+              fill
+              className={`object-cover group-hover:scale-110 transition-transform duration-500 ${!isAvailable ? 'grayscale-[30%]' : ''}`}
+            />
+          ) : (
+            <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+              <Image
+                src="/images/Hajz-Ice-White.png"
+                alt="Hajz"
+                width={120}
+                height={48}
+                className="opacity-50"
+              />
+            </div>
+          )}
 
           {/* Not Available badge */}
           {!isAvailable && (

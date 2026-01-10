@@ -160,19 +160,31 @@ export default function CarDetailPage() {
 
   const isAvailable = car.is_available !== false && car.company?.is_active !== false;
   const currentImage = car.images?.[currentImageIndex];
-  const imageUrl = currentImage?.image_url || getImageUrl(currentImage?.image_path) || 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=800';
+  const imageUrl = currentImage?.image_url || getImageUrl(currentImage?.image_path) || null;
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header with image */}
       <div className="relative h-[400px] bg-gray-900">
-        <Image
-          src={imageUrl}
-          alt={`${car.brand} ${car.model}`}
-          fill
-          className="object-cover opacity-90"
-          priority
-        />
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={`${car.brand} ${car.model}`}
+            fill
+            className="object-cover opacity-90"
+            priority
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+            <Image
+              src="/images/Hajz-Ice-White.png"
+              alt="Hajz"
+              width={200}
+              height={80}
+              className="opacity-50"
+            />
+          </div>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
 
         {/* Image navigation */}

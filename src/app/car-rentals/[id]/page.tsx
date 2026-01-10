@@ -713,6 +713,19 @@ export default function CarRentalDetailsPage() {
               {/* Guest Info Form - Only show if available */}
               {isAvailable && (
                 <>
+                  {/* Sign In Button for guests */}
+                  {!user && (
+                    <div className="mb-6 p-4 bg-green-50 rounded-xl border border-green-100">
+                      <p className="text-sm text-gray-600 mb-3">{t('alreadyHaveAccount')}</p>
+                      <button
+                        onClick={() => setShowLoginModal(true)}
+                        className="w-full py-3 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 transition-colors"
+                      >
+                        {t('signIn')}
+                      </button>
+                    </div>
+                  )}
+
                   <div className="space-y-4 mb-6">
                     <h4 className="font-medium text-gray-900">{t('yourInformation')}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -780,18 +793,6 @@ export default function CarRentalDetailsPage() {
                       />
                     </div>
                   </div>
-
-                  {!user && (
-                    <p className="text-center text-sm text-gray-500 mb-4">
-                      {t('alreadyHaveAccount')}{' '}
-                      <button
-                        onClick={() => setShowLoginModal(true)}
-                        className="text-green-600 hover:underline font-medium"
-                      >
-                        {t('signIn')}
-                      </button>
-                    </p>
-                  )}
 
                   <button
                     onClick={handleBooking}
