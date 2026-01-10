@@ -7,9 +7,7 @@ export default function ProLayout({
 }) {
   return (
     <ProAuthProvider>
-      <div dir="ltr">
-        {children}
-      </div>
+      {children}
     </ProAuthProvider>
   );
 }
