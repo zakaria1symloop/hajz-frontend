@@ -34,12 +34,16 @@ interface Totals {
   total_available: number;
   total_earned: number;
   total_withdrawn: number;
+  total_payments: number;
+  total_commissions: number;
+  commission_rate: number;
+  amount_to_pay: number;
 }
 
 export default function AdminWalletPage() {
   const [withdrawals, setWithdrawals] = useState<Withdrawal[]>([]);
   const [wallets, setWallets] = useState<WalletSummary[]>([]);
-  const [totals, setTotals] = useState<Totals>({ total_pending: 0, total_available: 0, total_earned: 0, total_withdrawn: 0 });
+  const [totals, setTotals] = useState<Totals>({ total_pending: 0, total_available: 0, total_earned: 0, total_withdrawn: 0, total_payments: 0, total_commissions: 0, commission_rate: 10, amount_to_pay: 0 });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'withdrawals' | 'wallets'>('withdrawals');
   const [statusFilter, setStatusFilter] = useState('pending');
@@ -136,23 +140,50 @@ export default function AdminWalletPage() {
         <p className="text-gray-500 mt-1">Manage wallet balances and withdrawal requests</p>
       </div>
 
-      {/* Stats Cards */}
+      {/* Platform Summary */}
+      <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-xl p-6 text-white">
+        <h2 className="text-lg font-semibold mb-4">Platform Revenue Summary</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div>
+            <p className="text-red-100 text-sm">Total Payments Received</p>
+            <p className="text-2xl font-bold">{formatCurrency(totals.total_payments)}</p>
+          </div>
+          <div>
+            <p className="text-red-100 text-sm">Platform Commission ({totals.commission_rate}%)</p>
+            <p className="text-2xl font-bold">{formatCurrency(totals.total_commissions)}</p>
+          </div>
+          <div>
+            <p className="text-red-100 text-sm">To Pay Professionals</p>
+            <p className="text-2xl font-bold">{formatCurrency(totals.amount_to_pay)}</p>
+          </div>
+          <div>
+            <p className="text-red-100 text-sm">Already Withdrawn</p>
+            <p className="text-2xl font-bold">{formatCurrency(totals.total_withdrawn)}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Professional Wallets Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <p className="text-gray-500 text-sm">Total Pending</p>
+          <p className="text-gray-500 text-sm">Pending Balance</p>
           <p className="text-xl font-bold text-yellow-600">{formatCurrency(totals.total_pending)}</p>
+          <p className="text-xs text-gray-400 mt-1">Awaiting confirmation</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <p className="text-gray-500 text-sm">Total Available</p>
+          <p className="text-gray-500 text-sm">Available Balance</p>
           <p className="text-xl font-bold text-green-600">{formatCurrency(totals.total_available)}</p>
+          <p className="text-xs text-gray-400 mt-1">Ready to withdraw</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4">
           <p className="text-gray-500 text-sm">Total Earned</p>
           <p className="text-xl font-bold text-blue-600">{formatCurrency(totals.total_earned)}</p>
+          <p className="text-xs text-gray-400 mt-1">After commission</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-4">
           <p className="text-gray-500 text-sm">Total Withdrawn</p>
           <p className="text-xl font-bold text-purple-600">{formatCurrency(totals.total_withdrawn)}</p>
+          <p className="text-xs text-gray-400 mt-1">Paid to professionals</p>
         </div>
       </div>
 
