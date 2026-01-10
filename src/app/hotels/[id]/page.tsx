@@ -295,8 +295,6 @@ export default function HotelDetailPage() {
       if (response.data.payment_url) {
         toast.success(t('redirectingToPayment'));
         window.location.href = response.data.payment_url;
-      } else if (response.data.checkout_url) {
-        window.location.href = response.data.checkout_url;
       } else {
         // No payment URL - show success
         setShowBookingModal(false);

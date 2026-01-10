@@ -287,9 +287,6 @@ export default function CarRentalDetailsPage() {
         toast.success(t('redirectingToPayment'));
         window.location.href = response.data.payment_url;
         return;
-      } else if (response.data.checkout_url) {
-        window.location.href = response.data.checkout_url;
-        return;
       }
 
       // No payment URL - show success

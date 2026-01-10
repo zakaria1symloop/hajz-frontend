@@ -192,7 +192,7 @@ export const bookCar = async (carId: number, data: {
   driver_license_number: string;
   notes?: string;
 }) => {
-  const response = await api.post<{ message: string; booking: CarBooking; payment_url?: string; checkout_url?: string }>(`/cars/${carId}/book`, data);
+  const response = await api.post<{ message: string; booking: CarBooking; payment_url?: string }>(`/cars/${carId}/book`, data);
   return response.data;
 };
 

@@ -111,9 +111,6 @@ export default function CarDetailPage() {
         toast.success(t('redirectingToPayment'));
         window.location.href = response.payment_url;
         return;
-      } else if (response.checkout_url) {
-        window.location.href = response.checkout_url;
-        return;
       }
 
       toast.success(t('bookingSuccess'));
