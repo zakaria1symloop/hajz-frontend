@@ -315,7 +315,7 @@ export default function RoomsPage() {
       console.log('Using http image_path:', image.image_path);
       return image.image_path;
     }
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://192.168.100.36:8000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
     const url = `${baseUrl}/storage/${image.image_path}`;
     console.log('Using fallback URL:', url);
     return url;

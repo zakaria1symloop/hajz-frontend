@@ -74,7 +74,7 @@ export default function MyHotelPage() {
   const getImageUrl = (image: HotelImage) => {
     if (image.url) return image.url;
     if (image.image_path?.startsWith('http')) return image.image_path;
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
     return `${baseUrl}/storage/${image.image_path}`;
   };
 

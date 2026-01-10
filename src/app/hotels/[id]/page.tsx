@@ -208,7 +208,7 @@ export default function HotelDetailPage() {
     if (primary.image_path.startsWith('http')) return primary.image_path;
     // Handle paths that might already have /storage/ prefix
     const cleanPath = primary.image_path.replace(/^\/?(storage\/)?/, '');
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
     return `${baseUrl}/storage/${cleanPath}`;
   };
 

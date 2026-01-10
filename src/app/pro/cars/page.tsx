@@ -275,7 +275,7 @@ export default function CarsManagementPage() {
     if (path.startsWith('http')) return path;
     // Handle paths that might already have /storage/ prefix
     const cleanPath = path.replace(/^\/?(storage\/)?/, '');
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
     return `${baseUrl}/storage/${cleanPath}`;
   };
 

@@ -151,7 +151,7 @@ export default function CarDetailPage() {
     if (!path) return null;
     if (path.startsWith('http')) return path;
     const cleanPath = path.replace(/^\/?(storage\/)?/, '');
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || '';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
     return `${baseUrl}/storage/${cleanPath}`;
   };
 

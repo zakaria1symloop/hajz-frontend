@@ -229,7 +229,7 @@ export default function ExplorePage() {
       const img = item.images[0];
       if ((img as any).url) return (img as any).url;
       if (img.image_path?.startsWith('http')) return img.image_path;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;
     }
     if (activeType === 'hotels') return 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80';

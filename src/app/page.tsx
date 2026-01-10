@@ -243,7 +243,7 @@ export default function Home() {
     if (wilaya.image_url) return wilaya.image_url;
     if (wilaya.image) {
       if (wilaya.image.startsWith('http')) return wilaya.image;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${wilaya.image}`;
     }
     // Default placeholder based on wilaya code
@@ -263,7 +263,7 @@ export default function Home() {
       const img = hotel.images[0];
       if (img.url) return img.url;
       if (img.image_path?.startsWith('http')) return img.image_path;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;
     }
     return null; // Return null for placeholder
@@ -275,7 +275,7 @@ export default function Home() {
       const img = restaurant.images[0];
       if (img.url) return img.url;
       if (img.image_path?.startsWith('http')) return img.image_path;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;
     }
     return null; // Return null for placeholder
@@ -322,7 +322,7 @@ export default function Home() {
       const img = carRental.images[0];
       if (img.url) return img.url;
       if (img.image_path?.startsWith('http')) return img.image_path;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;
     }
     return null; // Return null for placeholder

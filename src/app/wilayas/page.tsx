@@ -75,7 +75,7 @@ export default function WilayasPage() {
     if (wilaya.image_url) return wilaya.image_url;
     if (wilaya.image) {
       if (wilaya.image.startsWith('http')) return wilaya.image;
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${wilaya.image}`;
     }
     // Default placeholder based on wilaya code
