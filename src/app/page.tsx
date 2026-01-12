@@ -543,10 +543,10 @@ export default function Home() {
                 mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
               }`}
             >
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold text-[#2FB7EC] mb-1 sm:mb-4">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#2FB7EC] mb-1 sm:mb-4">
                 Hajz
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl lg:text-4xl font-semibold text-white">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-white">
                 {t('home.slogan.title')}
               </p>
             </div>
@@ -1371,99 +1371,99 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <p className="text-[#2FB7EC] font-semibold text-sm tracking-widest uppercase mb-3">
+          <div className="text-center mb-10">
+            <p className="text-[#2FB7EC] font-semibold text-xs tracking-widest uppercase mb-2">
               {t('home.whyChooseUs.title')}
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
               {t('home.whyChooseUs.title')}
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
+            <p className="text-gray-500 text-sm max-w-2xl mx-auto">
               {t('home.whyChooseUs.subtitle')}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {/* One Platform */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-[#2FB7EC]/30 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#2FB7EC]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#2FB7EC] transition-colors duration-300">
-                <BsBuilding className="text-[#2FB7EC] group-hover:text-white transition-colors duration-300" size={28} />
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2FB7EC]/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-[#2FB7EC]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#2FB7EC] transition-colors duration-300">
+                <BsBuilding className="text-[#2FB7EC] group-hover:text-white transition-colors duration-300" size={22} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('home.whyChooseUs.onePlatform')}</h3>
-              <p className="text-gray-500">{t('home.whyChooseUs.onePlatformDesc')}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-2">{t('home.whyChooseUs.onePlatform')}</h3>
+              <p className="text-gray-500 text-sm">{t('home.whyChooseUs.onePlatformDesc')}</p>
             </div>
 
             {/* Fast Booking */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-[#2FB7EC]/30 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#2FB7EC]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#2FB7EC] transition-colors duration-300">
-                <svg className="w-7 h-7 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2FB7EC]/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-[#2FB7EC]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#2FB7EC] transition-colors duration-300">
+                <svg className="w-5 h-5 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('home.whyChooseUs.fastBooking')}</h3>
-              <p className="text-gray-500">{t('home.whyChooseUs.fastBookingDesc')}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-2">{t('home.whyChooseUs.fastBooking')}</h3>
+              <p className="text-gray-500 text-sm">{t('home.whyChooseUs.fastBookingDesc')}</p>
             </div>
 
             {/* Online Payment */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-[#2FB7EC]/30 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#2FB7EC]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#2FB7EC] transition-colors duration-300">
-                <svg className="w-7 h-7 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2FB7EC]/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-[#2FB7EC]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#2FB7EC] transition-colors duration-300">
+                <svg className="w-5 h-5 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('home.whyChooseUs.onlinePayment')}</h3>
-              <p className="text-gray-500">{t('home.whyChooseUs.onlinePaymentDesc')}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-2">{t('home.whyChooseUs.onlinePayment')}</h3>
+              <p className="text-gray-500 text-sm">{t('home.whyChooseUs.onlinePaymentDesc')}</p>
             </div>
 
             {/* Pay on Arrival */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-[#2FB7EC]/30 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#2FB7EC]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#2FB7EC] transition-colors duration-300">
-                <svg className="w-7 h-7 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2FB7EC]/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-[#2FB7EC]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#2FB7EC] transition-colors duration-300">
+                <svg className="w-5 h-5 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('home.whyChooseUs.payOnArrival')}</h3>
-              <p className="text-gray-500">{t('home.whyChooseUs.payOnArrivalDesc')}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-2">{t('home.whyChooseUs.payOnArrival')}</h3>
+              <p className="text-gray-500 text-sm">{t('home.whyChooseUs.payOnArrivalDesc')}</p>
             </div>
 
             {/* Secure Transactions */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-[#2FB7EC]/30 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#2FB7EC]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#2FB7EC] transition-colors duration-300">
-                <svg className="w-7 h-7 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2FB7EC]/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-[#2FB7EC]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#2FB7EC] transition-colors duration-300">
+                <svg className="w-5 h-5 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('home.whyChooseUs.secureTransactions')}</h3>
-              <p className="text-gray-500">{t('home.whyChooseUs.secureTransactionsDesc')}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-2">{t('home.whyChooseUs.secureTransactions')}</h3>
+              <p className="text-gray-500 text-sm">{t('home.whyChooseUs.secureTransactionsDesc')}</p>
             </div>
 
             {/* 24/7 Support */}
-            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 hover:shadow-xl hover:border-[#2FB7EC]/30 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-[#2FB7EC]/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#2FB7EC] transition-colors duration-300">
-                <svg className="w-7 h-7 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 hover:shadow-lg hover:border-[#2FB7EC]/30 transition-all duration-300 group">
+              <div className="w-12 h-12 bg-[#2FB7EC]/10 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#2FB7EC] transition-colors duration-300">
+                <svg className="w-5 h-5 text-[#2FB7EC] group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{t('home.whyChooseUs.support247')}</h3>
-              <p className="text-gray-500">{t('home.whyChooseUs.support247Desc')}</p>
+              <h3 className="text-base font-bold text-gray-900 mb-2">{t('home.whyChooseUs.support247')}</h3>
+              <p className="text-gray-500 text-sm">{t('home.whyChooseUs.support247Desc')}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <p className="text-[#2FB7EC] font-semibold text-sm tracking-widest uppercase mb-3">
+          <div className="text-center mb-8">
+            <p className="text-[#2FB7EC] font-semibold text-xs tracking-widest uppercase mb-2">
               {t('home.contact.label')}
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
               {t('home.contact.title')}
             </h2>
-            <p className="text-gray-500 max-w-2xl mx-auto">
+            <p className="text-gray-500 text-sm max-w-2xl mx-auto">
               {t('home.contact.subtitle')}
             </p>
           </div>
@@ -1475,15 +1475,15 @@ export default function Home() {
       </section>
 
       {/* Slogan Section */}
-      <section className="py-16 bg-gradient-to-r from-[#2FB7EC] to-[#1a9fd4]">
+      <section className="py-10 bg-gradient-to-r from-[#2FB7EC] to-[#1a9fd4]">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-1">
             Hajz
           </h2>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-semibold text-white/90 mb-4">
+          <p className="text-lg md:text-xl lg:text-2xl font-semibold text-white/90 mb-2">
             {t('home.slogan.title')}
           </p>
-          <p className="text-lg text-white/70">
+          <p className="text-sm text-white/70">
             {t('home.slogan.subtitle')}
           </p>
         </div>
