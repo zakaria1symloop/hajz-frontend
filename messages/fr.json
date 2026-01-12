@@ -4,8 +4,8 @@
     "title": "À Propos de Hajz",
     "subtitle": "Votre partenaire de confiance pour le tourisme en Algérie",
     "whoWeAre": "Qui Sommes-Nous",
-    "description1": "Hajz est une entreprise algérienne émergente offrant une gamme diversifiée de services intégrés dans le tourisme, spécialisée dans les réservations d'hôtels, de restaurants et la location de voitures touristiques. Notre objectif est de fournir un excellent service client et d'améliorer l'industrie du tourisme dans le pays, rendant les voyages des clients plus agréables et fluides.",
-    "description2": "Nous facilitons la recherche d'hôtels, de restaurants et de voitures touristiques adaptés aux besoins du client, qu'il voyage pour affaires, pour visiter la famille ou pour passer des vacances en Algérie. Nous offrons également la réservation de restaurants comme premier service électronique en Algérie, grâce à notre interface facile à utiliser et nos fonctionnalités de recherche avancées qui trouvent rapidement les options les plus adaptées.",
+    "description1": "Hajz est une startup algérienne émergente offrant une gamme diversifiée de services intégrés dans le tourisme, spécialisée dans les réservations d'hôtels, de restaurants et la location de voitures touristiques. Notre objectif est de fournir un service confortable aux clients et d'améliorer l'industrie du tourisme dans le pays, rendant les voyages des clients plus agréables et fluides en facilitant la recherche d'hôtels, de restaurants et de voitures touristiques adaptés aux besoins des clients, que ce soit pour un voyage d'affaires, une visite familiale ou des vacances en Algérie.",
+    "description2": "Nous offrons également la réservation de restaurants comme premier service électronique en Algérie, grâce à notre interface facile à utiliser et nos fonctionnalités de recherche avancées, où vous pouvez trouver les options les plus adaptées rapidement.",
     "description3": "La plateforme agit comme un intermédiaire reliant les utilisateurs aux prestataires de services touristiques. Nous sommes là pour vous fournir tout ce dont vous avez besoin pour une expérience de voyage confortable et fluide en ligne, avec une sécurité de paiement garantie et une fiabilité des informations.",
     "visionTitle": "Notre Vision",
     "visionText": "Être le premier choix des voyageurs en fournissant une plateforme complète et intégrée pour répondre à tous leurs besoins touristiques.",
@@ -610,8 +610,8 @@
     "languageChanged": "Langue changée"
   },
   "footer": {
-    "description": "Simplifier la planification et la réservation en offrant des options diverses et des prix compétitifs.",
-    "vision": "Notre objectif à long terme : Nous visons à développer des solutions innovantes qui font du voyage une expérience immersive et personnalisée, tout en continuant à construire des partenariats solides avec les prestataires de services pour offrir les meilleurs services, élargir nos offres pour répondre à tous les besoins des voyageurs, et atteindre le leadership dans le secteur touristique algérien.",
+    "description": "Hajz est une startup algérienne émergente offrant une gamme diversifiée de services intégrés dans le tourisme, spécialisée dans les réservations d'hôtels, de restaurants et la location de voitures touristiques.",
+    "vision": "Notre objectif est de fournir un service confortable aux clients et d'améliorer l'industrie du tourisme dans le pays, rendant les voyages des clients plus agréables et fluides.",
     "quickLinks": "Liens Rapides",
     "hotels": "Hôtels",
     "restaurants": "Restaurants",
