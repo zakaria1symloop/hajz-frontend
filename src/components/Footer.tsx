@@ -126,6 +126,11 @@ export default function Footer() {
             <h3 className="text-white font-semibold mb-4">{t('legal')}</h3>
             <ul className="space-y-2">
               <li>
+                <Link href="/about" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
+                  {t('aboutUs')}
+                </Link>
+              </li>
+              <li>
                 <Link href="/terms" className="text-gray-400 hover:text-[#2FB7EC] transition-colors text-sm">
                   {t('termsOfUse')}
                 </Link>

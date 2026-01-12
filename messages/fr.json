@@ -1,4 +1,49 @@
 {
+  "about": {
+    "backToHome": "Retour à l'Accueil",
+    "title": "À Propos de Hajz",
+    "subtitle": "Votre partenaire de confiance pour le tourisme en Algérie",
+    "whoWeAre": "Qui Sommes-Nous",
+    "description1": "Hajz est une entreprise algérienne émergente offrant une gamme diversifiée de services intégrés dans le tourisme, spécialisée dans les réservations d'hôtels, de restaurants et la location de voitures touristiques. Notre objectif est de fournir un excellent service client et d'améliorer l'industrie du tourisme dans le pays, rendant les voyages des clients plus agréables et fluides.",
+    "description2": "Nous facilitons la recherche d'hôtels, de restaurants et de voitures touristiques adaptés aux besoins du client, qu'il voyage pour affaires, pour visiter la famille ou pour passer des vacances en Algérie. Nous offrons également la réservation de restaurants comme premier service électronique en Algérie, grâce à notre interface facile à utiliser et nos fonctionnalités de recherche avancées qui trouvent rapidement les options les plus adaptées.",
+    "description3": "La plateforme agit comme un intermédiaire reliant les utilisateurs aux prestataires de services touristiques. Nous sommes là pour vous fournir tout ce dont vous avez besoin pour une expérience de voyage confortable et fluide en ligne, avec une sécurité de paiement garantie et une fiabilité des informations.",
+    "visionTitle": "Notre Vision",
+    "visionText": "Être le premier choix des voyageurs en fournissant une plateforme complète et intégrée pour répondre à tous leurs besoins touristiques.",
+    "value1Title": "Plateforme Complète",
+    "value1Text": "Hôtels, restaurants et locations de voitures en un seul endroit",
+    "value2Title": "Sécurité et Confiance",
+    "value2Text": "Vos données et paiements sont toujours protégés",
+    "value3Title": "Innovation",
+    "value3Text": "Premier service de réservation de restaurants électronique en Algérie",
+    "value4Title": "Service Client",
+    "value4Text": "Support 24/7 pour vous aider à tout moment",
+    "faqLabel": "FAQ",
+    "faqTitle": "Questions Fréquemment Posées",
+    "faqSubtitle": "Trouvez des réponses aux questions courantes sur nos services",
+    "faq": {
+      "q1": "Comment puis-je réserver un hôtel via Hajz?",
+      "a1": "Sélectionnez votre destination et vos dates, parcourez la liste des hôtels disponibles, lisez les avis, puis complétez le processus de réservation par un paiement sécurisé.",
+      "q2": "Puis-je annuler ma réservation d'hôtel?",
+      "a2": "Oui, vous pouvez annuler votre réservation selon la politique d'annulation de l'hôtel. Certains hôtels peuvent facturer des frais pour les annulations tardives.",
+      "q3": "Puis-je modifier ma réservation de location de voiture?",
+      "a3": "Les modifications de réservation sont possibles si elles respectent la politique du prestataire de services.",
+      "q4": "Comment puis-je payer ma réservation?",
+      "a4": "Nous offrons plusieurs méthodes de paiement sécurisées, y compris les paiements par carte de crédit et les options de paiement à l'arrivée.",
+      "q5": "Le site offre-t-il un service client?",
+      "a5": "Oui, nous avons une équipe de support disponible 24/7 via chat en direct, email ou téléphone pour vous aider avec toutes vos questions.",
+      "q6": "Puis-je réserver un restaurant via le site?",
+      "a6": "Oui, vous pouvez réserver une table dans les meilleurs restaurants en parcourant les options disponibles sur le site et en sélectionnant votre horaire préféré.",
+      "q7": "Mes données sont-elles sécurisées sur le site?",
+      "a7": "Oui, pour assurer la protection de vos informations personnelles et de vos paiements, nous utilisons des technologies de sécurité avancées telles que les protocoles SSL.",
+      "q8": "Puis-je utiliser le site sur mon téléphone mobile?",
+      "a8": "Oui, le site est compatible avec tous les appareils mobiles, et vous pouvez facilement effectuer des réservations de n'importe où à tout moment.",
+      "q9": "Comment puis-je contacter le service client?",
+      "a9": "Vous pouvez nous joindre via le chat en direct sur le site, par email ou par téléphone. Notre équipe est disponible 24/7 pour vous aider."
+    },
+    "ctaTitle": "Prêt à Commencer Votre Voyage?",
+    "ctaSubtitle": "Découvrez les meilleurs hôtels, restaurants et locations de voitures à travers l'Algérie",
+    "ctaButton": "Explorer Maintenant"
+  },
   "booking": {
     "paymentSuccess": "Paiement Réussi!",
     "paymentSuccessMessage": "Votre réservation a été confirmée. Merci pour votre paiement.",
@@ -21,7 +66,7 @@
     "profile": "Profil",
     "settings": "Paramètres",
     "explore": "Explorer",
-    "proDashboard": "Espace Pro"
+    "proDashboard": "Partenaire"
   },
   "home": {
     "hero": {
@@ -76,6 +121,45 @@
       "title": "Prêt à Commencer Votre Voyage?",
       "subtitle": "Rejoignez des milliers de voyageurs qui font confiance à Hajz.",
       "button": "Commencer Maintenant"
+    },
+    "whyChooseUs": {
+      "title": "Pourquoi Nous Choisir",
+      "subtitle": "Tout ce dont vous avez besoin pour votre voyage en un seul endroit",
+      "onePlatform": "Une Plateforme pour Tous Vos Besoins Touristiques",
+      "onePlatformDesc": "Hôtels, restaurants et location de voitures au même endroit",
+      "fastBooking": "Réservation Rapide et Facile",
+      "fastBookingDesc": "Réservez en quelques secondes",
+      "onlinePayment": "Paiement en Ligne",
+      "onlinePaymentDesc": "Paiement sécurisé avec Chargily Pay",
+      "payOnArrival": "Paiement à l'Arrivée",
+      "payOnArrivalDesc": "Options de paiement flexibles pour votre confort",
+      "secureTransactions": "Transactions Sécurisées et Certifiées",
+      "secureTransactionsDesc": "Vos données et paiements sont toujours protégés",
+      "support247": "Support Client 24/7",
+      "support247Desc": "Nous sommes là pour vous 24h/24, 7j/7"
+    },
+    "slogan": {
+      "title": "Vous décidez de voyager, et laissez-nous le reste.",
+      "subtitle": "Votre partenaire de confiance pour tous vos besoins de voyage en Algérie"
+    },
+    "contact": {
+      "label": "Contactez-nous",
+      "title": "Entrer en Contact",
+      "subtitle": "Vous avez une question ou besoin d'aide? Envoyez-nous un message et nous vous répondrons dès que possible.",
+      "name": "Nom Complet",
+      "namePlaceholder": "Entrez votre nom complet",
+      "email": "Adresse Email",
+      "emailPlaceholder": "Entrez votre adresse email",
+      "phone": "Numéro de Téléphone",
+      "phonePlaceholder": "Entrez votre numéro de téléphone",
+      "subject": "Sujet",
+      "subjectPlaceholder": "De quoi s'agit-il?",
+      "message": "Message",
+      "messagePlaceholder": "Écrivez votre message ici...",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours...",
+      "success": "Votre message a été envoyé avec succès. Nous vous répondrons bientôt!",
+      "error": "Échec de l'envoi du message. Veuillez réessayer."
     }
   },
   "hotels": {
@@ -529,6 +613,7 @@
     "carRentals": "Location de Voitures",
     "destinations": "Destinations",
     "legal": "Légal",
+    "aboutUs": "À Propos",
     "termsOfUse": "Conditions d'Utilisation",
     "privacyPolicy": "Politique de Confidentialité",
     "contactUs": "Nous Contacter",

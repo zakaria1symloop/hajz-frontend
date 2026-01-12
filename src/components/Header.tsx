@@ -6,13 +6,12 @@ import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useAuth } from '@/context/AuthContext';
-import { HiOutlinePhone, HiOutlineMenu, HiOutlineX, HiOutlineUser, HiOutlineLogout, HiOutlineClipboardList, HiOutlineCog } from 'react-icons/hi';
+import { HiOutlineMenu, HiOutlineX, HiOutlineUser, HiOutlineLogout, HiOutlineClipboardList, HiOutlineCog } from 'react-icons/hi';
 import { FiLogIn, FiUserPlus, FiChevronDown } from 'react-icons/fi';
 import { BsBriefcase } from 'react-icons/bs';
 import LanguageSwitcher from './LanguageSwitcher';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
-import api from '@/lib/api';
 
 // Pages that have light backgrounds and need dark header
 const LIGHT_BG_PAGES = ['/explore', '/wilayas', '/hotels', '/restaurants', '/cars', '/profile', '/reservations', '/settings'];
@@ -29,23 +28,27 @@ export default function Header() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [supportPhone, setSupportPhone] = useState('+213 123 456 789');
+  const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('DZD');
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const currencyRef = useRef<HTMLDivElement>(null);
 
-  // Fetch support phone from settings
-  useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await api.get('/settings/public');
-        if (response.data?.support_phone) {
-          setSupportPhone(response.data.support_phone);
-        }
-      } catch (error) {
-        console.error('Failed to fetch settings:', error);
-      }
-    };
-    fetchSettings();
-  }, []);
+  const currencies = [
+    { code: 'DZD', symbol: 'د.ج', name: 'Dinar', available: true },
+    { code: 'EUR', symbol: '€', name: 'Euro', available: false },
+    { code: 'USD', symbol: '$', name: 'Dollar', available: false },
+  ];
+
+  const handleCurrencySelect = (currency: typeof currencies[0]) => {
+    if (currency.available) {
+      setSelectedCurrency(currency.code);
+      setShowCurrencyDropdown(false);
+    } else {
+      setShowComingSoon(true);
+      setTimeout(() => setShowComingSoon(false), 2000);
+    }
+  };
 
   // Check if current page has light background
   const isLightBgPage = LIGHT_BG_PAGES.some(page => pathname?.startsWith(page));
@@ -56,11 +59,14 @@ export default function Header() {
   // Use scrolled style if page has light background or user has scrolled
   const useScrolledStyle = isLightBgPage || scrolled;
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setShowUserDropdown(false);
+      }
+      if (currencyRef.current && !currencyRef.current.contains(event.target as Node)) {
+        setShowCurrencyDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -113,29 +119,70 @@ export default function Header() {
               <Image
                 src={!isFloatingHeader || useScrolledStyle ? '/images/Hajz.png' : '/images/Hajz-Ice-White.png'}
                 alt="Hajz"
-                width={120}
-                height={48}
-                className="h-12 w-auto object-contain"
+                width={160}
+                height={64}
+                className="h-16 w-auto object-contain"
                 priority
               />
             </Link>
 
             {/* Right Side */}
             <div className="hidden md:flex items-center gap-3">
-              {/* Phone Number */}
-              <a
-                href={`tel:${supportPhone.replace(/\s/g, '')}`}
-                className={`flex items-center gap-2 transition-all duration-500 group ${
-                  !isFloatingHeader || useScrolledStyle ? 'text-gray-600 hover:text-[#2FB7EC]' : 'text-white/90 hover:text-white'
-                }`}
-              >
-                <span className={`p-2 rounded-full transition-all duration-300 ${
-                  !isFloatingHeader || useScrolledStyle ? 'bg-gray-100 group-hover:bg-[#2FB7EC]/10' : 'bg-white/10 group-hover:bg-white/20'
-                }`}>
-                  <HiOutlinePhone size={16} className="group-hover:rotate-12 transition-transform duration-300" />
-                </span>
-                <span className="font-medium text-sm" dir="ltr">{supportPhone}</span>
-              </a>
+              {/* Currency Selector */}
+              <div className="relative" ref={currencyRef}>
+                <button
+                  onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-xl font-medium text-sm transition-all duration-300 ${
+                    !isFloatingHeader || useScrolledStyle
+                      ? 'text-gray-600 hover:text-[#2FB7EC] hover:bg-gray-50'
+                      : 'text-white/90 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <span className="font-semibold">{currencies.find(c => c.code === selectedCurrency)?.symbol}</span>
+                  <span>{selectedCurrency}</span>
+                  <FiChevronDown
+                    size={14}
+                    className={`transition-transform duration-300 ${showCurrencyDropdown ? 'rotate-180' : ''}`}
+                  />
+                </button>
+
+                {/* Currency Dropdown */}
+                {showCurrencyDropdown && (
+                  <div className="absolute right-0 top-full mt-2 w-44 bg-white rounded-xl shadow-xl shadow-black/10 border border-gray-100 py-2 z-50 animate-fadeIn">
+                    {currencies.map((currency) => (
+                      <button
+                        key={currency.code}
+                        onClick={() => handleCurrencySelect(currency)}
+                        className={`flex items-center justify-between w-full px-4 py-2.5 text-left transition-colors ${
+                          selectedCurrency === currency.code
+                            ? 'bg-[#2FB7EC]/10 text-[#2FB7EC]'
+                            : currency.available
+                            ? 'text-gray-700 hover:bg-gray-50'
+                            : 'text-gray-400 hover:bg-gray-50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold w-6">{currency.symbol}</span>
+                          <span>{currency.name}</span>
+                        </div>
+                        {selectedCurrency === currency.code && (
+                          <span className="text-[#2FB7EC]">✓</span>
+                        )}
+                        {!currency.available && (
+                          <span className="text-xs text-gray-400">Soon</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Coming Soon Toast */}
+                {showComingSoon && (
+                  <div className="absolute right-0 top-full mt-2 px-4 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap animate-fadeIn">
+                    Coming soon!
+                  </div>
+                )}
+              </div>
 
               {/* Language Switcher */}
               <LanguageSwitcher variant={!isFloatingHeader || useScrolledStyle ? 'light' : 'dark'} />
@@ -215,7 +262,7 @@ export default function Header() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  {/* Pro Button */}
+                  {/* Partner Button */}
                   <Link
                     href="/pro/login"
                     className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all duration-300 border-2 ${
@@ -225,7 +272,7 @@ export default function Header() {
                     }`}
                   >
                     <BsBriefcase size={16} />
-                    Pro
+                    {t('proDashboard')}
                   </Link>
 
                   {/* Sign In Button */}
@@ -291,15 +338,35 @@ export default function Header() {
           >
             <div className={`pt-4 border-t ${!isFloatingHeader || useScrolledStyle ? 'border-gray-100' : 'border-white/10'}`}>
               <div className="flex flex-col gap-3">
-                <a
-                  href={`tel:${supportPhone.replace(/\s/g, '')}`}
-                  className={`flex items-center gap-3 py-3 px-3 rounded-xl transition-all duration-300 ${
-                    !isFloatingHeader || useScrolledStyle ? 'text-gray-600 hover:bg-gray-50' : 'text-white hover:bg-white/10'
-                  }`}
-                >
-                  <HiOutlinePhone size={20} />
-                  <span className="font-medium" dir="ltr">{supportPhone}</span>
-                </a>
+                {/* Currency Selector Mobile */}
+                <div className={`flex items-center gap-2 py-3 px-3 rounded-xl ${
+                  !isFloatingHeader || useScrolledStyle ? 'bg-gray-50' : 'bg-white/10'
+                }`}>
+                  {currencies.map((currency) => (
+                    <button
+                      key={currency.code}
+                      onClick={() => handleCurrencySelect(currency)}
+                      className={`flex-1 py-2 px-3 rounded-lg font-medium text-sm transition-all duration-300 ${
+                        selectedCurrency === currency.code
+                          ? 'bg-[#2FB7EC] text-white'
+                          : currency.available
+                          ? !isFloatingHeader || useScrolledStyle
+                            ? 'text-gray-600 hover:bg-gray-100'
+                            : 'text-white/70 hover:bg-white/10'
+                          : !isFloatingHeader || useScrolledStyle
+                          ? 'text-gray-400'
+                          : 'text-white/40'
+                      }`}
+                    >
+                      {currency.symbol} {currency.code}
+                    </button>
+                  ))}
+                </div>
+                {showComingSoon && (
+                  <div className="text-center text-sm text-amber-500 font-medium">
+                    Coming soon!
+                  </div>
+                )}
 
                 <div className="py-2 px-3">
                   <LanguageSwitcher variant={!isFloatingHeader || useScrolledStyle ? 'light' : 'dark'} />

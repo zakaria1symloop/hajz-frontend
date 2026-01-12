@@ -1,4 +1,49 @@
 {
+  "about": {
+    "backToHome": "Back to Home",
+    "title": "About Hajz",
+    "subtitle": "Your trusted partner for tourism in Algeria",
+    "whoWeAre": "Who We Are",
+    "description1": "Hajz is an emerging Algerian company offering a diverse range of integrated services in tourism, specializing in hotel reservations, restaurant bookings, and tourist car rentals. Our goal is to provide excellent customer service and enhance the tourism industry in the country, making client trips more enjoyable and seamless.",
+    "description2": "We facilitate finding hotels, restaurants, and tourist cars that suit the client's needs, whether traveling for work, visiting family, or spending a vacation in Algeria. We also offer restaurant booking as the first electronic service in Algeria, thanks to our easy-to-use interface and advanced search features that quickly find the most suitable options.",
+    "description3": "The platform acts as an intermediary connecting users with tourism service providers. We are here to provide everything you need for a comfortable and smooth travel experience online, with guaranteed payment security and information reliability.",
+    "visionTitle": "Our Vision",
+    "visionText": "To be the first choice for travelers by providing a comprehensive and integrated platform to meet all their tourism needs.",
+    "value1Title": "Comprehensive Platform",
+    "value1Text": "Hotels, restaurants, and car rentals all in one place",
+    "value2Title": "Security & Trust",
+    "value2Text": "Your data and payments are always protected",
+    "value3Title": "Innovation",
+    "value3Text": "First electronic restaurant booking service in Algeria",
+    "value4Title": "Customer Care",
+    "value4Text": "24/7 support to assist you anytime",
+    "faqLabel": "FAQ",
+    "faqTitle": "Frequently Asked Questions",
+    "faqSubtitle": "Find answers to common questions about our services",
+    "faq": {
+      "q1": "How can I book a hotel through Hajz?",
+      "a1": "Select your destination and dates, browse the list of available hotels, read reviews, then complete the booking process through secure payment.",
+      "q2": "Can I cancel my hotel booking?",
+      "a2": "Yes, you can cancel your booking subject to the hotel's cancellation policy. Some hotels may charge fees for late cancellations.",
+      "q3": "Can I modify my car rental booking?",
+      "a3": "Booking modifications are possible if within the service provider's policy.",
+      "q4": "How can I pay for my booking?",
+      "a4": "We offer several secure payment methods including credit card payments and pay on arrival options.",
+      "q5": "Does the site offer customer service?",
+      "a5": "Yes, we have a support team available 24/7 via live chat, email, or phone to assist with all your inquiries.",
+      "q6": "Can I book a restaurant through the site?",
+      "a6": "Yes, you can book a table at the best restaurants by browsing available options on the site and selecting your preferred time.",
+      "q7": "Is my data secure on the site?",
+      "a7": "Yes, to ensure the protection of your personal information and payment, we use advanced security technologies such as SSL protocols.",
+      "q8": "Can I use the site on my mobile phone?",
+      "a8": "Yes, the site is compatible with all mobile devices, and you can easily make bookings from anywhere at any time.",
+      "q9": "How can I contact customer service?",
+      "a9": "You can reach us through live chat on the website, by email, or by phone. Our team is available 24/7 to help you."
+    },
+    "ctaTitle": "Ready to Start Your Journey?",
+    "ctaSubtitle": "Discover the best hotels, restaurants, and car rentals across Algeria",
+    "ctaButton": "Explore Now"
+  },
   "booking": {
     "paymentSuccess": "Payment Successful!",
     "paymentSuccessMessage": "Your booking has been confirmed. Thank you for your payment.",
@@ -21,7 +66,7 @@
     "profile": "Profile",
     "settings": "Settings",
     "explore": "Explore",
-    "proDashboard": "Pro Dashboard"
+    "proDashboard": "Partner"
   },
   "home": {
     "hero": {
@@ -76,6 +121,45 @@
       "title": "Ready to Start Your Journey?",
       "subtitle": "Join thousands of travelers who trust Hajz for their travel needs.",
       "button": "Get Started Now"
+    },
+    "whyChooseUs": {
+      "title": "Why Choose Us",
+      "subtitle": "Everything you need for your travel in one place",
+      "onePlatform": "One Platform for All Your Tourism Needs",
+      "onePlatformDesc": "Hotels, restaurants, and car rentals all in one place",
+      "fastBooking": "Fast and Easy Booking",
+      "fastBookingDesc": "Book in seconds with our streamlined process",
+      "onlinePayment": "Online Payment",
+      "onlinePaymentDesc": "Secure payment with Chargily Pay",
+      "payOnArrival": "Pay on Arrival",
+      "payOnArrivalDesc": "Flexible payment options for your convenience",
+      "secureTransactions": "Safe and Certified Transactions",
+      "secureTransactionsDesc": "Your data and payments are always protected",
+      "support247": "24/7 Customer Support",
+      "support247Desc": "We're here for you around the clock, every day of the week"
+    },
+    "slogan": {
+      "title": "You decide to travel, and leave the rest to us.",
+      "subtitle": "Your trusted partner for all your travel needs in Algeria"
+    },
+    "contact": {
+      "label": "Contact Us",
+      "title": "Get in Touch",
+      "subtitle": "Have a question or need assistance? Send us a message and we'll get back to you as soon as possible.",
+      "name": "Full Name",
+      "namePlaceholder": "Enter your full name",
+      "email": "Email Address",
+      "emailPlaceholder": "Enter your email address",
+      "phone": "Phone Number",
+      "phonePlaceholder": "Enter your phone number",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is this about?",
+      "message": "Message",
+      "messagePlaceholder": "Write your message here...",
+      "send": "Send Message",
+      "sending": "Sending...",
+      "success": "Your message has been sent successfully. We will get back to you soon!",
+      "error": "Failed to send message. Please try again."
     }
   },
   "hotels": {
@@ -533,6 +617,7 @@
     "carRentals": "Car Rentals",
     "destinations": "Destinations",
     "legal": "Legal",
+    "aboutUs": "About Us",
     "termsOfUse": "Terms of Use",
     "privacyPolicy": "Privacy Policy",
     "contactUs": "Contact Us",
