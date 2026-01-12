@@ -1335,6 +1335,41 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Projet Innovant Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            {/* Image */}
+            <div className="lg:w-1/2 flex justify-center">
+              <div className="relative">
+                <Image
+                  src="/images/label-projet-innevant.png"
+                  alt="Label Projet Innovant"
+                  width={400}
+                  height={400}
+                  className="object-contain"
+                />
+              </div>
+            </div>
+
+            {/* Text Content */}
+            <div className="lg:w-1/2 text-center lg:text-start">
+              <div className="inline-block px-4 py-2 bg-[#2FB7EC]/10 rounded-full mb-6">
+                <span className="text-[#2FB7EC] font-semibold text-sm tracking-widest uppercase">
+                  {t('home.projetInnovant.label')}
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                {t('home.projetInnovant.title')}
+              </h2>
+              <p className="text-gray-600 text-lg leading-relaxed">
+                {t('home.projetInnovant.description')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Why Choose Us Section */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4">
