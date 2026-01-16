@@ -15,6 +15,14 @@ const nextConfig: NextConfig = {
         hostname: 'hajz-project.symloop.com',
       },
       {
+        protocol: 'https',
+        hostname: 'api.hajz-algeria.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'hajz-algeria.com',
+      },
+      {
         protocol: 'http',
         hostname: '192.168.100.36',
         port: '8000',
