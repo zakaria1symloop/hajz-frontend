@@ -14,8 +14,8 @@ export const metadata: Metadata = {
   title: "Hajz - Book Hotels, Flights & Restaurants",
   description: "Your trusted partner for booking hotels, flights, and restaurants across Algeria and beyond.",
   icons: {
-    icon: '/icon.png',
-    apple: '/apple-icon.png',
+    icon: '/icon.png?v=2',
+    apple: '/apple-icon.png?v=2',
   },
 };
 
