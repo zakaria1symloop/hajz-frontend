@@ -41,7 +41,7 @@ interface Restaurant {
   email: string;
   opening_time: string;
   closing_time: string;
-  images: { id: number; image_path: string; is_primary: boolean }[];
+  images: { id: number; image_path: string; url?: string; is_primary: boolean }[];
   tables: RestaurantTable[];
   plats: Plat[];
 }
@@ -411,7 +411,7 @@ export default function RestaurantDetailsPage() {
         {restaurant.images && restaurant.images.length > 0 ? (
           <>
             <img
-              src={getImageUrl(restaurant.images[currentImageIndex]?.image_path)}
+              src={restaurant.images[currentImageIndex]?.url || getImageUrl(restaurant.images[currentImageIndex]?.image_path)}
               alt={restaurant.name}
               className="w-full h-full object-cover"
             />
