@@ -13,6 +13,10 @@ const changa = Changa({ subsets: ["arabic"], weight: ["400", "500", "600", "700"
 export const metadata: Metadata = {
   title: "Hajz - Book Hotels, Flights & Restaurants",
   description: "Your trusted partner for booking hotels, flights, and restaurants across Algeria and beyond.",
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default async function RootLayout({
