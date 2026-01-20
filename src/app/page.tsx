@@ -224,7 +224,7 @@ interface CarRental {
   min_price?: number;
   opening_time?: string;
   closing_time?: string;
-  images?: { id: number; image_path: string; url?: string }[];
+  images?: { id: number; image_path: string; url?: string; image_url?: string }[];
   wilaya?: { id: number; name: string; name_ar: string };
   average_rating?: number;
   reviews_count?: number;
@@ -463,6 +463,7 @@ export default function Home() {
     if (carRental.images && carRental.images.length > 0) {
       const img = carRental.images[0];
       if (img.url) return img.url;
+      if (img.image_url) return img.image_url;
       if (img.image_path?.startsWith('http')) return img.image_path;
       const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;
