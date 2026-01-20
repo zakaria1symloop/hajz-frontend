@@ -15,6 +15,7 @@ interface HotelImage {
   id: number;
   image_path: string;
   url?: string;
+  image_url?: string;
   is_primary: boolean;
 }
 
@@ -73,6 +74,7 @@ export default function MyHotelPage() {
 
   const getImageUrl = (image: HotelImage) => {
     if (image.url) return image.url;
+    if (image.image_url) return image.image_url;
     if (image.image_path?.startsWith('http')) return image.image_path;
     const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
     return `${baseUrl}/storage/${image.image_path}`;

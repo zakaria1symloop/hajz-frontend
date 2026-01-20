@@ -16,6 +16,7 @@ interface RoomImage {
   image_path: string;
   is_primary: boolean;
   url?: string;
+  image_url?: string;
 }
 
 interface Room {
@@ -309,6 +310,10 @@ export default function RoomsPage() {
     if (image.url) {
       console.log('Using backend URL:', image.url);
       return image.url;
+    }
+    if (image.image_url) {
+      console.log('Using backend image_url:', image.image_url);
+      return image.image_url;
     }
     // Fallback: construct URL manually
     if (image.image_path?.startsWith('http')) {
