@@ -422,7 +422,7 @@ export default function ProDashboard() {
                 )}
                 {businessType === 'car_rental' && (
                   <>
-                    <Link href="/pro/cars/create" className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-green-50 transition-colors group">
+                    <Link href="/pro/cars" className="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-green-50 transition-colors group">
                       <HiOutlinePlus size={24} className="text-gray-400 group-hover:text-green-600" />
                       <span className="text-sm font-medium">{t('addCar')}</span>
                     </Link>
