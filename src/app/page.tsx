@@ -404,6 +404,7 @@ export default function Home() {
     if (hotel.images && hotel.images.length > 0) {
       const img = hotel.images[0];
       if (img.url) return img.url;
+      if (img.image_url) return img.image_url;
       if (img.image_path?.startsWith('http')) return img.image_path;
       const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;
@@ -416,6 +417,7 @@ export default function Home() {
     if (restaurant.images && restaurant.images.length > 0) {
       const img = restaurant.images[0];
       if (img.url) return img.url;
+      if (img.image_url) return img.image_url;
       if (img.image_path?.startsWith('http')) return img.image_path;
       const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'https://hajz-project.symloop.com';
       return `${baseUrl}/storage/${img.image_path}`;

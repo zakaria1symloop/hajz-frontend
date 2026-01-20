@@ -49,6 +49,7 @@ interface CarRentalCompany {
 interface CarImage {
   id: number;
   image_path: string;
+  image_url?: string;
   is_primary: boolean;
 }
 
@@ -409,15 +410,15 @@ export default function CarRentalDetailsPage() {
                 >
                   {/* Car Image */}
                   <div className="relative h-48 bg-gray-100">
-                    {car.images && car.images.length > 0 ? (
+                    {car.primary_image_url ? (
                       <img
-                        src={getImageUrl(car.images.find((i) => i.is_primary)?.image_path || car.images[0]?.image_path)}
+                        src={car.primary_image_url}
                         alt={car.full_name}
                         className="w-full h-full object-cover"
                       />
-                    ) : car.primary_image_url ? (
+                    ) : car.images && car.images.length > 0 ? (
                       <img
-                        src={car.primary_image_url}
+                        src={car.images.find((i) => i.is_primary)?.image_url || car.images[0]?.image_url || getImageUrl(car.images[0]?.image_path)}
                         alt={car.full_name}
                         className="w-full h-full object-cover"
                       />
@@ -539,7 +540,7 @@ export default function CarRentalDetailsPage() {
                 {selectedCar.images && selectedCar.images.length > 0 ? (
                   <>
                     <img
-                      src={getImageUrl(selectedCar.images[carImageIndex]?.image_path)}
+                      src={selectedCar.images[carImageIndex]?.image_url || getImageUrl(selectedCar.images[carImageIndex]?.image_path)}
                       alt={selectedCar.full_name}
                       className="w-full h-full object-cover"
                     />

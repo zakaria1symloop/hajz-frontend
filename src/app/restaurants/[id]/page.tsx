@@ -411,7 +411,7 @@ export default function RestaurantDetailsPage() {
         {restaurant.images && restaurant.images.length > 0 ? (
           <>
             <img
-              src={restaurant.images[currentImageIndex]?.url || getImageUrl(restaurant.images[currentImageIndex]?.image_path)}
+              src={restaurant.images[currentImageIndex]?.url || restaurant.images[currentImageIndex]?.image_url || getImageUrl(restaurant.images[currentImageIndex]?.image_path)}
               alt={restaurant.name}
               className="w-full h-full object-cover"
             />
