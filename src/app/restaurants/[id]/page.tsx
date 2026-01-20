@@ -41,7 +41,7 @@ interface Restaurant {
   email: string;
   opening_time: string;
   closing_time: string;
-  images: { id: number; image_path: string; url?: string; is_primary: boolean }[];
+  images: { id: number; image_path: string; url?: string; image_url?: string; is_primary: boolean }[];
   tables: RestaurantTable[];
   plats: Plat[];
 }
