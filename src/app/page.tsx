@@ -174,7 +174,7 @@ interface Hotel {
   price_per_night?: number;
   min_price?: number;
   amenities?: string[];
-  images?: { id: number; image_path: string; url?: string }[];
+  images?: { id: number; image_path: string; url?: string; image_url?: string }[];
   wilaya?: { id: number; name: string; name_ar: string };
   rooms_count?: number;
   reviews_count?: number;
@@ -194,7 +194,7 @@ interface Restaurant {
   opening_time?: string;
   closing_time?: string;
   phone?: string;
-  images?: { id: number; image_path: string; url?: string }[];
+  images?: { id: number; image_path: string; url?: string; image_url?: string }[];
   wilaya?: { id: number; name: string; name_ar: string };
   tables_count?: number;
   plats_count?: number;
