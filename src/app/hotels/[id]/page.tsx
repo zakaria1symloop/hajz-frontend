@@ -24,7 +24,7 @@ interface Room {
   size_sqm: number;
   amenities: string[];
   is_active: boolean;
-  images?: { id: number; image_path: string; url?: string; is_primary: boolean }[];
+  images?: { id: number; image_path: string; url?: string; image_url?: string; is_primary: boolean }[];
 }
 
 interface Hotel {
@@ -40,7 +40,7 @@ interface Hotel {
   price_per_night: number;
   rooms_available: number;
   amenities: string[];
-  images?: { id: number; url?: string; image_path?: string; is_primary: boolean }[];
+  images?: { id: number; url?: string; image_url?: string; image_path?: string; is_primary: boolean }[];
   rooms?: Room[];
 }
 
@@ -223,6 +223,7 @@ export default function HotelDetailPage() {
     const primary = hotel.images.find(img => img.is_primary) || hotel.images[0];
     // Check for full URL first
     if (primary?.url) return primary.url;
+    if (primary?.image_url) return primary.image_url;
     if (!primary?.image_path) return null;
     if (primary.image_path.startsWith('http')) return primary.image_path;
     // Handle paths that might already have /storage/ prefix

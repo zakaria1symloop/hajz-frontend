@@ -14,6 +14,7 @@ interface CarImage {
   id: number;
   image_path: string;
   url?: string;
+  image_url?: string;
   is_primary: boolean;
 }
 
@@ -342,7 +343,7 @@ export default function CarsManagementPage() {
                 <div className="relative h-48 bg-gray-100">
                   {car.images && car.images.length > 0 ? (
                     <img
-                      src={(car.images.find(i => i.is_primary) || car.images[0])?.url || getImageUrl(car.images.find(i => i.is_primary)?.image_path || car.images[0].image_path)}
+                      src={(car.images.find(i => i.is_primary) || car.images[0])?.url || (car.images.find(i => i.is_primary) || car.images[0])?.image_url || getImageUrl(car.images.find(i => i.is_primary)?.image_path || car.images[0].image_path)}
                       alt={`${car.brand} ${car.model}`}
                       className="w-full h-full object-cover"
                     />
@@ -731,7 +732,7 @@ export default function CarsManagementPage() {
                   {selectedCar.images.map((image) => (
                     <div key={image.id} className="relative group rounded-xl overflow-hidden aspect-square bg-gray-100">
                       <img
-                        src={image.url || getImageUrl(image.image_path)}
+                        src={image.url || image.image_url || getImageUrl(image.image_path)}
                         alt="Car"
                         className="w-full h-full object-cover"
                       />

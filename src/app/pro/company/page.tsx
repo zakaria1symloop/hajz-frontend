@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl';
 interface CompanyImage {
   id: number;
   image_path: string;
+  image_url?: string;
   is_primary: boolean;
 }
 
@@ -248,7 +249,7 @@ export default function MyCompanyPage() {
                 {images.map((image) => (
                   <div key={image.id} className="relative group rounded-xl overflow-hidden aspect-square bg-gray-100">
                     <img
-                      src={getImageUrl(image.image_path)}
+                      src={image.image_url || getImageUrl(image.image_path)}
                       alt="Company"
                       className="w-full h-full object-cover"
                     />
